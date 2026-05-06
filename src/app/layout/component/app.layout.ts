@@ -7,17 +7,17 @@ import { AppFooter } from './app.footer';
 import { LayoutService } from '@/app/layout/service/layout.service';
 
 @Component({
-    selector: 'app-layout',
+    selector: 'p-layout',
     standalone: true,
     imports: [CommonModule, AppTopbar, AppSidebar, RouterModule, AppFooter],
     template: `<div class="layout-wrapper" [ngClass]="containerClass()">
-        <app-topbar></app-topbar>
-        <app-sidebar></app-sidebar>
+        <p-topbar></p-topbar>
+        <p-sidebar></p-sidebar>
         <div class="layout-main-container">
             <div class="layout-main">
                 <router-outlet></router-outlet>
             </div>
-            <app-footer></app-footer>
+            <p-footer></p-footer>
         </div>
         <div class="layout-mask"></div>
     </div> `
@@ -28,6 +28,7 @@ export class AppLayout {
     constructor() {
         effect(() => {
             const state = this.layoutService.layoutState();
+
             if (state.mobileMenuActive) {
                 document.body.classList.add('blocked-scroll');
             } else {
@@ -39,6 +40,7 @@ export class AppLayout {
     containerClass = computed(() => {
         const config = this.layoutService.layoutConfig();
         const state = this.layoutService.layoutState();
+
         return {
             'layout-overlay': config.menuMode === 'overlay',
             'layout-static': config.menuMode === 'static',

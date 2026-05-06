@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { RippleModule } from 'primeng/ripple';
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
@@ -7,7 +7,7 @@ import { Product, ProductService } from '@/app/pages/service/product.service';
 
 @Component({
     standalone: true,
-    selector: 'app-recent-sales-widget',
+    selector: 'p-recent-sales-widget',
     imports: [CommonModule, TableModule, ButtonModule, RippleModule],
     template: `<div class="card mb-8!">
         <div class="font-semibold text-xl mb-4">Recent Sales</div>
@@ -36,7 +36,7 @@ import { Product, ProductService } from '@/app/pages/service/product.service';
     </div>`,
     providers: [ProductService]
 })
-export class RecentSalesWidget {
+export class RecentSalesWidget implements OnInit {
     products = signal<Product[]>([]);
 
     productService = inject(ProductService);

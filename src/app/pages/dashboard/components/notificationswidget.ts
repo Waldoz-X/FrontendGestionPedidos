@@ -4,7 +4,7 @@ import { MenuModule } from 'primeng/menu';
 
 @Component({
     standalone: true,
-    selector: 'app-notifications-widget',
+    selector: 'p-notifications-widget',
     imports: [ButtonModule, MenuModule],
     template: `<div class="card">
         <div class="flex items-center justify-between mb-6">

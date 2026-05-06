@@ -1,14 +1,14 @@
-import { Component } from '@angular/core';
-import { RouterModule } from '@angular/router';
+import { Component, inject } from '@angular/core';
+import { ActivatedRoute, RouterModule } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import { RippleModule } from 'primeng/ripple';
 import { AppFloatingConfigurator } from '../../layout/component/app.floatingconfigurator';
 
 @Component({
-    selector: 'app-error',
+    selector: 'p-error',
     imports: [ButtonModule, RippleModule, RouterModule, AppFloatingConfigurator, ButtonModule],
     standalone: true,
-    template: ` <app-floating-configurator />
+    template: ` <p-floating-configurator />
         <div class="bg-surface-50 dark:bg-surface-950 flex items-center justify-center min-h-screen min-w-screen overflow-hidden">
             <div class="flex flex-col items-center justify-center">
                 <div style="border-radius: 56px; padding: 0.3rem; background: linear-gradient(180deg, rgba(233, 30, 99, 0.4) 10%, rgba(33, 150, 243, 0) 30%)">
@@ -17,11 +17,11 @@ import { AppFloatingConfigurator } from '../../layout/component/app.floatingconf
                             <div class="flex justify-center items-center border-2 border-pink-500 rounded-full" style="height: 3.2rem; width: 3.2rem">
                                 <i class="pi pi-fw pi-exclamation-circle text-2xl! text-pink-500"></i>
                             </div>
-                            <h1 class="text-surface-900 dark:text-surface-0 font-bold text-5xl mb-2">Error Occured</h1>
-                            <span class="text-muted-color mb-8">Requested resource is not available.</span>
+                            <h1 class="text-surface-900 dark:text-surface-0 font-bold text-5xl mb-2">Error de acceso</h1>
+                            <span class="text-muted-color mb-8">{{ detailMessage }}</span>
                             <img src="https://primefaces.org/cdn/templates/sakai/auth/asset-error.svg" alt="Error" class="mb-8" width="80%" />
                             <div class="col-span-12 mt-8 text-center">
-                                <p-button label="Go to Dashboard" routerLink="/" severity="danger" />
+                                <p-button label="Ir a Login" routerLink="/auth/login" severity="danger" />
                             </div>
                         </div>
                     </div>
@@ -29,4 +29,18 @@ import { AppFloatingConfigurator } from '../../layout/component/app.floatingconf
             </div>
         </div>`
 })
-export class Error {}
+export class Error {
+    private readonly route = inject(ActivatedRoute);
+
+    detailMessage: string = 'No fue posible completar la solicitud.';
+
+    constructor() {
+        const code = Number(this.route.snapshot.queryParamMap.get('code'));
+
+        if (code === 401) {
+            this.detailMessage = 'Sesion invalida o expirada. Inicia sesion nuevamente.';
+        } else if (code === 403) {
+            this.detailMessage = 'No tienes permisos para esta seccion.';
+        }
+    }
+}

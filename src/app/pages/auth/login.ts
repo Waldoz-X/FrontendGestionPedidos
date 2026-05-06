@@ -1,19 +1,22 @@
-import { Component } from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
+import { Component, inject, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import { CheckboxModule } from 'primeng/checkbox';
 import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
 import { RippleModule } from 'primeng/ripple';
+import { finalize } from 'rxjs';
+import { AuthSessionService } from '@/app/core/services/auth-session.service';
 import { AppFloatingConfigurator } from '../../layout/component/app.floatingconfigurator';
 
 @Component({
-    selector: 'app-login',
+    selector: 'p-login',
     standalone: true,
     imports: [ButtonModule, CheckboxModule, InputTextModule, PasswordModule, FormsModule, RouterModule, RippleModule, AppFloatingConfigurator],
     template: `
-        <app-floating-configurator />
+        <p-floating-configurator />
         <div class="bg-surface-50 dark:bg-surface-950 flex items-center justify-center min-h-screen min-w-screen overflow-hidden">
             <div class="flex flex-col items-center justify-center">
                 <div style="border-radius: 56px; padding: 0.3rem; background: linear-gradient(180deg, var(--primary-color) 10%, rgba(33, 150, 243, 0) 30%)">
@@ -54,7 +57,12 @@ import { AppFloatingConfigurator } from '../../layout/component/app.floatingconf
                                 </div>
                                 <span class="font-medium no-underline ml-2 text-right cursor-pointer text-primary">Forgot password?</span>
                             </div>
-                            <p-button label="Sign In" styleClass="w-full" routerLink="/"></p-button>
+
+                            @if (errorMessage) {
+                                <small class="block mb-4 text-red-500">{{ errorMessage }}</small>
+                            }
+
+                            <p-button label="Sign In" styleClass="w-full" [loading]="loading" (onClick)="signIn()"></p-button>
                         </div>
                     </div>
                 </div>
@@ -62,10 +70,82 @@ import { AppFloatingConfigurator } from '../../layout/component/app.floatingconf
         </div>
     `
 })
-export class Login {
+export class Login implements OnInit {
+    private readonly authSession = inject(AuthSessionService);
+    private readonly router = inject(Router);
+    private readonly route = inject(ActivatedRoute);
+
     email: string = '';
 
     password: string = '';
 
     checked: boolean = false;
+
+    loading: boolean = false;
+
+    errorMessage: string = '';
+
+    ngOnInit(): void {
+        const reason = this.route.snapshot.queryParamMap.get('reason');
+
+        if (reason === 'session_expired') {
+            this.errorMessage = 'Tu sesión expiró. Inicia sesión de nuevo.';
+        }
+    }
+
+    private getSafeReturnUrl(): string {
+        const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl');
+
+        if (!returnUrl) {
+            return '/';
+        }
+
+        if (!returnUrl.startsWith('/') || returnUrl.startsWith('//') || returnUrl.includes('://')) {
+            return '/';
+        }
+
+        return returnUrl;
+    }
+
+    signIn(): void {
+        this.errorMessage = '';
+
+        if (!this.email || !this.password) {
+            this.errorMessage = 'Ingresa email y password.';
+
+            return;
+        }
+
+        this.loading = true;
+        this.authSession
+            .login({ email: this.email, password: this.password })
+            .pipe(finalize(() => (this.loading = false)))
+            .subscribe({
+                next: () => {
+                    this.authSession.getMe().subscribe({
+                        next: async () => {
+                            await this.router.navigateByUrl(this.getSafeReturnUrl());
+                        },
+                        error: async (meError: HttpErrorResponse) => {
+                            if (meError.status === 401 || meError.status === 403) {
+                                await this.router.navigate(['/auth/error'], { queryParams: { code: meError.status } });
+
+                                return;
+                            }
+
+                            this.errorMessage = 'Login correcto, pero no se pudo cargar tu perfil.';
+                        }
+                    });
+                },
+                error: async (error: HttpErrorResponse) => {
+                    if (error.status === 401 || error.status === 403) {
+                        await this.router.navigate(['/auth/error'], { queryParams: { code: error.status } });
+
+                        return;
+                    }
+
+                    this.errorMessage = 'No se pudo iniciar sesion. Intenta de nuevo.';
+                }
+            });
+    }
 }

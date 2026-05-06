@@ -3,13 +3,14 @@ import { Injectable, effect, signal, computed } from '@angular/core';
 export interface LayoutConfig {
     preset: string;
     primary: string;
-    surface: string | undefined | null;
+    surface: string;
     darkTheme: boolean;
     menuMode: string;
 }
 
 interface LayoutState {
     staticMenuDesktopInactive: boolean;
+    staticMenuMobileActive: boolean;
     overlayMenuActive: boolean;
     configSidebarVisible: boolean;
     mobileMenuActive: boolean;
@@ -24,13 +25,14 @@ export class LayoutService {
     layoutConfig = signal<LayoutConfig>({
         preset: 'Aura',
         primary: 'emerald',
-        surface: null,
+        surface: 'slate',
         darkTheme: false,
         menuMode: 'static'
     });
 
     layoutState = signal<LayoutState>({
         staticMenuDesktopInactive: false,
+        staticMenuMobileActive: false,
         overlayMenuActive: false,
         configSidebarVisible: false,
         mobileMenuActive: false,
@@ -52,18 +54,23 @@ export class LayoutService {
 
     transitionComplete = signal<boolean>(false);
 
-    private initialized = false;
+    private previousDarkTheme: boolean | null = null;
 
     constructor() {
         effect(() => {
             const config = this.layoutConfig();
 
-            if (!this.initialized || !config) {
-                this.initialized = true;
+            if (this.previousDarkTheme === null) {
+                this.previousDarkTheme = config.darkTheme;
+                this.toggleDarkMode(config);
+
                 return;
             }
 
-            this.handleDarkModeTransition(config);
+            if (config.darkTheme !== this.previousDarkTheme) {
+                this.previousDarkTheme = config.darkTheme;
+                this.handleDarkModeTransition(config);
+            }
         });
     }
 
@@ -78,13 +85,18 @@ export class LayoutService {
     }
 
     private startViewTransition(config: LayoutConfig): void {
-        document.startViewTransition(() => {
+        try {
+            document.startViewTransition(() => {
+                this.toggleDarkMode(config);
+            });
+        } catch {
             this.toggleDarkMode(config);
-        });
+        }
     }
 
     toggleDarkMode(config?: LayoutConfig): void {
         const _config = config || this.layoutConfig();
+
         if (_config.darkTheme) {
             document.documentElement.classList.add('app-dark');
         } else {

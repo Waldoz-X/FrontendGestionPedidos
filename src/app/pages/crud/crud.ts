@@ -1,4 +1,4 @@
-import { Component, OnInit, signal, ViewChild } from '@angular/core';
+import { Component, inject, OnInit, signal, ViewChild } from '@angular/core';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { Table, TableModule } from 'primeng/table';
 import { CommonModule } from '@angular/common';
@@ -32,7 +32,7 @@ interface ExportColumn {
 }
 
 @Component({
-    selector: 'app-crud',
+    selector: 'p-crud',
     standalone: true,
     imports: [
         CommonModule,
@@ -149,11 +149,15 @@ interface ExportColumn {
         <p-dialog [(visible)]="productDialog" [style]="{ width: '450px' }" header="Product Details" [modal]="true">
             <ng-template #content>
                 <div class="flex flex-col gap-6">
-                    <img [src]="'https://primefaces.org/cdn/primeng/images/demo/product/' + product.image" [alt]="product.image" class="block m-auto pb-4" *ngIf="product.image" />
+                    @if (product.image) {
+                        <img [src]="'https://primefaces.org/cdn/primeng/images/demo/product/' + product.image" [alt]="product.image" class="block m-auto pb-4" />
+                    }
                     <div>
                         <label for="name" class="block font-bold mb-3">Name</label>
                         <input type="text" pInputText id="name" [(ngModel)]="product.name" required autofocus fluid />
-                        <small class="text-red-500" *ngIf="submitted && !product.name">Name is required.</small>
+                        @if (submitted && !product.name) {
+                            <small class="text-red-500">Name is required.</small>
+                        }
                     </div>
                     <div>
                         <label for="description" class="block font-bold mb-3">Description</label>
@@ -229,11 +233,9 @@ export class Crud implements OnInit {
 
     cols!: Column[];
 
-    constructor(
-        private productService: ProductService,
-        private messageService: MessageService,
-        private confirmationService: ConfirmationService
-    ) {}
+    private productService = inject(ProductService);
+    private messageService = inject(MessageService);
+    private confirmationService = inject(ConfirmationService);
 
     exportCSV() {
         this.dt.exportCSV();
@@ -288,6 +290,7 @@ export class Crud implements OnInit {
             accept: () => {
                 this.products.set(this.products().filter((val) => !this.selectedProducts?.includes(val)));
                 this.selectedProducts = null;
+
                 this.messageService.add({
                     severity: 'success',
                     summary: 'Successful',
@@ -323,6 +326,7 @@ export class Crud implements OnInit {
 
     findIndexById(id: string): number {
         let index = -1;
+
         for (let i = 0; i < this.products().length; i++) {
             if (this.products()[i].id === id) {
                 index = i;
@@ -335,10 +339,12 @@ export class Crud implements OnInit {
 
     createId(): string {
         let id = '';
-        var chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-        for (var i = 0; i < 5; i++) {
+        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+
+        for (let i = 0; i < 5; i++) {
             id += chars.charAt(Math.floor(Math.random() * chars.length));
         }
+
         return id;
     }
 
@@ -357,11 +363,13 @@ export class Crud implements OnInit {
 
     saveProduct() {
         this.submitted = true;
-        let _products = this.products();
+        const _products = this.products();
+
         if (this.product.name?.trim()) {
             if (this.product.id) {
                 _products[this.findIndexById(this.product.id)] = this.product;
                 this.products.set([..._products]);
+
                 this.messageService.add({
                     severity: 'success',
                     summary: 'Successful',
@@ -371,6 +379,7 @@ export class Crud implements OnInit {
             } else {
                 this.product.id = this.createId();
                 this.product.image = 'product-placeholder.svg';
+
                 this.messageService.add({
                     severity: 'success',
                     summary: 'Successful',

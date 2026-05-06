@@ -60,6 +60,12 @@
                 },
                 "serve": {
                     "builder": "@angular-devkit/build-angular:dev-server",
+                    "options": {
+                        "proxyConfig": "proxy.conf.json",
+                        "host": "localhost",
+                        "port": 4200,
+                        "open": true
+                    },
                     "configurations": {
                         "production": {
                             "buildTarget": "sakai-ng:build:production"

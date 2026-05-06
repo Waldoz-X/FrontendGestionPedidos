@@ -1,31 +1,63 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { MenuItem } from 'primeng/api';
 import { AppMenuitem } from './app.menuitem';
 
 @Component({
-    selector: 'app-menu',
+    selector: 'p-menu',
     standalone: true,
     imports: [CommonModule, AppMenuitem, RouterModule],
     template: `<ul class="layout-menu">
         @for (item of model; track item.label) {
             @if (!item.separator) {
-                <li app-menuitem [item]="item" [root]="true"></li>
+                <p-menuitem [item]="item" [root]="true"></p-menuitem>
             } @else {
                 <li class="menu-separator"></li>
             }
         }
     </ul> `,
 })
-export class AppMenu {
+export class AppMenu implements OnInit {
     model: MenuItem[] = [];
 
     ngOnInit() {
         this.model = [
             {
                 label: 'Home',
-                items: [{ label: 'Dashboard', icon: 'pi pi-fw pi-home', routerLink: ['/'] }]
+                items: [
+                    { label: 'Dashboard', icon: 'pi pi-fw pi-home', routerLink: ['/'] },
+                    { label: 'Asignaciones', icon: 'pi pi-fw pi-link', routerLink: ['/asignaciones'] },
+                    {
+                        label: 'Catalogo',
+                        icon: 'pi pi-fw pi-box',
+                        path: '/catalogo',
+                        items: [
+                            { label: 'Productos', icon: 'pi pi-fw pi-tag', routerLink: ['/catalogo/productos'] },
+                            { label: 'Variantes', icon: 'pi pi-fw pi-palette', routerLink: ['/catalogo/variantes'] },
+                            { label: 'SKUs', icon: 'pi pi-fw pi-barcode', routerLink: ['/catalogo/skus'] },
+                            { label: 'Precios', icon: 'pi pi-fw pi-dollar', routerLink: ['/catalogo/precios'] },
+                            { label: 'Gamas', icon: 'pi pi-fw pi-layers', routerLink: ['/catalogo/gamas'] }
+                        ]
+                    },
+                    { label: 'Clientes', icon: 'pi pi-fw pi-building', routerLink: ['/clientes'] },
+                    { label: 'Empleados', icon: 'pi pi-fw pi-users', routerLink: ['/empleados'] },
+                    {
+                        label: 'Admin',
+                        icon: 'pi pi-fw pi-shield',
+                        path: '/admin',
+                        items: [
+                            { label: 'Usuarios clientes', icon: 'pi pi-fw pi-user-edit', routerLink: ['/admin/clientes-usuarios'] },
+                            { label: 'Usuarios empleados', icon: 'pi pi-fw pi-key', routerLink: ['/admin/empleados-usuarios'] },
+                            { label: 'Países', icon: 'pi pi-fw pi-globe', routerLink: ['/admin/paises'] },
+                            { label: 'Estados', icon: 'pi pi-fw pi-map', routerLink: ['/admin/estados'] },
+                            { label: 'Áreas', icon: 'pi pi-fw pi-sitemap', routerLink: ['/admin/areas'] },
+                            { label: 'Series', icon: 'pi pi-fw pi-th-large', routerLink: ['/admin/series'] },
+                            { label: 'Líneas', icon: 'pi pi-fw pi-align-justify', routerLink: ['/admin/lineas-coleccion'] }
+                        ]
+                    },
+                    { label: 'Pedidos', icon: 'pi pi-fw pi-shopping-cart', routerLink: ['/pedidos'] }
+                ]
             },
             {
                 label: 'UI Components',
@@ -56,28 +88,6 @@ export class AppMenu {
                         label: 'Landing',
                         icon: 'pi pi-fw pi-globe',
                         routerLink: ['/landing']
-                    },
-                    {
-                        label: 'Auth',
-                        icon: 'pi pi-fw pi-user',
-                        path: '/auth',
-                        items: [
-                            {
-                                label: 'Login',
-                                icon: 'pi pi-fw pi-sign-in',
-                                routerLink: ['/auth/login']
-                            },
-                            {
-                                label: 'Error',
-                                icon: 'pi pi-fw pi-times-circle',
-                                routerLink: ['/auth/error']
-                            },
-                            {
-                                label: 'Access Denied',
-                                icon: 'pi pi-fw pi-lock',
-                                routerLink: ['/auth/access']
-                            }
-                        ]
                     },
                     {
                         label: 'Crud',

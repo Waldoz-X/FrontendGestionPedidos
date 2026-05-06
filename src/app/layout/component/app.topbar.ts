@@ -1,13 +1,14 @@
 import { Component, inject } from '@angular/core';
 import { MenuItem } from 'primeng/api';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { StyleClassModule } from 'primeng/styleclass';
+import { AuthSessionService } from '@/app/core/services/auth-session.service';
 import { AppConfigurator } from './app.configurator';
 import { LayoutService } from '@/app/layout/service/layout.service';
 
 @Component({
-    selector: 'app-topbar',
+    selector: 'p-topbar',
     standalone: true,
     imports: [RouterModule, CommonModule, StyleClassModule, AppConfigurator],
     template: ` <div class="layout-topbar">
@@ -33,7 +34,7 @@ import { LayoutService } from '@/app/layout/service/layout.service';
                         />
                     </g>
                 </svg>
-                <span>SAKAI</span>
+                <span>Gestion de Pedidos</span>
             </a>
         </div>
 
@@ -54,7 +55,7 @@ import { LayoutService } from '@/app/layout/service/layout.service';
                     >
                         <i class="pi pi-palette"></i>
                     </button>
-                    <app-configurator />
+                    <p-configurator />
                 </div>
             </div>
 
@@ -76,6 +77,10 @@ import { LayoutService } from '@/app/layout/service/layout.service';
                         <i class="pi pi-user"></i>
                         <span>Profile</span>
                     </button>
+                    <button type="button" class="layout-topbar-action" (click)="logout()">
+                        <i class="pi pi-sign-out"></i>
+                        <span>Cerrar sesion</span>
+                    </button>
                 </div>
             </div>
         </div>
@@ -85,11 +90,18 @@ export class AppTopbar {
     items!: MenuItem[];
 
     layoutService = inject(LayoutService);
+    private readonly authSession = inject(AuthSessionService);
+    private readonly router = inject(Router);
 
     toggleDarkMode() {
         this.layoutService.layoutConfig.update((state) => ({
             ...state,
             darkTheme: !state.darkTheme
         }));
+    }
+
+    logout(): void {
+        this.authSession.logout();
+        this.router.navigate(['/auth/login']);
     }
 }

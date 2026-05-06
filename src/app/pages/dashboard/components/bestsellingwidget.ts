@@ -5,7 +5,7 @@ import { MenuModule } from 'primeng/menu';
 
 @Component({
     standalone: true,
-    selector: 'app-best-selling-widget',
+    selector: 'p-best-selling-widget',
     imports: [CommonModule, ButtonModule, MenuModule],
     template: ` <div class="card">
         <div class="flex justify-between items-center mb-6">

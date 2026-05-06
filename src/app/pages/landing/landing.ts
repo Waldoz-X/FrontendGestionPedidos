@@ -12,18 +12,18 @@ import { PricingWidget } from './components/pricingwidget';
 import { FooterWidget } from './components/footerwidget';
 
 @Component({
-    selector: 'app-landing',
+    selector: 'p-landing',
     standalone: true,
     imports: [RouterModule, TopbarWidget, HeroWidget, FeaturesWidget, HighlightsWidget, PricingWidget, FooterWidget, RippleModule, StyleClassModule, ButtonModule, DividerModule],
     template: `
         <div class="bg-surface-0 dark:bg-surface-900">
             <div id="home" class="landing-wrapper overflow-hidden">
-                <topbar-widget class="py-6 px-6 mx-0 md:mx-12 lg:mx-20 lg:px-20 flex items-center justify-between relative lg:static" />
-                <hero-widget />
-                <features-widget />
-                <highlights-widget />
-                <pricing-widget />
-                <footer-widget />
+                <p-topbar-widget class="py-6 px-6 mx-0 md:mx-12 lg:mx-20 lg:px-20 flex items-center justify-between relative lg:static" />
+                <p-hero-widget />
+                <p-features-widget />
+                <p-highlights-widget />
+                <p-pricing-widget />
+                <p-footer-widget />
             </div>
         </div>
     `

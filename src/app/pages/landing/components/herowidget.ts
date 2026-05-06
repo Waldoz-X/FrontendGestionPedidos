@@ -3,7 +3,7 @@ import { ButtonModule } from 'primeng/button';
 import { RippleModule } from 'primeng/ripple';
 
 @Component({
-    selector: 'hero-widget',
+    selector: 'p-hero-widget',
     imports: [ButtonModule, RippleModule],
     template: `
         <div

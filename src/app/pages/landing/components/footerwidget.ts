@@ -1,8 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 
 @Component({
-    selector: 'footer-widget',
+    selector: 'p-footer-widget',
     imports: [RouterModule],
     template: `
         <div class="py-12 px-12 mx-0 mt-20 lg:mx-20">
@@ -69,5 +69,5 @@ import { Router, RouterModule } from '@angular/router';
     `
 })
 export class FooterWidget {
-    constructor(public router: Router) {}
+    router = inject(Router);
 }

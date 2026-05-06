@@ -1,4 +1,4 @@
-import { Component, computed, inject, input, signal } from '@angular/core';
+import { AfterViewInit, Component, computed, inject, input, OnInit, signal } from '@angular/core';
 import { NavigationEnd, Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { RippleModule } from 'primeng/ripple';
@@ -6,7 +6,7 @@ import { LayoutService } from '@/app/layout/service/layout.service';
 import { filter } from 'rxjs/operators';
 
 @Component({
-    selector: '[app-menuitem]',
+    selector: 'p-menuitem',
     imports: [CommonModule, RouterModule, RippleModule],
     template: `
         @if (root() && isVisible()) {
@@ -47,9 +47,9 @@ import { filter } from 'rxjs/operators';
             </a>
         }
         @if (hasChildren() && isVisible() && (root() || isActive())) {
-            <ul [animate.enter]="initialized() ? 'p-submenu-enter' : null" [animate.leave]="'p-submenu-leave'" [class.layout-root-submenulist]="root()">
+            <ul [animate.enter]="initialized() ? 'p-submenu-enter' : ''" [animate.leave]="'p-submenu-leave'" [class.layout-root-submenulist]="root()">
                 @for (child of item().items; track child?.label) {
-                    <li app-menuitem [item]="child" [parentPath]="fullPath()" [root]="false" [class]="child['badgeClass']"></li>
+                    <p-menuitem [item]="child" [parentPath]="fullPath()" [root]="false" [class]="child['badgeClass']"></p-menuitem>
                 }
             </ul>
         }
@@ -92,7 +92,7 @@ import { filter } from 'rxjs/operators';
         `
     ]
 })
-export class AppMenuitem {
+export class AppMenuitem implements OnInit, AfterViewInit {
     layoutService = inject(LayoutService);
 
     router = inject(Router);
@@ -111,19 +111,25 @@ export class AppMenuitem {
 
     fullPath = computed(() => {
         const itemPath = this.item()?.path;
+
         if (!itemPath) return this.parentPath();
+
         const parent = this.parentPath();
+
         if (parent && !itemPath.startsWith(parent)) {
             return parent + itemPath;
         }
+
         return itemPath;
     });
 
     isActive = computed(() => {
         const activePath = this.layoutService.layoutState().activePath;
+
         if (this.item()?.path) {
             return activePath?.startsWith(this.fullPath() ?? '') ?? false;
         }
+
         return false;
     });
 
@@ -151,6 +157,7 @@ export class AppMenuitem {
 
     updateActiveStateFromRoute() {
         const item = this.item();
+
         if (!item?.routerLink) return;
 
         const isRouteActive = this.router.isActive(item.routerLink[0], {
@@ -162,6 +169,7 @@ export class AppMenuitem {
 
         if (isRouteActive) {
             const parentPath = this.parentPath();
+
             if (parentPath) {
                 this.layoutService.layoutState.update((val) => ({
                     ...val,
@@ -176,6 +184,7 @@ export class AppMenuitem {
 
         if (item?.disabled) {
             event.preventDefault();
+
             return;
         }
 
