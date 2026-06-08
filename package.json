@@ -3,7 +3,9 @@
     "version": "21.0.0",
     "scripts": {
         "ng": "ng",
-        "start": "ng serve --host localhost --port 4200 --open",
+        "prestart": "node ./scripts/generate-app-config.js",
+        "start": "ng serve --configuration development --proxy-config proxy.conf.json --host localhost --port 4200 --open",
+        "prebuild": "node ./scripts/generate-app-config.js",
         "build": "ng build",
         "watch": "ng build --watch --configuration development",
         "format": "prettier --write \"**/*.{js,mjs,ts,mts,d.ts,html}\" --cache",
@@ -37,6 +39,7 @@
         "@types/jasmine": "~5.1.0",
         "angular-eslint": "^21.3.1",
         "autoprefixer": "^10.4.20",
+        "dotenv": "^17.4.2",
         "eslint": "^9.14.0",
         "eslint-config-prettier": "^9.1.0",
         "eslint-plugin-import": "^2.31.0",

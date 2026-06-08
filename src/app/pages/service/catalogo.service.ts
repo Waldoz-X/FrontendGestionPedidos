@@ -1,6 +1,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { AppConfigService } from '../../config/app-config.service';
 import {
     ActualizarEstiloCatalogoRequest,
     ActualizarPoliticaPrecioRequest,
@@ -43,8 +44,15 @@ import {
 @Injectable({ providedIn: 'root' })
 export class CatalogoService {
     private readonly http = inject(HttpClient);
-    private readonly catalogoUrl = '/api/catalogo';
-    private readonly catalogosUrl = '/api/catalogos';
+    private readonly appConfig = inject(AppConfigService);
+
+    private get catalogoUrl(): string {
+        return this.appConfig.getCatalogoBase();
+    }
+
+    private get catalogosUrl(): string {
+        return this.appConfig.getCatalogosBase();
+    }
 
     getTallas(activo?: boolean, segmento?: string): Observable<TallaCatalogo[]> {
         let params = new HttpParams();

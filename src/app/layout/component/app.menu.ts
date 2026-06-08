@@ -24,39 +24,20 @@ export class AppMenu implements OnInit {
     ngOnInit() {
         this.model = [
             {
-                label: 'Home',
+                label: 'Administración',
                 items: [
                     { label: 'Dashboard', icon: 'pi pi-fw pi-home', routerLink: ['/'] },
-                    { label: 'Asignaciones', icon: 'pi pi-fw pi-link', routerLink: ['/asignaciones'] },
-                    {
-                        label: 'Catalogo',
-                        icon: 'pi pi-fw pi-box',
-                        path: '/catalogo',
-                        items: [
-                            { label: 'Productos', icon: 'pi pi-fw pi-tag', routerLink: ['/catalogo/productos'] },
-                            { label: 'Variantes', icon: 'pi pi-fw pi-palette', routerLink: ['/catalogo/variantes'] },
-                            { label: 'SKUs', icon: 'pi pi-fw pi-barcode', routerLink: ['/catalogo/skus'] },
-                            { label: 'Precios', icon: 'pi pi-fw pi-dollar', routerLink: ['/catalogo/precios'] },
-                            { label: 'Gamas', icon: 'pi pi-fw pi-layers', routerLink: ['/catalogo/gamas'] }
-                        ]
-                    },
                     { label: 'Clientes', icon: 'pi pi-fw pi-building', routerLink: ['/clientes'] },
                     { label: 'Empleados', icon: 'pi pi-fw pi-users', routerLink: ['/empleados'] },
-                    {
-                        label: 'Admin',
-                        icon: 'pi pi-fw pi-shield',
-                        path: '/admin',
-                        items: [
-                            { label: 'Usuarios clientes', icon: 'pi pi-fw pi-user-edit', routerLink: ['/admin/clientes-usuarios'] },
-                            { label: 'Usuarios empleados', icon: 'pi pi-fw pi-key', routerLink: ['/admin/empleados-usuarios'] },
-                            { label: 'Países', icon: 'pi pi-fw pi-globe', routerLink: ['/admin/paises'] },
-                            { label: 'Estados', icon: 'pi pi-fw pi-map', routerLink: ['/admin/estados'] },
-                            { label: 'Áreas', icon: 'pi pi-fw pi-sitemap', routerLink: ['/admin/areas'] },
-                            { label: 'Series', icon: 'pi pi-fw pi-th-large', routerLink: ['/admin/series'] },
-                            { label: 'Líneas', icon: 'pi pi-fw pi-align-justify', routerLink: ['/admin/lineas-coleccion'] }
-                        ]
-                    },
-                    { label: 'Pedidos', icon: 'pi pi-fw pi-shopping-cart', routerLink: ['/pedidos'] }
+                    { label: 'Usuarios', icon: 'pi pi-fw pi-user-edit', routerLink: ['/admin/usuarios'] },
+                    { label: 'Asignaciones', icon: 'pi pi-fw pi-link', routerLink: ['/asignaciones'] },
+                    { label: 'Catálogos', icon: 'pi pi-fw pi-folder', routerLink: ['/admin/catalogos'] }
+                ]
+            },
+            {
+                label: 'Productos',
+                items: [
+                    { label: 'Guantes', icon: 'pi pi-fw pi-box', routerLink: ['/productos/guantes'] }
                 ]
             },
             {
@@ -77,100 +58,6 @@ export class AppMenu implements OnInit {
                     { label: 'Chart', icon: 'pi pi-fw pi-chart-bar', routerLink: ['/uikit/charts'] },
                     { label: 'Timeline', icon: 'pi pi-fw pi-calendar', routerLink: ['/uikit/timeline'] },
                     { label: 'Misc', icon: 'pi pi-fw pi-circle', routerLink: ['/uikit/misc'] }
-                ]
-            },
-            {
-                label: 'Pages',
-                icon: 'pi pi-fw pi-briefcase',
-                path: '/pages',
-                items: [
-                    {
-                        label: 'Landing',
-                        icon: 'pi pi-fw pi-globe',
-                        routerLink: ['/landing']
-                    },
-                    {
-                        label: 'Crud',
-                        icon: 'pi pi-fw pi-pencil',
-                        routerLink: ['/pages/crud']
-                    },
-                    {
-                        label: 'Not Found',
-                        icon: 'pi pi-fw pi-exclamation-circle',
-                        routerLink: ['/pages/notfound']
-                    },
-                    {
-                        label: 'Empty',
-                        icon: 'pi pi-fw pi-circle-off',
-                        routerLink: ['/pages/empty']
-                    }
-                ]
-            },
-            {
-                label: 'Hierarchy',
-                path: '/hierarchy',
-                items: [
-                    {
-                        label: 'Submenu 1',
-                        icon: 'pi pi-fw pi-bookmark',
-                        path: '/hierarchy/submenu_1',
-                        items: [
-                            {
-                                label: 'Submenu 1.1',
-                                icon: 'pi pi-fw pi-bookmark',
-                                path: '/hierarchy/submenu_1/submenu_1_1',
-                                items: [
-                                    { label: 'Submenu 1.1.1', icon: 'pi pi-fw pi-bookmark' },
-                                    { label: 'Submenu 1.1.2', icon: 'pi pi-fw pi-bookmark' },
-                                    { label: 'Submenu 1.1.3', icon: 'pi pi-fw pi-bookmark' }
-                                ]
-                            },
-                            {
-                                label: 'Submenu 1.2',
-                                icon: 'pi pi-fw pi-bookmark',
-                                path: '/hierarchy/submenu_1/submenu_1_2',
-                                items: [{ label: 'Submenu 1.2.1', icon: 'pi pi-fw pi-bookmark' }]
-                            }
-                        ]
-                    },
-                    {
-                        label: 'Submenu 2',
-                        icon: 'pi pi-fw pi-bookmark',
-                        path: '/hierarchy/submenu_2',
-                        items: [
-                            {
-                                label: 'Submenu 2.1',
-                                icon: 'pi pi-fw pi-bookmark',
-                                path: '/hierarchy/submenu_2/submenu_2_1',
-                                items: [
-                                    { label: 'Submenu 2.1.1', icon: 'pi pi-fw pi-bookmark' },
-                                    { label: 'Submenu 2.1.2', icon: 'pi pi-fw pi-bookmark' }
-                                ]
-                            },
-                            {
-                                label: 'Submenu 2.2',
-                                icon: 'pi pi-fw pi-bookmark',
-                                path: '/hierarchy/submenu_2/submenu_2_2',
-                                items: [{ label: 'Submenu 2.2.1', icon: 'pi pi-fw pi-bookmark' }]
-                            }
-                        ]
-                    }
-                ]
-            },
-            {
-                label: 'Get Started',
-                items: [
-                    {
-                        label: 'Documentation',
-                        icon: 'pi pi-fw pi-book',
-                        routerLink: ['/documentation']
-                    },
-                    {
-                        label: 'View Source',
-                        icon: 'pi pi-fw pi-github',
-                        url: 'https://github.com/primefaces/sakai-ng',
-                        target: '_blank'
-                    }
                 ]
             }
         ];

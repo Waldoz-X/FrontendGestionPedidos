@@ -34,7 +34,8 @@ export interface GetClientesQuery {
 export interface CrearClienteRequest {
     nombreComercial: string;
     tipo: string;
-    moneda: string;
+    // Puede ser el código de moneda (string) o el id del elemento de catálogo (number)
+    moneda: string | number;
     canalVenta: string;
     limiteCredito: number;
     activo: boolean;
@@ -57,26 +58,30 @@ export type ActualizarDireccionClienteRequest = CrearDireccionClienteRequest;
 
 export interface AsignacionClienteEmpleado {
     idEmpleado: string;
-    numeroEmpleado: string;
-    nombreEmpleado: string;
+    numeroEmpleado?: string;
+    nuEmpleado?: string;
+    clEmpleado?: string;
+    nombreEmpleado?: string;
+    nbEmpleado?: string;
+    nbApellidos?: string;
     idCliente: string;
-    nombreComercialCliente: string;
-    tipoRelacion: string;
-    activo: boolean;
-    creadoEn: string;
-    actualizadoEn: string;
+    nombreComercialCliente?: string;
+    nbComercial?: string;
+    clTipoRelacion: string;
+    clEstatusAsignacion: string;
+    creadoEn?: string;
+    actualizadoEn?: string;
 }
 
 export interface CrearAsignacionClienteEmpleadoRequest {
     idEmpleado: string;
     idCliente: string;
-    tipoRelacion: string;
-    activo: boolean;
+    clTipoRelacion: string;
 }
 
 export interface ActualizarAsignacionClienteEmpleadoRequest {
-    tipoRelacion: string;
-    activo: boolean;
+    clTipoRelacion: string;
+    clEstatusAsignacion: string;
 }
 
 export interface ClienteUsuario {

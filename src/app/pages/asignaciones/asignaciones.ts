@@ -18,10 +18,11 @@ import { TagModule } from 'primeng/tag';
 import { ToastModule } from 'primeng/toast';
 import { ToolbarModule } from 'primeng/toolbar';
 import { TooltipModule } from 'primeng/tooltip';
-import { Empleado } from '../service/empleados-api.types';
-import { EmpleadosService } from '../service/empleados.service';
-import { AsignacionClienteEmpleado, Cliente, CrearAsignacionClienteEmpleadoRequest } from '../service/clientes-api.types';
-import { ClientesService } from '../service/clientes.service';
+import { Empleado } from '../service/empleados/empleados-api.types';
+import { EmpleadosApiService } from '../service/empleados/empleados-api.service';
+import { AsignacionClienteEmpleado, Cliente, CrearAsignacionClienteEmpleadoRequest } from '../service/clientes/clientes-api.types';
+import { ClientesApiService } from '../service/clientes/clientes-api.service';
+import { AsignacionesApiService } from '../service/clientes/asignaciones-api.service';
 
 @Component({
     selector: 'p-asignaciones',
@@ -129,21 +130,23 @@ import { ClientesService } from '../service/clientes.service';
                 <ng-template #header>
                     <tr>
                         <th pSortableColumn="numeroEmpleado" style="min-width: 10rem">No. Empleado <p-sortIcon field="numeroEmpleado" /></th>
+                        <th pSortableColumn="clEmpleado" style="min-width: 10rem">Clave <p-sortIcon field="clEmpleado" /></th>
                         <th pSortableColumn="nombreEmpleado" style="min-width: 14rem">Empleado <p-sortIcon field="nombreEmpleado" /></th>
                         <th pSortableColumn="nombreComercialCliente" style="min-width: 14rem">Cliente <p-sortIcon field="nombreComercialCliente" /></th>
-                        <th pSortableColumn="tipoRelacion" style="min-width: 10rem">Tipo relación <p-sortIcon field="tipoRelacion" /></th>
-                        <th pSortableColumn="activo" style="min-width: 8rem">Estado <p-sortIcon field="activo" /></th>
+                        <th pSortableColumn="clTipoRelacion" style="min-width: 10rem">Tipo relación <p-sortIcon field="clTipoRelacion" /></th>
+                        <th pSortableColumn="clEstatusAsignacion" style="min-width: 8rem">Estado <p-sortIcon field="clEstatusAsignacion" /></th>
                         <th style="min-width: 10rem"></th>
                     </tr>
                 </ng-template>
                 <ng-template #body let-item>
                     <tr>
-                        <td class="font-mono">{{ item.numeroEmpleado }}</td>
-                        <td>{{ item.nombreEmpleado }}</td>
-                        <td class="font-medium">{{ item.nombreComercialCliente }}</td>
-                        <td>{{ item.tipoRelacion }}</td>
+                        <td class="font-mono">{{ item.nuEmpleado || item.numeroEmpleado || '-' }}</td>
+                        <td><p-tag [value]="item.clEmpleado || 'N/A'" severity="secondary" /></td>
+                        <td>{{ item.nombreEmpleado || (item.nbEmpleado ? item.nbEmpleado + ' ' + (item.nbApellidos || '') : '') }}</td>
+                        <td class="font-medium">{{ item.nombreComercialCliente || item.nbComercial }}</td>
+                        <td>{{ item.clTipoRelacion }}</td>
                         <td>
-                            <p-tag [value]="item.activo ? 'Activo' : 'Inactivo'" [severity]="item.activo ? 'success' : 'danger'" />
+                            <p-tag [value]="item.clEstatusAsignacion === 'ACTIVO' ? 'Activo' : 'Inactivo'" [severity]="item.clEstatusAsignacion === 'ACTIVO' ? 'success' : 'danger'" />
                         </td>
                         <td>
                             <p-button icon="pi pi-pencil" class="mr-2" [rounded]="true" [outlined]="true" (onClick)="abrirEditar(item)" pTooltip="Editar" />
@@ -200,26 +203,19 @@ import { ClientesService } from '../service/clientes.service';
                         @if (submitted() && !nuevaAsignacion.idCliente) {
                             <small class="text-red-500">Selecciona un cliente.</small>
                         }
-                    </div>
-                    <div>
                         <label for="crear_tipo" class="block font-bold mb-3">Tipo de relación</label>
-                        <p-select
+                        <p-select appendTo="body"
                             inputId="crear_tipo"
-                            [(ngModel)]="nuevaAsignacion.tipoRelacion"
+                            [(ngModel)]="nuevaAsignacion.clTipoRelacion"
                             [options]="tipoRelacionOptions"
                             optionLabel="label"
                             optionValue="value"
                             placeholder="Seleccionar..."
-                            appendTo="body"
                             fluid
                         />
-                        @if (submitted() && !nuevaAsignacion.tipoRelacion) {
+                        @if (submitted() && !nuevaAsignacion.clTipoRelacion) {
                             <small class="text-red-500">Requerido.</small>
                         }
-                    </div>
-                    <div class="flex items-center gap-2">
-                        <p-checkbox inputId="crear_activo" [(ngModel)]="nuevaAsignacion.activo" [binary]="true" />
-                        <label for="crear_activo">Activo</label>
                     </div>
                 </div>
             </ng-template>
@@ -243,16 +239,15 @@ import { ClientesService } from '../service/clientes.service';
                     </div>
                     <div>
                         <label for="edit_tipo" class="block font-bold mb-3">Tipo de relación</label>
-                        <p-select
+                        <p-select appendTo="body"
                             inputId="edit_tipo"
-                            [(ngModel)]="datosEditar.tipoRelacion"
+                            [(ngModel)]="datosEditar.clTipoRelacion"
                             [options]="tipoRelacionOptions"
                             optionLabel="label"
                             optionValue="value"
-                            appendTo="body"
                             fluid
                         />
-                        @if (submittedEditar() && !datosEditar.tipoRelacion) {
+                        @if (submittedEditar() && !datosEditar.clTipoRelacion) {
                             <small class="text-red-500">Requerido.</small>
                         }
                     </div>
@@ -270,8 +265,9 @@ import { ClientesService } from '../service/clientes.service';
     `
 })
 export class Asignaciones implements OnInit {
-    private readonly clientesService = inject(ClientesService);
-    private readonly empleadosService = inject(EmpleadosService);
+    private readonly clientesService = inject(ClientesApiService);
+    private readonly asignacionesService = inject(AsignacionesApiService);
+    private readonly empleadosService = inject(EmpleadosApiService);
     private readonly messageService = inject(MessageService);
     private readonly confirmationService = inject(ConfirmationService);
     private readonly destroyRef = inject(DestroyRef);
@@ -300,11 +296,11 @@ export class Asignaciones implements OnInit {
     ];
 
     empleadoOptions = computed(() =>
-        this.empleados().map((e) => ({ value: e.idUsuario, label: `${e.numeroEmpleado} — ${e.nombres} ${e.apellidos}` }))
+        this.empleados().map((e) => ({ value: e.idEmpleado || (e as any).id, label: `${e.clEmpleado} — ${e.nbEmpleado} ${e.nbApellidos}` }))
     );
 
     clienteOptions = computed(() =>
-        this.clientes().map((c) => ({ value: c.id, label: c.nombreComercial }))
+        this.clientes().map((c) => ({ value: c.id || (c as any).idCliente, label: c.nombreComercial || (c as any).nbComercial || 'Cliente sin nombre' }))
     );
 
     // ─── Crear ───
@@ -319,7 +315,7 @@ export class Asignaciones implements OnInit {
     editandoIdCliente = '';
     editandoNombreEmpleado = '';
     editandoNombreCliente = '';
-    datosEditar = { tipoRelacion: '', activo: true };
+    datosEditar = { clTipoRelacion: '', activo: true };
 
     ngOnInit(): void {
         this.cargarCatalogos();
@@ -333,7 +329,7 @@ export class Asignaciones implements OnInit {
         this.empleadosService.getEmpleados().pipe(
             takeUntilDestroyed(this.destroyRef)
         ).subscribe({
-            next: (r) => this.empleados.set(r.filter((e) => e.activo)),
+            next: (r) => this.empleados.set(r.filter((e) => e.clEstatusEmpleado === 'ACTIVO')),
             error: () => this.messageService.add({ severity: 'error', summary: 'Error', detail: 'No se pudieron cargar los empleados.', life: 5000 })
         });
 
@@ -342,7 +338,7 @@ export class Asignaciones implements OnInit {
         ).subscribe({
             next: (r) => {
                 this.clientes.set(r);
-                this.cargarTodas(r.map((c) => c.id));
+                this.cargarTodas();
             },
             error: () => this.messageService.add({ severity: 'error', summary: 'Error', detail: 'No se pudieron cargar los clientes.', life: 5000 })
         });
@@ -357,7 +353,7 @@ export class Asignaciones implements OnInit {
             this.filtroClienteId = '';
             this.cargarPorEmpleado();
         } else {
-            this.cargarTodas(this.clientes().map((c) => c.id));
+            this.cargarTodas();
         }
     }
 
@@ -366,7 +362,7 @@ export class Asignaciones implements OnInit {
             this.filtroEmpleadoId = '';
             this.cargarPorCliente();
         } else {
-            this.cargarTodas(this.clientes().map((c) => c.id));
+            this.cargarTodas();
         }
     }
 
@@ -376,27 +372,24 @@ export class Asignaciones implements OnInit {
         } else if (this.filtroClienteId) {
             this.cargarPorCliente();
         } else {
-            this.cargarTodas(this.clientes().map((c) => c.id));
+            this.cargarTodas();
         }
     }
 
-    cargarTodas(clienteIds: string[]): void {
-        if (clienteIds.length === 0) {
-            this.asignaciones.set([]);
-
-            return;
-        }
-
+    cargarTodas(): void {
         this.loading.set(true);
         const activo = this.getActivoFilterValue();
 
-        forkJoin(
-            clienteIds.map((id) => this.clientesService.getAsignacionesPorCliente(id, activo))
-        ).pipe(
+        this.asignacionesService.getTodas().pipe(
             takeUntilDestroyed(this.destroyRef)
         ).subscribe({
             next: (results) => {
-                this.asignaciones.set(results.flat());
+                let list = results;
+                if (activo !== undefined) {
+                    const status = activo ? 'ACTIVO' : 'INACTIVO';
+                    list = list.filter(a => a.clEstatusAsignacion === status);
+                }
+                this.asignaciones.set(list);
                 this.loading.set(false);
             },
             error: () => {
@@ -408,7 +401,7 @@ export class Asignaciones implements OnInit {
 
     cargarPorEmpleado(): void {
         this.loading.set(true);
-        this.clientesService.getAsignacionesPorEmpleado(this.filtroEmpleadoId, this.getActivoFilterValue()).pipe(
+        this.asignacionesService.getAsignacionesPorEmpleado(this.filtroEmpleadoId, this.getActivoFilterValue()).pipe(
             takeUntilDestroyed(this.destroyRef)
         ).subscribe({
             next: (r) => { this.asignaciones.set(r); this.loading.set(false); },
@@ -421,7 +414,7 @@ export class Asignaciones implements OnInit {
 
     cargarPorCliente(): void {
         this.loading.set(true);
-        this.clientesService.getAsignacionesPorCliente(this.filtroClienteId, this.getActivoFilterValue()).pipe(
+        this.asignacionesService.getAsignacionesPorCliente(this.filtroClienteId, this.getActivoFilterValue()).pipe(
             takeUntilDestroyed(this.destroyRef)
         ).subscribe({
             next: (r) => { this.asignaciones.set(r); this.loading.set(false); },
@@ -445,7 +438,7 @@ export class Asignaciones implements OnInit {
     guardarNueva(): void {
         this.submitted.set(true);
 
-        if (!this.nuevaAsignacion.idEmpleado || !this.nuevaAsignacion.idCliente || !this.nuevaAsignacion.tipoRelacion?.trim()) {
+        if (!this.nuevaAsignacion.idEmpleado || !this.nuevaAsignacion.idCliente || !this.nuevaAsignacion.clTipoRelacion?.trim()) {
             this.messageService.add({ severity: 'warn', summary: 'Formulario incompleto', detail: 'Completa todos los campos obligatorios.', life: 4000 });
 
             return;
@@ -453,7 +446,7 @@ export class Asignaciones implements OnInit {
 
         this.saving.set(true);
 
-        this.clientesService.crearAsignacion(this.nuevaAsignacion).pipe(
+        this.asignacionesService.crearAsignacion(this.nuevaAsignacion).pipe(
             takeUntilDestroyed(this.destroyRef)
         ).subscribe({
             next: () => {
@@ -483,9 +476,10 @@ export class Asignaciones implements OnInit {
     abrirEditar(item: AsignacionClienteEmpleado): void {
         this.editandoIdEmpleado = item.idEmpleado;
         this.editandoIdCliente = item.idCliente;
-        this.editandoNombreEmpleado = `${item.numeroEmpleado} — ${item.nombreEmpleado}`;
-        this.editandoNombreCliente = item.nombreComercialCliente;
-        this.datosEditar = { tipoRelacion: item.tipoRelacion, activo: item.activo };
+        const nombreEmp = item.nombreEmpleado || (item.nbEmpleado ? item.nbEmpleado + ' ' + (item.nbApellidos || '') : '');
+        this.editandoNombreEmpleado = `${item.nuEmpleado || item.numeroEmpleado || '-'} | ${item.clEmpleado || 'N/A'} — ${nombreEmp}`;
+        this.editandoNombreCliente = item.nombreComercialCliente || item.nbComercial || 'Cliente sin nombre';
+        this.datosEditar = { clTipoRelacion: item.clTipoRelacion, activo: item.clEstatusAsignacion === 'ACTIVO' };
         this.submittedEditar.set(false);
         this.editarDialogVisible = true;
     }
@@ -493,7 +487,7 @@ export class Asignaciones implements OnInit {
     guardarEdicion(): void {
         this.submittedEditar.set(true);
 
-        if (!this.datosEditar.tipoRelacion?.trim()) {
+        if (!this.datosEditar.clTipoRelacion?.trim()) {
             this.messageService.add({ severity: 'warn', summary: 'Formulario incompleto', detail: 'El tipo de relación es obligatorio.', life: 4000 });
 
             return;
@@ -501,7 +495,10 @@ export class Asignaciones implements OnInit {
 
         this.saving.set(true);
 
-        this.clientesService.actualizarAsignacion(this.editandoIdEmpleado, this.editandoIdCliente, this.datosEditar).pipe(
+        this.asignacionesService.actualizarAsignacion(this.editandoIdEmpleado, this.editandoIdCliente, {
+            clTipoRelacion: this.datosEditar.clTipoRelacion,
+            clEstatusAsignacion: this.datosEditar.activo ? 'ACTIVO' : 'INACTIVO'
+        }).pipe(
             takeUntilDestroyed(this.destroyRef)
         ).subscribe({
             next: () => {
@@ -522,20 +519,22 @@ export class Asignaciones implements OnInit {
     // ═══════════════════════════════════════════
 
     confirmarEliminar(item: AsignacionClienteEmpleado): void {
+        const nombreEmp = item.nombreEmpleado || (item.nbEmpleado ? item.nbEmpleado + ' ' + (item.nbApellidos || '') : '');
+        const nombreCli = item.nombreComercialCliente || item.nbComercial || 'Cliente sin nombre';
         this.confirmationService.confirm({
-            message: `¿Eliminar la asignación de ${item.nombreEmpleado} con ${item.nombreComercialCliente}?`,
+            message: `¿Eliminar la asignación de ${nombreEmp} con ${nombreCli}?`,
             header: 'Confirmar eliminación',
             icon: 'pi pi-exclamation-triangle',
             acceptLabel: 'Sí, eliminar',
             rejectLabel: 'No',
             acceptButtonStyleClass: 'p-button-danger',
             accept: () => {
-                this.clientesService.eliminarAsignacion(item.idEmpleado, item.idCliente).pipe(
+                this.asignacionesService.eliminarAsignacion(item.idEmpleado, item.idCliente).pipe(
                     takeUntilDestroyed(this.destroyRef)
                 ).subscribe({
                     next: () => {
                         this.recargarConFiltros();
-                        this.messageService.add({ severity: 'success', summary: 'Eliminada', detail: `La asignación de ${item.nombreEmpleado} fue eliminada.`, life: 4000 });
+                        this.messageService.add({ severity: 'success', summary: 'Eliminada', detail: `La asignación de ${nombreEmp} fue eliminada.`, life: 4000 });
                     },
                     error: () => this.messageService.add({ severity: 'error', summary: 'Error', detail: 'No se pudo eliminar la asignación.', life: 5000 })
                 });
@@ -548,7 +547,7 @@ export class Asignaciones implements OnInit {
     // ═══════════════════════════════════════════
 
     private emptyAsignacion(): CrearAsignacionClienteEmpleadoRequest {
-        return { idEmpleado: '', idCliente: '', tipoRelacion: 'Responsable', activo: true };
+        return { idEmpleado: '', idCliente: '', clTipoRelacion: 'Responsable' };
     }
 
     private getActivoFilterValue(): boolean | undefined {

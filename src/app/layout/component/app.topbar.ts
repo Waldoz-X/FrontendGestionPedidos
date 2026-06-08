@@ -101,7 +101,13 @@ export class AppTopbar {
     }
 
     logout(): void {
-        this.authSession.logout();
-        this.router.navigate(['/auth/login']);
+        this.authSession.logout().subscribe({
+            next: async () => {
+                await this.router.navigate(['/auth/login']);
+            },
+            error: async () => {
+                await this.router.navigate(['/auth/login']);
+            }
+        });
     }
 }

@@ -3,18 +3,18 @@ import { Component, inject, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
-import { CheckboxModule } from 'primeng/checkbox';
 import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
 import { RippleModule } from 'primeng/ripple';
-import { finalize } from 'rxjs';
+import { firstValueFrom } from 'rxjs';
 import { AuthSessionService } from '@/app/core/services/auth-session.service';
+import { AppConfigService } from '@/app/config/app-config.service';
 import { AppFloatingConfigurator } from '../../layout/component/app.floatingconfigurator';
 
 @Component({
     selector: 'p-login',
     standalone: true,
-    imports: [ButtonModule, CheckboxModule, InputTextModule, PasswordModule, FormsModule, RouterModule, RippleModule, AppFloatingConfigurator],
+    imports: [ButtonModule, InputTextModule, PasswordModule, FormsModule, RouterModule, RippleModule, AppFloatingConfigurator],
     template: `
         <p-floating-configurator />
         <div class="bg-surface-50 dark:bg-surface-950 flex items-center justify-center min-h-screen min-w-screen overflow-hidden">
@@ -39,30 +39,28 @@ import { AppFloatingConfigurator } from '../../layout/component/app.floatingconf
                                     />
                                 </g>
                             </svg>
-                            <div class="text-surface-900 dark:text-surface-0 text-3xl font-medium mb-4">Welcome to PrimeLand!</div>
-                            <span class="text-muted-color font-medium">Sign in to continue</span>
+                            <div class="text-surface-900 dark:text-surface-0 text-3xl font-medium mb-4">Gestion de Pedidos</div>
+                            <span class="text-muted-color font-medium">Inicia sesión para continuar</span>
                         </div>
 
                         <div>
-                            <label for="email1" class="block text-surface-900 dark:text-surface-0 text-xl font-medium mb-2">Email</label>
-                            <input pInputText id="email1" type="text" placeholder="Email address" class="w-full md:w-120 mb-8" [(ngModel)]="email" />
+                            <label for="email1" class="block text-surface-900 dark:text-surface-0 text-xl font-medium mb-2">Correo electrónico</label>
+                            <input pInputText id="email1" type="text" placeholder="Correo electrónico" class="w-full md:w-120 mb-8" [(ngModel)]="email" />
 
-                            <label for="password1" class="block text-surface-900 dark:text-surface-0 font-medium text-xl mb-2">Password</label>
-                            <p-password id="password1" [(ngModel)]="password" placeholder="Password" [toggleMask]="true" styleClass="mb-4" [fluid]="true" [feedback]="false"></p-password>
+                            <label for="password1" class="block text-surface-900 dark:text-surface-0 font-medium text-xl mb-2">Contraseña</label>
+                            <p-password id="password1" [(ngModel)]="password" placeholder="Contraseña" [toggleMask]="true" styleClass="mb-4" [fluid]="true" [feedback]="false"></p-password>
 
                             <div class="flex items-center justify-between mt-2 mb-8 gap-8">
                                 <div class="flex items-center">
-                                    <p-checkbox [(ngModel)]="checked" id="rememberme1" binary class="mr-2"></p-checkbox>
-                                    <label for="rememberme1">Remember me</label>
                                 </div>
-                                <span class="font-medium no-underline ml-2 text-right cursor-pointer text-primary">Forgot password?</span>
+                                <span class="font-medium no-underline ml-2 text-right cursor-pointer text-primary">¿Olvidaste tu contraseña?</span>
                             </div>
 
                             @if (errorMessage) {
                                 <small class="block mb-4 text-red-500">{{ errorMessage }}</small>
                             }
 
-                            <p-button label="Sign In" styleClass="w-full" [loading]="loading" (onClick)="signIn()"></p-button>
+                            <p-button label="Iniciar sesión" styleClass="w-full" [loading]="loading" (onClick)="signIn()"></p-button>
                         </div>
                     </div>
                 </div>
@@ -79,8 +77,6 @@ export class Login implements OnInit {
 
     password: string = '';
 
-    checked: boolean = false;
-
     loading: boolean = false;
 
     errorMessage: string = '';
@@ -92,6 +88,8 @@ export class Login implements OnInit {
             this.errorMessage = 'Tu sesión expiró. Inicia sesión de nuevo.';
         }
     }
+
+    private readonly appConfig = inject(AppConfigService);
 
     private getSafeReturnUrl(): string {
         const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl');
@@ -107,45 +105,82 @@ export class Login implements OnInit {
         return returnUrl;
     }
 
-    signIn(): void {
+    private resolveTipoUsuarioCandidates(): string[] {
+        return [this.appConfig.getDefaultTipoUsuario()];
+    }
+
+    private async tryLogin(tipoUsuario: string): Promise<void> {
+        await firstValueFrom(this.authSession.login({ email: this.email, password: this.password, tipoUsuario }));
+
+        this.authSession.getMe().subscribe({
+            next: () => undefined,
+            error: () => undefined
+        });
+
+        const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl');
+        const targetUrl = returnUrl ? this.getSafeReturnUrl() : this.authSession.isAdminUser() ? '/admin' : '/';
+
+        await this.router.navigateByUrl(targetUrl);
+    }
+
+    async signIn(): Promise<void> {
         this.errorMessage = '';
 
-        if (!this.email || !this.password) {
-            this.errorMessage = 'Ingresa email y password.';
+        if (!this.email.trim() || !this.password.trim()) {
+            this.errorMessage = 'Ingresa correo y contraseña.';
 
             return;
         }
 
         this.loading = true;
-        this.authSession
-            .login({ email: this.email, password: this.password })
-            .pipe(finalize(() => (this.loading = false)))
-            .subscribe({
-                next: () => {
-                    this.authSession.getMe().subscribe({
-                        next: async () => {
-                            await this.router.navigateByUrl(this.getSafeReturnUrl());
-                        },
-                        error: async (meError: HttpErrorResponse) => {
-                            if (meError.status === 401 || meError.status === 403) {
-                                await this.router.navigate(['/auth/error'], { queryParams: { code: meError.status } });
+        const candidates = this.resolveTipoUsuarioCandidates();
 
-                                return;
-                            }
+        try {
+            let lastAuthError: HttpErrorResponse | null = null;
 
-                            this.errorMessage = 'Login correcto, pero no se pudo cargar tu perfil.';
-                        }
-                    });
-                },
-                error: async (error: HttpErrorResponse) => {
-                    if (error.status === 401 || error.status === 403) {
-                        await this.router.navigate(['/auth/error'], { queryParams: { code: error.status } });
-
-                        return;
+            for (const tipoUsuario of candidates) {
+                try {
+                    await this.tryLogin(tipoUsuario);
+                    return;
+                } catch (error: unknown) {
+                    if (error instanceof HttpErrorResponse && (error.status === 401 || error.status === 403 || error.status === 404)) {
+                        lastAuthError = error;
+                        continue;
                     }
 
-                    this.errorMessage = 'No se pudo iniciar sesion. Intenta de nuevo.';
+                    throw error;
                 }
-            });
+            }
+
+            if (lastAuthError) {
+                // Do NOT redirect on 401 (invalid credentials). Just show error.
+                if (lastAuthError.status === 401) {
+                    this.errorMessage = 'Correo o contraseña incorrectos.';
+                    return;
+                }
+                
+                if (lastAuthError.status === 403) {
+                    this.errorMessage = 'No tienes permiso para acceder.';
+                    return;
+                }
+
+                const detail = (lastAuthError.error as { message?: string; detail?: string; title?: string } | null) || null;
+                this.errorMessage = detail?.message || detail?.detail || detail?.title || 'No se pudo iniciar sesión. Verifica tus credenciales.';
+
+                return;
+            }
+        } catch (error: unknown) {
+            if (error instanceof HttpErrorResponse) {
+                const detail = (error.error as { message?: string; detail?: string; title?: string } | null) || null;
+
+                this.errorMessage = detail?.message || detail?.detail || detail?.title || 'Error de conexión con el servidor.';
+
+                return;
+            }
+
+            this.errorMessage = error instanceof Error ? error.message : 'Ocurrió un error inesperado al iniciar sesión.';
+        } finally {
+            this.loading = false;
+        }
     }
 }

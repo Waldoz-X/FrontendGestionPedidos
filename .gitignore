@@ -1,26 +1,26 @@
 # See https://docs.github.com/get-started/getting-started-with-git/ignoring-files for more about ignoring files.
 
-# Compiled output
+## ----------------------------------------------------
+## CARPETAS DE COMPILACIÓN Y SALIDA (BUILD / OUTPUT)
+## ----------------------------------------------------
+node_modules/
+.angular/
+/.angular/cache
 /dist
 /tmp
 /out-tsc
 /bazel-out
+/coverage
+.sass-cache/
 
-# Node
-/node_modules
-npm-debug.log
-yarn-error.log
-
-# IDEs and editors
+## ----------------------------------------------------
+## ENTORNOS DE DESARROLLO (IDEs & EDITORS)
+## ----------------------------------------------------
+# JetBrains / WebStorm
 .idea/
-.project
-.classpath
-.c9/
-*.launch
-.settings/
-*.sublime-workspace
 
 # Visual Studio Code
+.vscode
 .vscode/*
 !.vscode/settings.json
 !.vscode/tasks.json
@@ -28,16 +28,41 @@ yarn-error.log
 !.vscode/extensions.json
 .history/*
 
-# Miscellaneous
-/.angular/cache
-.sass-cache/
-/connect.lock
-/coverage
-/libpeerconnection.log
-testem.log
-/typings
-.vscode
+# Otros Editores (Eclipse, Sublime, Cloud9)
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
 
-# System files
+## ----------------------------------------------------
+## CONFIGURACIONES LOCALES, SECRETOS Y GENERADOS
+## ----------------------------------------------------
+.env
+.env.local
+.env.*.local
+!.env.example
+
+# Archivos de configuración locales generados
+src/assets/app-config.json
+proxy.conf.json
+
+## ----------------------------------------------------
+## ARCHIVOS DE LOGS Y TEMPORALES
+## ----------------------------------------------------
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+testem.log
+/libpeerconnection.log
+/connect.lock
+/typings
+
+## ----------------------------------------------------
+## ARCHIVOS DEL SISTEMA OPERATIVO
+## ----------------------------------------------------
 .DS_Store
 Thumbs.db
+ehthumbs.db

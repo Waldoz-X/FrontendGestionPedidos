@@ -14,9 +14,10 @@ import { TimelineModule } from 'primeng/timeline';
 import { TooltipModule } from 'primeng/tooltip';
 import { EstatusPedido, Pedido, HistorialPedido, CrearPedidoRequest, CrearLineaPedidoRequest } from '../service/pedidos-api.types';
 import { PedidosService } from '../service/pedidos.service';
-import { ClientesService } from '../service/clientes.service';
+import { ClientesApiService } from '../service/clientes/clientes-api.service';
+import { ClientesDireccionesApiService } from '../service/clientes/clientes-direcciones-api.service';
 import { CatalogoService } from '../service/catalogo.service';
-import { Cliente } from '../service/clientes-api.types';
+import { Cliente } from '../service/clientes/clientes-api.types';
 
 @Component({
     selector: 'p-pedidos',
@@ -386,7 +387,8 @@ import { Cliente } from '../service/clientes-api.types';
 export class Pedidos implements OnInit {
     private readonly fb = inject(FormBuilder);
     private readonly pedidosService = inject(PedidosService);
-    private readonly clientesService = inject(ClientesService);
+    private readonly clientesService = inject(ClientesApiService);
+    private readonly clientesDireccionesService = inject(ClientesDireccionesApiService);
     private readonly catalogoService = inject(CatalogoService);
     private readonly destroyRef = inject(DestroyRef);
 
@@ -541,7 +543,7 @@ export class Pedidos implements OnInit {
         }
 
         this.crearForm.controls.idDireccionEnvio.enable();
-        this.clientesService.getDirecciones(idCliente).pipe(
+        this.clientesDireccionesService.getDirecciones(idCliente).pipe(
             takeUntilDestroyed(this.destroyRef)
         ).subscribe({
             next: (r) => this.direcciones.set(r.map((d) => ({

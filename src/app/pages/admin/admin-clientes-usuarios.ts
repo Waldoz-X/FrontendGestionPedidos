@@ -17,8 +17,9 @@ import { ToastModule } from 'primeng/toast';
 import { ToolbarModule } from 'primeng/toolbar';
 import { TooltipModule } from 'primeng/tooltip';
 import { catchError, forkJoin, map, of, switchMap } from 'rxjs';
-import { Cliente, ClienteUsuario, CrearClienteUsuarioRequest } from '../service/clientes-api.types';
-import { ClientesService } from '../service/clientes.service';
+import { Cliente, ClienteUsuario, CrearClienteUsuarioRequest } from '../service/clientes/clientes-api.types';
+import { ClientesApiService } from '../service/clientes/clientes-api.service';
+import { ClientesUsuariosApiService } from '../service/clientes/clientes-usuarios-api.service';
 
 interface ClienteCuentaRow {
     cliente: Cliente;
@@ -213,7 +214,8 @@ interface ClienteCuentaRow {
     `
 })
 export class AdminClientesUsuarios implements OnInit {
-    private readonly clientesService = inject(ClientesService);
+    private readonly clientesService = inject(ClientesApiService);
+    private readonly clientesUsuariosService = inject(ClientesUsuariosApiService);
     private readonly messageService = inject(MessageService);
     private readonly destroyRef = inject(DestroyRef);
 
@@ -258,7 +260,7 @@ export class AdminClientesUsuarios implements OnInit {
                     }
 
                     const requests = clientes.map((cliente) =>
-                        this.clientesService.getUsuariosCliente(cliente.id).pipe(
+                        this.clientesUsuariosService.getUsuariosCliente(cliente.id).pipe(
                             map((usuarios) => ({
                                 cliente,
                                 usuarioPrincipal: this.resolveUsuarioPrincipal(usuarios),
@@ -375,7 +377,7 @@ export class AdminClientesUsuarios implements OnInit {
 
         this.saving.set(true);
 
-        this.clientesService.crearUsuarioCliente(this.clienteSeleccionadoId, this.nuevoUsuario).pipe(
+        this.clientesUsuariosService.crearUsuarioCliente(this.clienteSeleccionadoId, this.nuevoUsuario).pipe(
             takeUntilDestroyed(this.destroyRef)
         ).subscribe({
             next: () => {
@@ -428,7 +430,7 @@ export class AdminClientesUsuarios implements OnInit {
 
         this.saving.set(true);
 
-        this.clientesService.actualizarPasswordUsuarioCliente(this.selectedIdClientePassword, this.selectedIdUsuario, { password: this.nuevaPassword }).pipe(
+        this.clientesUsuariosService.actualizarPasswordUsuarioCliente(this.selectedIdClientePassword, this.selectedIdUsuario, { password: this.nuevaPassword }).pipe(
             takeUntilDestroyed(this.destroyRef)
         ).subscribe({
             next: () => {
@@ -458,7 +460,7 @@ export class AdminClientesUsuarios implements OnInit {
     private cargarUsuariosCliente(idCliente: string): void {
         this.loadingUsuarios.set(true);
 
-        this.clientesService.getUsuariosCliente(idCliente).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+        this.clientesUsuariosService.getUsuariosCliente(idCliente).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
             next: (usuarios) => {
                 this.usuarios.set(usuarios);
                 this.loadingUsuarios.set(false);

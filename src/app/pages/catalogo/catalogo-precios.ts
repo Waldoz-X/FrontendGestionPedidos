@@ -16,8 +16,8 @@ import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { TooltipModule } from 'primeng/tooltip';
 import { CheckboxModule } from 'primeng/checkbox';
-import { Cliente } from '../service/clientes-api.types';
-import { ClientesService } from '../service/clientes.service';
+import { Cliente } from '../service/clientes/clientes-api.types';
+import { ClientesApiService } from '../service/clientes/clientes-api.service';
 import { CatalogoService } from '../service/catalogo.service';
 import {
     CrearPoliticaPrecioRequest,
@@ -286,7 +286,7 @@ import {
 export class CatalogoPrecios implements OnInit {
     private readonly fb = inject(FormBuilder);
     private readonly catalogoService = inject(CatalogoService);
-    private readonly clientesService = inject(ClientesService);
+    private readonly clientesService = inject(ClientesApiService);
     private readonly destroyRef = inject(DestroyRef);
     private readonly messageService = inject(MessageService);
     private readonly confirmationService = inject(ConfirmationService);

@@ -9,8 +9,9 @@ import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
 import { SelectModule } from 'primeng/select';
 import { TableModule } from 'primeng/table';
-import { CrearEmpleadoUsuarioRequest, Empleado } from '../service/empleados-api.types';
-import { EmpleadosService } from '../service/empleados.service';
+import { CrearEmpleadoUsuarioRequest, Empleado } from '../service/empleados/empleados-api.types';
+import { EmpleadosApiService } from '../service/empleados/empleados-api.service';
+import { EmpleadosUsuariosApiService } from '../service/empleados/empleados-usuarios-api.service';
 
 @Component({
     selector: 'p-admin-empleados-password',
@@ -53,8 +54,8 @@ import { EmpleadosService } from '../service/empleados.service';
                 </ng-template>
                 <ng-template #body let-e>
                     <tr>
-                        <td>{{ e.numeroEmpleado }}</td>
-                        <td>{{ e.nombres }} {{ e.apellidos }}</td>
+                        <td>{{ e.clEmpleado }}</td>
+                        <td>{{ e.nbEmpleado }} {{ e.nbApellidos }}</td>
                         <td>{{ e.email || 'Sin usuario' }}</td>
                         <td>{{ e.area }}</td>
                         <td>{{ e.activo ? 'Activo' : 'Inactivo' }}</td>
@@ -115,7 +116,8 @@ import { EmpleadosService } from '../service/empleados.service';
     `
 })
 export class AdminEmpleadosUsuarios implements OnInit {
-    private readonly empleadosService = inject(EmpleadosService);
+    private readonly empleadosApiService = inject(EmpleadosApiService);
+    private readonly empleadosUsuariosApiService = inject(EmpleadosUsuariosApiService);
     private readonly fb = inject(FormBuilder);
     private readonly destroyRef = inject(DestroyRef);
 
@@ -156,7 +158,7 @@ export class AdminEmpleadosUsuarios implements OnInit {
             return '';
         }
 
-        return `${empleado.numeroEmpleado} - ${empleado.nombres} ${empleado.apellidos}`;
+        return `${empleado.clEmpleado} - ${empleado.nbEmpleado} ${empleado.nbApellidos}`;
     }
 
     cargarEmpleados(): void {
@@ -164,7 +166,7 @@ export class AdminEmpleadosUsuarios implements OnInit {
 
         this.errorMessage.set('');
 
-        this.empleadosService
+        this.empleadosApiService
             .getEmpleados()
             .pipe(takeUntilDestroyed(this.destroyRef))
             .subscribe({
@@ -234,7 +236,7 @@ export class AdminEmpleadosUsuarios implements OnInit {
 
         this.saving.set(true);
 
-        this.empleadosService
+        this.empleadosUsuariosApiService
             .actualizarPasswordEmpleado(empleado.idEmpleado, this.passwordForm.getRawValue())
             .pipe(takeUntilDestroyed(this.destroyRef))
             .subscribe({
@@ -273,7 +275,7 @@ export class AdminEmpleadosUsuarios implements OnInit {
 
         const payload = this.usuarioForm.getRawValue() as CrearEmpleadoUsuarioRequest;
 
-        this.empleadosService
+        this.empleadosUsuariosApiService
             .crearUsuarioEmpleado(empleado.idEmpleado, payload)
             .pipe(takeUntilDestroyed(this.destroyRef))
             .subscribe({

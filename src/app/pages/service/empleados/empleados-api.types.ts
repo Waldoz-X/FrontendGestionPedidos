@@ -1,12 +1,13 @@
 export interface Empleado {
     idEmpleado: string;
     idUsuario: string | null;
-    numeroEmpleado: string;
-    nombres: string;
-    apellidos: string;
-    area: string;
-    activo: boolean;
-    email: string | null;
+    nuEmpleado?: string | null;
+    clEmpleado: string;
+    nbEmpleado: string;
+    nbApellidos: string;
+    idElemArea: number;
+    clEstatusEmpleado: string;
+    correo: string | null;
 }
 
 export interface CrearEmpleadoRequest {
@@ -32,10 +33,13 @@ export interface CrearEmpleadoUsuarioRequest {
 }
 
 export interface ActualizarEmpleadoRequest {
-    nombres: string;
-    apellidos: string;
-    area: string;
-    activo: boolean;
+    idUsuario: string | null;
+    idElemArea: number;
+    nuEmpleado?: string | null;
+    clEmpleado: string;
+    nbEmpleado: string;
+    nbApellidos: string;
+    clEstatusEmpleado: string;
 }
 
 export interface ActualizarPasswordEmpleadoRequest {

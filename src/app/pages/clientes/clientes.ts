@@ -2,6 +2,8 @@ import { CommonModule } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, computed, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { FormsModule } from '@angular/forms';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
@@ -26,12 +28,15 @@ import {
     CrearClienteRequest,
     CrearDireccionClienteRequest,
     DireccionCliente
-} from '../service/clientes-api.types';
-import { ClientesService } from '../service/clientes.service';
-import { Empleado } from '../service/empleados-api.types';
-import { EmpleadosService } from '../service/empleados.service';
+} from '../service/clientes/clientes-api.types';
+import { ClientesApiService } from '../service/clientes/clientes-api.service';
+import { ClientesDireccionesApiService } from '../service/clientes/clientes-direcciones-api.service';
+import { AsignacionesApiService } from '../service/clientes/asignaciones-api.service';
+import { Empleado } from '../service/empleados/empleados-api.types';
+import { EmpleadosApiService } from '../service/empleados/empleados-api.service';
 import { CatalogosMaestrosService } from '../service/catalogos-maestros.service';
 import { Pais, Estado } from '../service/catalogos-maestros-api.types';
+import { CatalogosApiService } from '../service/catalogos-api.service';
 
 @Component({
     selector: 'p-clientes',
@@ -153,11 +158,11 @@ import { Pais, Estado } from '../service/catalogos-maestros-api.types';
                     <div class="grid grid-cols-12 gap-4">
                         <div class="col-span-6">
                             <label for="create_tipo" class="block font-bold mb-3">Tipo</label>
-                            <p-select inputId="create_tipo" [(ngModel)]="nuevoCliente.tipo" [options]="tipoOptions" optionLabel="label" optionValue="value" fluid />
+                            <p-select appendTo="body" inputId="create_tipo" [(ngModel)]="nuevoCliente.tipo" [options]="tipoOptions" optionLabel="label" optionValue="value" fluid />
                         </div>
                         <div class="col-span-6">
                             <label for="create_moneda" class="block font-bold mb-3">Moneda</label>
-                            <p-select inputId="create_moneda" [(ngModel)]="nuevoCliente.moneda" [options]="monedaOptions" optionLabel="label" optionValue="value" fluid />
+                            <p-select appendTo="body" inputId="create_moneda" [(ngModel)]="nuevoCliente.moneda" [options]="monedaOptions()" optionLabel="label" optionValue="value" fluid />
                         </div>
                     </div>
                     <div>
@@ -197,11 +202,11 @@ import { Pais, Estado } from '../service/catalogos-maestros-api.types';
                     <div class="grid grid-cols-12 gap-4">
                         <div class="col-span-6">
                             <label for="edit_tipo" class="block font-bold mb-3">Tipo</label>
-                            <p-select inputId="edit_tipo" [(ngModel)]="datosEditar.tipo" [options]="tipoOptions" optionLabel="label" optionValue="value" fluid />
+                            <p-select appendTo="body" inputId="edit_tipo" [(ngModel)]="datosEditar.tipo" [options]="tipoOptions" optionLabel="label" optionValue="value" fluid />
                         </div>
                         <div class="col-span-6">
                             <label for="edit_moneda" class="block font-bold mb-3">Moneda</label>
-                            <p-select inputId="edit_moneda" [(ngModel)]="datosEditar.moneda" [options]="monedaOptions" optionLabel="label" optionValue="value" fluid />
+                            <p-select appendTo="body" inputId="edit_moneda" [(ngModel)]="datosEditar.moneda" [options]="monedaOptions()" optionLabel="label" optionValue="value" fluid />
                         </div>
                     </div>
                     <div>
@@ -264,7 +269,7 @@ import { Pais, Estado } from '../service/catalogos-maestros-api.types';
                     </div>
                     <div class="col-span-12 md:col-span-3">
                         <label for="dir_estado" class="block font-bold mb-2">Estado</label>
-                        <p-select
+                        <p-select appendTo="body"
                             inputId="dir_estado"
                             [(ngModel)]="direccionFormData.estado"
                             [options]="estadosFiltrados()"
@@ -282,7 +287,7 @@ import { Pais, Estado } from '../service/catalogos-maestros-api.types';
                     </div>
                     <div class="col-span-12 md:col-span-2">
                         <label for="dir_pais" class="block font-bold mb-2">País</label>
-                        <p-select
+                        <p-select appendTo="body"
                             inputId="dir_pais"
                             [(ngModel)]="direccionFormData.pais"
                             [options]="paises()"
@@ -363,7 +368,7 @@ import { Pais, Estado } from '../service/catalogos-maestros-api.types';
                 <div class="grid grid-cols-12 gap-4 mb-6">
                     <div class="col-span-12 md:col-span-5">
                         <label for="asig_empleado" class="block font-bold mb-2">Empleado</label>
-                        <p-select
+                        <p-select appendTo="body"
                             inputId="asig_empleado"
                             [(ngModel)]="asignacionFormData.idEmpleado"
                             [options]="empleadoOptions()"
@@ -381,7 +386,7 @@ import { Pais, Estado } from '../service/catalogos-maestros-api.types';
                     </div>
                     <div class="col-span-12 md:col-span-3">
                         <label for="asig_tipo" class="block font-bold mb-2">Tipo relación</label>
-                        <input type="text" pInputText id="asig_tipo" [(ngModel)]="asignacionFormData.tipoRelacion" fluid />
+                        <input type="text" pInputText id="asig_tipo" [(ngModel)]="asignacionFormData.clTipoRelacion" fluid />
                     </div>
                     <div class="col-span-12 md:col-span-2 flex items-end gap-2">
                         <p-checkbox inputId="asig_activo" [(ngModel)]="asignacionFormData.activo" [binary]="true" />
@@ -413,9 +418,9 @@ import { Pais, Estado } from '../service/catalogos-maestros-api.types';
                         <tr>
                             <td class="font-mono">{{ asig.numeroEmpleado }}</td>
                             <td>{{ asig.nombreEmpleado }}</td>
-                            <td>{{ asig.tipoRelacion }}</td>
+                            <td>{{ asig.clTipoRelacion }}</td>
                             <td>
-                                <p-tag [value]="asig.activo ? 'Activo' : 'Inactivo'" [severity]="asig.activo ? 'success' : 'danger'" />
+                                <p-tag [value]="asig.clEstatusAsignacion === 'ACTIVO' ? 'Activo' : 'Inactivo'" [severity]="asig.clEstatusAsignacion === 'ACTIVO' ? 'success' : 'danger'" />
                             </td>
                             <td>
                                 <p-button icon="pi pi-pencil" class="mr-2" [rounded]="true" [outlined]="true" (onClick)="editarAsignacion(asig)" pTooltip="Editar" />
@@ -434,11 +439,14 @@ import { Pais, Estado } from '../service/catalogos-maestros-api.types';
     `
 })
 export class Clientes implements OnInit {
-    private readonly clientesService = inject(ClientesService);
-    private readonly empleadosService = inject(EmpleadosService);
+    private readonly clientesService = inject(ClientesApiService);
+    private readonly clientesDireccionesService = inject(ClientesDireccionesApiService);
+    private readonly asignacionesService = inject(AsignacionesApiService);
+    private readonly empleadosService = inject(EmpleadosApiService);
     private readonly messageService = inject(MessageService);
     private readonly confirmationService = inject(ConfirmationService);
     private readonly catalogosService = inject(CatalogosMaestrosService);
+    private readonly catalogosGenService = inject(CatalogosApiService);
     private readonly destroyRef = inject(DestroyRef);
 
     // ─── State principal ───
@@ -458,10 +466,9 @@ export class Clientes implements OnInit {
         { label: 'Directo', value: 'Directo' }
     ];
 
-    monedaOptions = [
-        { label: 'USD', value: 'USD' },
-        { label: 'MXN', value: 'MXN' }
-    ];
+    monedaOptions = signal<{label: string, value: string}[]>([]);
+
+    private searchSubject = new Subject<{table: Table, query: string}>();
 
     // ─── CREAR CLIENTE ───
     crearDialogVisible = false;
@@ -492,12 +499,12 @@ export class Clientes implements OnInit {
     empleadosActivos = signal<Empleado[]>([]);
     loadingEmpleados = signal<boolean>(false);
     asignacionEditandoId = signal<string>('');
-    asignacionFormData = { idEmpleado: '', tipoRelacion: 'Responsable', activo: true };
+    asignacionFormData = { idEmpleado: '', clTipoRelacion: 'Responsable', activo: true };
 
     empleadoOptions = computed(() => {
         const activas = this.empleadosActivos().map((e) => ({
             value: e.idUsuario,
-            label: `${e.numeroEmpleado} — ${e.nombres} ${e.apellidos}`
+            label: `${e.clEmpleado} — ${e.nbEmpleado} ${e.nbApellidos}`
         }));
 
         const editId = this.asignacionEditandoId();
@@ -522,6 +529,25 @@ export class Clientes implements OnInit {
         this.cargarClientes();
         this.cargarEmpleadosActivos();
         this.cargarPaises();
+        this.cargarMonedas();
+
+        this.searchSubject.pipe(
+            debounceTime(300),
+            distinctUntilChanged((prev, curr) => prev.query === curr.query),
+            takeUntilDestroyed(this.destroyRef)
+        ).subscribe(({table, query}) => {
+            table.filterGlobal(query, 'contains');
+        });
+    }
+
+    cargarMonedas(): void {
+        this.catalogosGenService.getElementos('MONEDAS').pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+            next: (data) => {
+                const options = (data || []).map(m => ({ label: m.nbCatalogoElemento, value: m.clCatalogoElemento }));
+                this.monedaOptions.set(options);
+            },
+            error: () => this.messageService.add({ severity: 'error', summary: 'Error', detail: 'No se pudieron cargar las monedas.' })
+        });
     }
 
     cargarPaises(): void {
@@ -585,7 +611,7 @@ export class Clientes implements OnInit {
     }
 
     onGlobalFilter(table: Table, event: Event): void {
-        table.filterGlobal((event.target as HTMLInputElement).value, 'contains');
+        this.searchSubject.next({ table, query: (event.target as HTMLInputElement).value });
     }
 
     cargarEmpleadosActivos(): void {
@@ -653,7 +679,12 @@ export class Clientes implements OnInit {
         this.datosEditar = {
             nombreComercial: cliente.nombreComercial,
             tipo: cliente.tipo,
-            moneda: cliente.moneda,
+            // Intentamos mapear moneda (nombre o código) al id del catálogo si está disponible
+            moneda: (() => {
+                const monedas = this.monedasRaw();
+                const found = monedas.find((m: any) => m.clCatalogoElemento === cliente.moneda || m.nbCatalogoElemento === cliente.moneda);
+                return found ? found.id : cliente.moneda;
+            })(),
             canalVenta: cliente.canalVenta,
             limiteCredito: cliente.limiteCredito,
             activo: cliente.activo
@@ -671,11 +702,30 @@ export class Clientes implements OnInit {
             return;
         }
 
+        // Mapear moneda seleccionada al id si es posible
+        const selected = this.datosEditar.moneda as any;
+        let idElemMoneda: number | undefined;
+
+        if (typeof selected === 'number' && selected > 0) {
+            idElemMoneda = Number(selected);
+        } else if (typeof selected === 'string') {
+            const found = this.monedasRaw().find((m: any) => m.clCatalogoElemento === selected || m.nbCatalogoElemento === selected);
+
+            if (found) idElemMoneda = found.id;
+        }
+
         this.saving.set(true);
 
-        this.clientesService.actualizarCliente(this.clienteEditandoId, this.datosEditar).pipe(
-            takeUntilDestroyed(this.destroyRef)
-        ).subscribe({
+        const payload: any = {
+            nombreComercial: this.datosEditar.nombreComercial?.trim(),
+            tipo: this.datosEditar.tipo,
+            idElemMoneda: idElemMoneda ? Number(idElemMoneda) : undefined,
+            canalVenta: this.datosEditar.canalVenta?.trim(),
+            limiteCredito: Number(this.datosEditar.limiteCredito ?? 0),
+            activo: this.datosEditar.activo
+        };
+
+        this.clientesService.actualizarCliente(this.clienteEditandoId, payload).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
             next: (cli) => {
                 this.saving.set(false);
                 this.editarDialogVisible = false;
@@ -705,14 +755,19 @@ export class Clientes implements OnInit {
             rejectLabel: 'No',
             acceptButtonStyleClass: 'p-button-danger',
             accept: () => {
-                this.clientesService.actualizarCliente(cliente.id, {
+                // Mapear moneda del cliente al id de catálogo si está disponible
+                const monedas = this.monedasRaw();
+                const found = monedas.find((m: any) => m.clCatalogoElemento === cliente.moneda || m.nbCatalogoElemento === cliente.moneda);
+                const payload: any = {
                     nombreComercial: cliente.nombreComercial,
                     tipo: cliente.tipo,
-                    moneda: cliente.moneda,
+                    idElemMoneda: found ? found.id : undefined,
                     canalVenta: cliente.canalVenta,
                     limiteCredito: cliente.limiteCredito,
                     activo: false
-                }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+                };
+
+                this.clientesService.actualizarCliente(cliente.id, payload).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
                     next: () => {
                         this.cargarClientes();
                         this.messageService.add({ severity: 'success', summary: 'Desactivado', detail: `${cliente.nombreComercial} fue desactivado.`, life: 4000 });
@@ -731,14 +786,18 @@ export class Clientes implements OnInit {
             acceptLabel: 'Sí, reactivar',
             rejectLabel: 'No',
             accept: () => {
-                this.clientesService.actualizarCliente(cliente.id, {
+                const monedas = this.monedasRaw();
+                const found = monedas.find((m: any) => m.clCatalogoElemento === cliente.moneda || m.nbCatalogoElemento === cliente.moneda);
+                const payload: any = {
                     nombreComercial: cliente.nombreComercial,
                     tipo: cliente.tipo,
-                    moneda: cliente.moneda,
+                    idElemMoneda: found ? found.id : undefined,
                     canalVenta: cliente.canalVenta,
                     limiteCredito: cliente.limiteCredito,
                     activo: true
-                }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+                };
+
+                this.clientesService.actualizarCliente(cliente.id, payload).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
                     next: () => {
                         this.cargarClientes();
                         this.messageService.add({ severity: 'success', summary: 'Reactivado', detail: `${cliente.nombreComercial} fue reactivado.`, life: 4000 });
@@ -763,7 +822,7 @@ export class Clientes implements OnInit {
 
     cargarDirecciones(idCliente: string): void {
         this.loadingDirecciones.set(true);
-        this.clientesService.getDirecciones(idCliente).pipe(
+        this.clientesDireccionesService.getDirecciones(idCliente).pipe(
             takeUntilDestroyed(this.destroyRef)
         ).subscribe({
             next: (r) => { this.direcciones.set(r); this.loadingDirecciones.set(false); },
@@ -817,8 +876,8 @@ export class Clientes implements OnInit {
         const idDireccion = this.direccionEditandoId();
 
         const request$ = idDireccion
-            ? this.clientesService.actualizarDireccion(idCliente, idDireccion, this.direccionFormData)
-            : this.clientesService.crearDireccion(idCliente, this.direccionFormData);
+            ? this.clientesDireccionesService.actualizarDireccion(idCliente, idDireccion, this.direccionFormData)
+            : this.clientesDireccionesService.crearDireccion(idCliente, this.direccionFormData);
 
         request$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
             next: () => {
@@ -856,7 +915,7 @@ export class Clientes implements OnInit {
 
     cargarAsignaciones(idCliente: string): void {
         this.loadingAsignaciones.set(true);
-        this.clientesService.getAsignacionesPorCliente(idCliente).pipe(
+        this.asignacionesService.getAsignacionesPorCliente(idCliente).pipe(
             takeUntilDestroyed(this.destroyRef)
         ).subscribe({
             next: (r) => { this.asignaciones.set(r); this.loadingAsignaciones.set(false); },
@@ -871,14 +930,14 @@ export class Clientes implements OnInit {
         this.asignacionEditandoId.set(asig.idEmpleado);
         this.asignacionFormData = {
             idEmpleado: asig.idEmpleado,
-            tipoRelacion: asig.tipoRelacion,
-            activo: asig.activo
+            clTipoRelacion: asig.clTipoRelacion,
+            activo: asig.clEstatusAsignacion === 'ACTIVO'
         };
     }
 
     limpiarAsignacionForm(): void {
         this.asignacionEditandoId.set('');
-        this.asignacionFormData = { idEmpleado: '', tipoRelacion: 'Responsable', activo: true };
+        this.asignacionFormData = { idEmpleado: '', clTipoRelacion: 'Responsable', activo: true };
     }
 
     guardarAsignacion(): void {
@@ -888,7 +947,7 @@ export class Clientes implements OnInit {
             return;
         }
 
-        if (!this.asignacionFormData.idEmpleado || !this.asignacionFormData.tipoRelacion?.trim()) {
+        if (!this.asignacionFormData.idEmpleado || !this.asignacionFormData.clTipoRelacion?.trim()) {
             this.messageService.add({ severity: 'warn', summary: 'Formulario incompleto', detail: 'Selecciona un empleado y tipo de relación.', life: 4000 });
 
             return;
@@ -918,15 +977,14 @@ export class Clientes implements OnInit {
         this.savingAsignacion.set(true);
 
         const request$ = editId
-            ? this.clientesService.actualizarAsignacion(editId, idCliente, {
-                  tipoRelacion: this.asignacionFormData.tipoRelacion,
-                  activo: this.asignacionFormData.activo
+            ? this.asignacionesService.actualizarAsignacion(editId, idCliente, {
+                  clTipoRelacion: this.asignacionFormData.clTipoRelacion,
+                  clEstatusAsignacion: this.asignacionFormData.activo ? 'ACTIVO' : 'INACTIVO'
               })
-            : this.clientesService.crearAsignacion({
+            : this.asignacionesService.crearAsignacion({
                   idEmpleado: this.asignacionFormData.idEmpleado,
                   idCliente,
-                  tipoRelacion: this.asignacionFormData.tipoRelacion,
-                  activo: this.asignacionFormData.activo
+                  clTipoRelacion: this.asignacionFormData.clTipoRelacion
               } as CrearAsignacionClienteEmpleadoRequest);
 
         request$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
@@ -962,7 +1020,7 @@ export class Clientes implements OnInit {
             rejectLabel: 'No',
             acceptButtonStyleClass: 'p-button-danger',
             accept: () => {
-                this.clientesService.eliminarAsignacion(asig.idEmpleado, asig.idCliente).pipe(
+                this.asignacionesService.eliminarAsignacion(asig.idEmpleado, asig.idCliente).pipe(
                     takeUntilDestroyed(this.destroyRef)
                 ).subscribe({
                     next: () => {
@@ -985,7 +1043,7 @@ export class Clientes implements OnInit {
     // ═══════════════════════════════════════════
 
     private emptyCliente(): CrearClienteRequest {
-        return { nombreComercial: '', tipo: 'Distribuidor', moneda: 'USD', canalVenta: '', limiteCredito: 0, activo: true };
+        return { nombreComercial: '', tipo: 'Distribuidor', moneda: 0, canalVenta: '', limiteCredito: 0, activo: true };
     }
 
     private emptyDireccion(): CrearDireccionClienteRequest {

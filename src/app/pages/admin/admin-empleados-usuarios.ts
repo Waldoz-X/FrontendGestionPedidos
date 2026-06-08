@@ -17,8 +17,9 @@ import { TagModule } from 'primeng/tag';
 import { ToastModule } from 'primeng/toast';
 import { ToolbarModule } from 'primeng/toolbar';
 import { TooltipModule } from 'primeng/tooltip';
-import { CrearEmpleadoUsuarioRequest, Empleado } from '../service/empleados-api.types';
-import { EmpleadosService } from '../service/empleados.service';
+import { CrearEmpleadoUsuarioRequest, Empleado } from '../service/empleados/empleados-api.types';
+import { EmpleadosApiService } from '../service/empleados/empleados-api.service';
+import { EmpleadosUsuariosApiService } from '../service/empleados/empleados-usuarios-api.service';
 
 @Component({
     selector: 'p-admin-empleados-usuarios',
@@ -70,7 +71,7 @@ import { EmpleadosService } from '../service/empleados.service';
                 [rowsPerPageOptions]="[10, 20, 50]"
                 currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} empleados"
                 [showCurrentPageReport]="true"
-                [globalFilterFields]="['numeroEmpleado', 'nombres', 'apellidos', 'area', 'email']"
+                [globalFilterFields]="['clEmpleado', 'nbEmpleado', 'nbApellidos', 'idElemArea', 'email']"
                 [tableStyle]="{ 'min-width': '70rem' }"
                 [rowHover]="true"
             >
@@ -85,10 +86,11 @@ import { EmpleadosService } from '../service/empleados.service';
                 </ng-template>
                 <ng-template #header>
                     <tr>
-                        <th pSortableColumn="numeroEmpleado" style="min-width: 10rem">No. Empleado <p-sortIcon field="numeroEmpleado" /></th>
-                        <th pSortableColumn="nombres" style="min-width: 14rem">Nombre completo <p-sortIcon field="nombres" /></th>
-                        <th style="min-width: 10rem">Área</th>
-                        <th style="min-width: 14rem">Email</th>
+                        <th pSortableColumn="clEmpleado" style="min-width: 10rem">No. Empleado <p-sortIcon field="clEmpleado" /></th>
+                        <th pSortableColumn="nbEmpleado" style="min-width: 12rem">Nombres <p-sortIcon field="nbEmpleado" /></th>
+                        <th pSortableColumn="nbApellidos" style="min-width: 12rem">Apellidos <p-sortIcon field="nbApellidos" /></th>
+                        <th pSortableColumn="idElemArea" style="min-width: 10rem">Área <p-sortIcon field="idElemArea" /></th>
+                        <th style="min-width: 10rem">Email</th>
                         <th pSortableColumn="activo" style="min-width: 8rem">Estado <p-sortIcon field="activo" /></th>
                         <th style="min-width: 7rem">Cuenta</th>
                         <th style="min-width: 12rem"></th>
@@ -96,12 +98,13 @@ import { EmpleadosService } from '../service/empleados.service';
                 </ng-template>
                 <ng-template #body let-e>
                     <tr>
-                        <td class="font-mono">{{ e.numeroEmpleado }}</td>
-                        <td>{{ e.nombres }} {{ e.apellidos }}</td>
-                        <td>{{ e.area }}</td>
+                        <td class="font-mono">{{ e.clEmpleado }}</td>
+                        <td>{{ e.nbEmpleado }}</td>
+                        <td>{{ e.nbApellidos }}</td>
+                        <td>{{ e.idElemArea }}</td>
                         <td>{{ e.email || '—' }}</td>
                         <td>
-                            <p-tag [value]="e.activo ? 'Activo' : 'Inactivo'" [severity]="e.activo ? 'success' : 'danger'" />
+                            <p-tag [value]="e.clEstatusEmpleado === 'ACTIVO' ? 'Activo' : 'Inactivo'" [severity]="e.clEstatusEmpleado === 'ACTIVO' ? 'success' : 'danger'" />
                         </td>
                         <td>
                             <p-tag [value]="e.idUsuario ? 'Con cuenta' : 'Sin cuenta'" [severity]="e.idUsuario ? 'info' : 'warn'" />
@@ -204,7 +207,8 @@ import { EmpleadosService } from '../service/empleados.service';
     `
 })
 export class AdminEmpleadosUsuarios implements OnInit {
-    private readonly empleadosService = inject(EmpleadosService);
+    private readonly empleadosApiService = inject(EmpleadosApiService);
+    private readonly empleadosUsuariosApiService = inject(EmpleadosUsuariosApiService);
     private readonly messageService = inject(MessageService);
     private readonly destroyRef = inject(DestroyRef);
 
@@ -240,7 +244,7 @@ export class AdminEmpleadosUsuarios implements OnInit {
     cargarEmpleados(): void {
         this.loading.set(true);
 
-        this.empleadosService.getEmpleados().pipe(
+        this.empleadosApiService.getEmpleados().pipe(
             takeUntilDestroyed(this.destroyRef)
         ).subscribe({
             next: (r) => { this.empleados.set(r); this.loading.set(false); },
@@ -259,7 +263,7 @@ export class AdminEmpleadosUsuarios implements OnInit {
 
     abrirCrearUsuario(emp: Empleado): void {
         this.selectedIdEmpleado = emp.idEmpleado;
-        this.selectedNombre = `${emp.numeroEmpleado} — ${emp.nombres} ${emp.apellidos}`;
+        this.selectedNombre = `${emp.clEmpleado} — ${emp.nbEmpleado} ${emp.nbApellidos}`;
         this.nuevoUsuario = { email: '', password: '', role: 'Comercial' };
         this.submitted.set(false);
         this.crearDialogVisible = true;
@@ -282,7 +286,7 @@ export class AdminEmpleadosUsuarios implements OnInit {
 
         this.saving.set(true);
 
-        this.empleadosService.crearUsuarioEmpleado(this.selectedIdEmpleado, this.nuevoUsuario).pipe(
+        this.empleadosUsuariosApiService.crearUsuarioEmpleado(this.selectedIdEmpleado, this.nuevoUsuario).pipe(
             takeUntilDestroyed(this.destroyRef)
         ).subscribe({
             next: () => {
@@ -304,8 +308,8 @@ export class AdminEmpleadosUsuarios implements OnInit {
 
     abrirCambioPassword(emp: Empleado): void {
         this.selectedIdEmpleado = emp.idEmpleado;
-        this.selectedNombre = `${emp.numeroEmpleado} — ${emp.nombres} ${emp.apellidos}`;
-        this.selectedEmail = emp.email || '';
+        this.selectedNombre = `${emp.clEmpleado} — ${emp.nbEmpleado} ${emp.nbApellidos}`;
+        this.selectedEmail = emp.correo || '';
         this.nuevaPassword = '';
         this.submittedPwd.set(false);
         this.passwordDialogVisible = true;
@@ -328,7 +332,7 @@ export class AdminEmpleadosUsuarios implements OnInit {
 
         this.saving.set(true);
 
-        this.empleadosService.actualizarPasswordEmpleado(this.selectedIdEmpleado, { password: this.nuevaPassword }).pipe(
+        this.empleadosUsuariosApiService.actualizarPasswordEmpleado(this.selectedIdEmpleado, { password: this.nuevaPassword }).pipe(
             takeUntilDestroyed(this.destroyRef)
         ).subscribe({
             next: () => {

@@ -1,6 +1,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, map } from 'rxjs';
+import { AppConfigService } from '../../config/app-config.service';
 import {
     ActualizarAreaRequest,
     ActualizarEstadoRequest,
@@ -15,8 +16,12 @@ import {
 
 @Injectable({ providedIn: 'root' })
 export class CatalogosMaestrosService {
-    private readonly baseUrl = '/api/catalogos';
     private readonly http = inject(HttpClient);
+    private readonly appConfig = inject(AppConfigService);
+
+    private get baseUrl(): string {
+        return this.appConfig.getCatalogosBase();
+    }
 
     // ─── COUNTRIES ───
 
@@ -45,13 +50,9 @@ export class CatalogosMaestrosService {
     // ─── AREAS ───
 
     getAreas(activo?: boolean): Observable<Area[]> {
-        let params = new HttpParams();
-
-        if (activo !== undefined) {
-            params = params.set('activo', String(activo));
-        }
-
-        return this.http.get<Area[]>(`${this.baseUrl}/areas`, { params });
+        return this.http.get<unknown[]>(`${this.baseUrl}/AREAS_DEPARTAMENTOS`).pipe(
+            map((items) => this.normalizeAreas(items, activo))
+        );
     }
 
     crearArea(payload: CrearAreaRequest): Observable<Area> {
@@ -92,5 +93,83 @@ export class CatalogosMaestrosService {
 
     eliminarEstado(id: number): Observable<void> {
         return this.http.delete<void>(`${this.baseUrl}/estados/${id}`);
+    }
+
+    private normalizeAreas(items: unknown[], activo?: boolean): Area[] {
+        return (items ?? [])
+            .map((item) => this.toArea(item))
+            .filter((item): item is Area => item !== null)
+            .filter((item) => (activo === undefined ? true : item.activo === activo));
+    }
+
+    private toArea(raw: unknown): Area | null {
+        if (!raw || typeof raw !== 'object') {
+            return null;
+        }
+
+        const item = raw as Record<string, unknown>;
+
+        const id = this.toNumber(item['id']) ?? this.toNumber(item['idCatalogoElemento']) ?? 0;
+
+        const nombre = this.toString(item['nombre'])
+            ?? this.toString(item['nbCatalogoElemento'])
+            ?? this.toString(item['nbCatalogo'])
+            ?? this.toString(item['clCatalogoElemento'])
+            ?? '';
+
+        if (!nombre.trim()) {
+            return null;
+        }
+
+        const estatusCatalogoElemento = this.toString(item['clEstatusCatalogoElemento']);
+        const estatus = this.toString(item['clEstatus']);
+        const activoPorEstatusCatalogoElemento = estatusCatalogoElemento ? estatusCatalogoElemento.toUpperCase() === 'ACTIVO' : null;
+        const activoPorEstatus = estatus ? estatus.toUpperCase() === 'ACTIVO' : null;
+
+        const activo = this.toBoolean(item['activo'])
+            ?? this.toBoolean(item['esActivo'])
+            ?? activoPorEstatusCatalogoElemento
+            ?? activoPorEstatus
+            ?? true;
+
+        return { id, nombre, activo };
+    }
+
+    private toString(value: unknown): string | null {
+        return typeof value === 'string' ? value : null;
+    }
+
+    private toNumber(value: unknown): number | null {
+        if (typeof value === 'number' && Number.isFinite(value)) {
+            return value;
+        }
+
+        if (typeof value === 'string') {
+            const parsed = Number(value);
+
+            return Number.isFinite(parsed) ? parsed : null;
+        }
+
+        return null;
+    }
+
+    private toBoolean(value: unknown): boolean | null {
+        if (typeof value === 'boolean') {
+            return value;
+        }
+
+        if (typeof value === 'string') {
+            const normalized = value.trim().toLowerCase();
+
+            if (normalized === 'true' || normalized === '1' || normalized === 'activo') {
+                return true;
+            }
+
+            if (normalized === 'false' || normalized === '0' || normalized === 'inactivo') {
+                return false;
+            }
+        }
+
+        return null;
     }
 }

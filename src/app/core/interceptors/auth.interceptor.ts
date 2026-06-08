@@ -4,17 +4,29 @@ import { Router } from '@angular/router';
 import { catchError, throwError } from 'rxjs';
 import { AuthSessionService } from '../services/auth-session.service';
 
-const AUTH_PUBLIC_ENDPOINTS = ['/api/auth/login'];
+const AUTH_PUBLIC_ENDPOINTS = ['/api/adminauth/login', '/api/auth/login'];
 let redirectInProgress = false;
 
-const isPublicAuthRequest = (url: string): boolean => AUTH_PUBLIC_ENDPOINTS.some((endpoint) => url.startsWith(endpoint) || url.includes(endpoint));
+const normalizeUrl = (url: string): string => url.toLowerCase();
+
+const isPublicAuthRequest = (url: string): boolean => {
+    const normalizedUrl = normalizeUrl(url);
+
+    return AUTH_PUBLIC_ENDPOINTS.some((endpoint) => normalizedUrl.includes(endpoint));
+};
+
+const isApiRequest = (url: string): boolean => {
+    const normalizedUrl = normalizeUrl(url);
+
+    return normalizedUrl.startsWith('/api') || normalizedUrl.includes('/api/');
+};
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
     const authSession = inject(AuthSessionService);
     const router = inject(Router);
     const token = authSession.getToken();
 
-    const isApiCall = req.url.startsWith('/api');
+    const isApiCall = isApiRequest(req.url);
 
     const request = token && isApiCall
         ? req.clone({
