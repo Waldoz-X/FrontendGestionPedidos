@@ -245,6 +245,7 @@ export class CloudinaryFolderExplorerComponent implements OnInit {
 
   crearCarpeta(): void {
     const nombreLimpio = this.nuevaCarpetaNombre.trim();
+
     if (!nombreLimpio) return;
 
     this.isCreando = true;

@@ -70,7 +70,7 @@ import { Usuario } from '../service/usuarios/usuarios-api.types';
                     <div class="flex items-center justify-end">
                         <p-iconfield>
                             <p-inputicon styleClass="pi pi-search" />
-                            <input pInputText type="text" (input)="onGlobalFilter(dtUsuarios, $event)" placeholder="Buscar usuario..." />
+                            <input pInputText type="text" (input)="onGlobalFilter(dtUsuarios, $event)" placeholder="Buscar Usuarios" />
                         </p-iconfield>
                     </div>
                 </ng-template>
@@ -137,7 +137,7 @@ import { Usuario } from '../service/usuarios/usuarios-api.types';
                             <p-select appendTo="body" id="cli_sel" [(ngModel)]="idEntidadData" [options]="clientesDisponibles()" optionLabel="label" optionValue="value" fluid placeholder="Seleccione un cliente" [filter]="true" filterBy="label" />
                         </div>
                     }
-                    
+
                     <div>
                         <label for="acc_email" class="block font-bold mb-3">Email</label>
                         <input type="email" pInputText id="acc_email" [(ngModel)]="accesoFormData.email" required fluid />
@@ -176,7 +176,7 @@ import { Usuario } from '../service/usuarios/usuarios-api.types';
                 <p-button label="Guardar" icon="pi pi-check" (onClick)="guardarResetPassword()" [loading]="saving()" />
             </ng-template>
         </p-dialog>
-        
+
         <!-- DIALOG CAMBIAR ESTADO -->
         <p-dialog [(visible)]="estadoDialogVisible" [style]="{ width: '400px' }" header="Cambiar Estado" [modal]="true">
             <ng-template #content>
@@ -241,9 +241,11 @@ export class Usuarios implements OnInit {
     empleadosDisponibles = computed(() => {
         const users = this.usuarios() || [];
         const emps = Array.isArray(this.empleados()) ? this.empleados() : [];
+
         return emps
             .filter(e => {
                 const idE = e.idEmpleado || (e as any).id;
+
                 return !users.some(u => u.empleado?.idEmpleado === idE);
             })
             .map(e => ({ value: e.idEmpleado || (e as any).id, label: `${e.clEmpleado} — ${e.nbEmpleado} ${e.nbApellidos}` }));
@@ -252,9 +254,11 @@ export class Usuarios implements OnInit {
     clientesDisponibles = computed(() => {
         const users = this.usuarios() || [];
         const clis = Array.isArray(this.clientes()) ? this.clientes() : [];
+
         return clis
             .filter(c => {
                 const idC = c.id || (c as any).idCliente;
+
                 return !users.some(u => u.cliente?.idCliente === idC);
             })
             .map(c => ({ value: c.id || (c as any).idCliente, label: c.nombreComercial || (c as any).nbComercial || 'Cliente sin nombre' }));
@@ -274,7 +278,7 @@ export class Usuarios implements OnInit {
 
     cargarDatos(): void {
         this.loading.set(true);
-        
+
         // Load Usuarios
         this.usuariosService.getUsuarios().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
             next: (data) => {
@@ -286,12 +290,12 @@ export class Usuarios implements OnInit {
                 this.loading.set(false);
             }
         });
-        
+
         // Load Empleados (for dropdown)
         this.empleadosService.getEmpleados().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
             next: (data) => this.empleados.set(data)
         });
-        
+
         // Load Clientes (for dropdown)
         this.clientesService.getClientes().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
             next: (data) => this.clientes.set(data)
@@ -309,6 +313,7 @@ export class Usuarios implements OnInit {
         if (!/[a-z]/.test(password)) return 'Debe incluir al menos una letra minúscula.';
         if (!/[0-9]/.test(password)) return 'Debe incluir al menos un número.';
         if (!/[!@#$%^&*(),.?":{}|<>]/.test(password)) return 'Debe incluir al menos un símbolo especial.';
+
         return '';
     }
 
@@ -328,19 +333,22 @@ export class Usuarios implements OnInit {
 
     guardarNuevoUsuario(): void {
         this.validarPasswordAcceso();
-        
+
         if (!this.idEntidadData) {
             this.messageService.add({ severity: 'warn', summary: 'Requerido', detail: 'Debe seleccionar un empleado o cliente.' });
+
             return;
         }
 
         if (!this.accesoFormData.email || !this.accesoFormData.password) {
             this.messageService.add({ severity: 'warn', summary: 'Requerido', detail: 'Email y contraseña son obligatorios.' });
+
             return;
         }
 
         if (this.passwordAccesoError) {
             this.messageService.add({ severity: 'warn', summary: 'Contraseña débil', detail: this.passwordAccesoError });
+
             return;
         }
 
@@ -359,6 +367,7 @@ export class Usuarios implements OnInit {
             error: (err: HttpErrorResponse) => {
                 this.saving.set(false);
                 const msg = err.error?.detail || err.error?.title || 'No se pudo crear el acceso.';
+
                 this.messageService.add({ severity: 'error', summary: 'Error', detail: msg });
             }
         });
@@ -380,14 +389,16 @@ export class Usuarios implements OnInit {
 
     guardarResetPassword(): void {
         this.validarPasswordReset();
-        
+
         if (!this.resetPasswordData) {
             this.messageService.add({ severity: 'warn', summary: 'Requerido', detail: 'La nueva contraseña es obligatoria.' });
+
             return;
         }
 
         if (this.passwordResetError) {
             this.messageService.add({ severity: 'warn', summary: 'Contraseña débil', detail: this.passwordResetError });
+
             return;
         }
 
@@ -433,6 +444,7 @@ export class Usuarios implements OnInit {
 
     confirmarEliminarUsuario(usr: Usuario): void {
         const nombre = usr.tipoUsuario === 'EMPLEADO' ? usr.empleado?.nbNombreCompleto : usr.cliente?.nbComercial;
+
         this.confirmationService.confirm({
             message: `¿Estás seguro de eliminar el usuario de ${nombre}? El acceso al sistema será revocado de inmediato.`,
             header: 'Confirmar eliminación de usuario',

@@ -311,6 +311,7 @@ export class AccesoriosVisor implements OnInit {
     filteredAccesorios = computed(() => {
         const query = this.searchQuery().toLowerCase().trim();
         const list = this.accesorios();
+
         if (!query) return list;
 
         return list.filter(g => {
@@ -321,6 +322,7 @@ export class AccesoriosVisor implements OnInit {
             // Check if any variant combinations matches search
             const matchesColor = (g.variantes || []).some(v => {
                 const combName = this.combinacionesMap().get(Number(v.idElemCombinacion)) || '';
+
                 return combName.toLowerCase().includes(query);
             });
 
@@ -332,13 +334,16 @@ export class AccesoriosVisor implements OnInit {
         const list = this.filteredAccesorios();
         const start = this.first();
         const end = start + this.rows();
+
         return list.slice(start, end);
     });
 
     varianteSeleccionada = computed(() => {
         const accesorio = this.accesorioSeleccionado();
+
         if (!accesorio || !accesorio.variantes || accesorio.variantes.length === 0) return null;
         const index = this.varianteIdx();
+
         return accesorio.variantes[index] || accesorio.variantes[0];
     });
 
@@ -355,6 +360,7 @@ export class AccesoriosVisor implements OnInit {
             this.catalogosService.getElementos(clCatalogo).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
                 next: (data: CatalogoElemento[]) => {
                     const newMap = new Map<number, string>();
+
                     (data || []).forEach(item => {
                         if (item.idCatalogoElemento !== undefined) {
                             newMap.set(Number(item.idCatalogoElemento), item.nbCatalogoElemento || item.clCatalogoElemento);
@@ -408,17 +414,22 @@ export class AccesoriosVisor implements OnInit {
     getImagenMini(accesorio: ProductoAccesorio): string {
         if (accesorio.variantes && accesorio.variantes.length > 0) {
             const url = accesorio.variantes[0].urlImagen;
+
             if (!url) return 'demo/images/product/product-placeholder.svg';
+
             if (url.includes('cloudinary.com') && url.includes('/upload/')) {
                 return url.replace('/upload/', '/upload/w_250,h_250,c_limit,q_auto,f_auto/');
             }
+
             return url;
         }
+
         return 'demo/images/product/product-placeholder.svg';
     }
 
     getColoresDisponibles(accesorio: ProductoAccesorio): string {
         if (!accesorio.variantes || accesorio.variantes.length === 0) return 'N/A';
+
         return accesorio.variantes
             .map(v => this.getCombinacionName(v.idElemCombinacion))
             .filter((value, index, self) => self.indexOf(value) === index)
@@ -427,6 +438,7 @@ export class AccesoriosVisor implements OnInit {
 
     cleanTallaLabel(label: string): string {
         if (!label) return '';
+
         return label
             .replace(/Talla\s+/i, '')
             .replace(/\s*-\s*\w+/g, '')
@@ -436,25 +448,30 @@ export class AccesoriosVisor implements OnInit {
     getTallasDisponibles(accesorio: ProductoAccesorio): string {
         if (!accesorio.variantes || accesorio.variantes.length === 0) return 'N/A';
         const allTallas: string[] = [];
+
         accesorio.variantes.forEach(v => {
             (v.skus || []).forEach(s => {
                 const rawLabel = this.getTallaLabel(s.idElemTalla);
                 const label = this.cleanTallaLabel(rawLabel);
+
                 if (label && !allTallas.includes(label)) {
                     allTallas.push(label);
                 }
             });
         });
+
         return allTallas.length > 0 ? allTallas.sort((a,b) => a.localeCompare(b, undefined, {numeric: true})).join(', ') : 'N/A';
     }
 
     getStockTotal(accesorio: ProductoAccesorio): number {
         let total = 0;
+
         (accesorio.variantes || []).forEach(v => {
             (v.skus || []).forEach(s => {
                 total += s.noStockDisponible || 0;
             });
         });
+
         return total;
     }
 
@@ -484,11 +501,14 @@ export class AccesoriosVisor implements OnInit {
 
     getImagenVarianteActual(): string {
         const selected = this.varianteSeleccionada();
+
         if (!selected || !selected.urlImagen) return 'demo/images/product/product-placeholder.svg';
         const url = selected.urlImagen;
+
         if (url.includes('cloudinary.com') && url.includes('/upload/')) {
             return url.replace('/upload/', '/upload/w_500,h_500,c_limit,q_auto,f_auto/');
         }
+
         return url;
     }
 }

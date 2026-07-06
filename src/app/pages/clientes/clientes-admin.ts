@@ -67,7 +67,7 @@ type ClienteForm = CrearClienteAdminRequest;
                         <span class="text-sm text-surface-500">Registros disponibles</span>
                         <p-iconfield>
                             <p-inputicon class="pi pi-search" />
-                            <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Buscar cliente..." />
+                            <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Buscar Clientes " />
                         </p-iconfield>
                     </div>
                 </ng-template>
@@ -118,8 +118,8 @@ type ClienteForm = CrearClienteAdminRequest;
             <ng-template #content>
                 <div class="flex flex-col gap-5">
                     <div>
-                        <label for="nbComercial" class="block font-bold mb-2">Nombre comercial</label>
-                        <input id="nbComercial" pInputText [(ngModel)]="form.nbComercial" class="w-full" />
+                        <label for="nbComercial" class="block font-bold mb-2">Nombre comercial *</label>
+                        <input id="nbComercial" pInputText [(ngModel)]="form.nbComercial" class="w-full" maxlength="100" />
                         @if (submitted() && !form.nbComercial.trim()) {
                             <small class="text-red-500">El nombre comercial es obligatorio.</small>
                         }
@@ -127,26 +127,42 @@ type ClienteForm = CrearClienteAdminRequest;
 
                     <div class="grid grid-cols-12 gap-4">
                         <div class="col-span-12 md:col-span-6">
-                            <label for="clTipoCliente" class="block font-bold mb-2">Tipo de cliente</label>
+                            <label for="clTipoCliente" class="block font-bold mb-2">Tipo de cliente *</label>
                             <p-select appendTo="body" inputId="clTipoCliente" [(ngModel)]="form.clTipoCliente" [options]="tipoClienteOptions" optionLabel="label" optionValue="value" placeholder="Selecciona..." fluid />
+                            @if (submitted() && !form.clTipoCliente) {
+                                <small class="text-red-500">El tipo de cliente es obligatorio.</small>
+                            }
                         </div>
 
                         <div class="col-span-12 md:col-span-6">
-                            <label for="idElemMoneda" class="block font-bold mb-2">Moneda</label>
+                            <label for="idElemMoneda" class="block font-bold mb-2">Moneda *</label>
                             <p-select appendTo="body" inputId="idElemMoneda" [(ngModel)]="form.idElemMoneda" [options]="monedaOptions()" optionLabel="label" optionValue="value" placeholder="Selecciona..." fluid />
+                            @if (submitted() && !form.idElemMoneda) {
+                                <small class="text-red-500">La moneda es obligatoria.</small>
+                            }
                         </div>
                     </div>
 
                     <div class="grid grid-cols-12 gap-4">
                         <div class="col-span-12">
-                            <label for="dsCanalVenta" class="block font-bold mb-2">Canal de venta</label>
-                            <input id="dsCanalVenta" pInputText [(ngModel)]="form.dsCanalVenta" class="w-full" />
+                            <label for="dsCanalVenta" class="block font-bold mb-2">Canal de venta *</label>
+                            <input id="dsCanalVenta" pInputText [(ngModel)]="form.dsCanalVenta" class="w-full" maxlength="150" />
+                            @if (submitted() && !form.dsCanalVenta.trim()) {
+                                <small class="text-red-500">El canal de venta es obligatorio.</small>
+                            }
                         </div>
                     </div>
 
-                    <div>
-                        <label for="mnLimiteCredito" class="block font-bold mb-2">Límite de crédito</label>
-                        <p-inputNumber inputId="mnLimiteCredito" [(ngModel)]="form.mnLimiteCredito" mode="decimal" [minFractionDigits]="2" [maxFractionDigits]="2" [min]="0" fluid />
+                    <div class="grid grid-cols-12 gap-4">
+                        <div class="col-span-12 md:col-span-6">
+                            <label for="mnLimiteCredito" class="block font-bold mb-2">Límite de crédito</label>
+                            <p-inputNumber inputId="mnLimiteCredito" [(ngModel)]="form.mnLimiteCredito" mode="decimal" [minFractionDigits]="2" [maxFractionDigits]="2" [min]="0" fluid />
+                        </div>
+
+                        <div class="col-span-12 md:col-span-6">
+                            <label for="clEstatusCliente" class="block font-bold mb-2">Estado</label>
+                            <p-select appendTo="body" inputId="clEstatusCliente" [(ngModel)]="form.clEstatusCliente" [options]="estatusOptions" optionLabel="label" optionValue="value" placeholder="Selecciona..." fluid />
+                        </div>
                     </div>
                 </div>
             </ng-template>
@@ -207,11 +223,12 @@ export class ClientesAdminComponent implements OnInit {
     cargarMonedas(): void {
         this.catalogosGenService.getElementos('MONEDAS').pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
             next: (data) => {
-                const options = (data || []).map(m => ({ 
-                    label: m.nbCatalogoElemento || (m as any).nbMoneda, 
+                const options = (data || []).map(m => ({
+                    label: m.nbCatalogoElemento || (m as any).nbMoneda,
                     value: m.idCatalogoElemento || (m as any).idCatalogoElemento,
                     clave: m.clCatalogoElemento || (m as any).clMoneda
                 }));
+
                 this.monedaOptions.set(options);
             },
             error: () => this.messageService.add({ severity: 'error', summary: 'Error', detail: 'No se pudieron cargar las monedas.' })
@@ -220,6 +237,7 @@ export class ClientesAdminComponent implements OnInit {
 
     getMonedaLabel(idMoneda: number): string {
         const option = this.monedaOptions().find(m => m.value === idMoneda);
+
         return option ? (option.clave || option.label || idMoneda.toString()) : idMoneda.toString();
     }
 
@@ -251,15 +269,15 @@ export class ClientesAdminComponent implements OnInit {
     }
 
     abrirEditar(cliente: ClienteAdmin): void {
-        this.selectedId = cliente.id;
+        this.selectedId = cliente.id || (cliente as any).idCliente;
         this.editMode = true;
         this.form = {
-            nbComercial: cliente.nbComercial,
-            clTipoCliente: cliente.clTipoCliente,
-            idElemMoneda: cliente.idElemMoneda,
-            dsCanalVenta: cliente.dsCanalVenta,
-            mnLimiteCredito: cliente.mnLimiteCredito,
-            clEstatusCliente: cliente.clEstatusCliente
+            nbComercial: cliente.nbComercial || '',
+            clTipoCliente: cliente.clTipoCliente || 'Distribuidor',
+            idElemMoneda: cliente.idElemMoneda || 0,
+            dsCanalVenta: cliente.dsCanalVenta || '',
+            mnLimiteCredito: cliente.mnLimiteCredito || 0,
+            clEstatusCliente: cliente.clEstatusCliente || 'ACTIVO'
         };
         this.submitted.set(false);
         this.dialogVisible = true;

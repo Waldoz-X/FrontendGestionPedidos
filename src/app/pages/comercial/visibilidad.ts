@@ -204,8 +204,11 @@ export class Visibilidad implements OnInit {
 
     guardarVisibilidad(): void {
         if (!this.formulario.idCliente || !this.formulario.idProducto) {
-            this.messageService.add({ severity: 'warn', summary: 'Atención', detail: 'Seleccione un cliente y un producto.', life: 3000 }); return;
+            this.messageService.add({ severity: 'warn', summary: 'Atención', detail: 'Seleccione un cliente y un producto.', life: 3000 });
+
+ return;
         }
+
         this.saving.set(true);
         this.apiService.asignarVisibilidad(this.formulario).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
             next: () => {

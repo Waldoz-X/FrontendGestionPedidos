@@ -82,7 +82,7 @@ import { Area } from '../service/catalogos-maestros-api.types';
                         <span></span>
                         <p-iconfield>
                             <p-inputicon styleClass="pi pi-search" />
-                            <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Buscar..." />
+                            <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Buscar Empleados" />
                         </p-iconfield>
                     </div>
                 </ng-template>
@@ -139,11 +139,11 @@ import { Area } from '../service/catalogos-maestros-api.types';
                     <div class="grid grid-cols-12 gap-4">
                         <div class="col-span-6">
                             <label for="create_numeroEmpleado" class="block font-bold mb-3">No. Empleado</label>
-                            <input type="text" pInputText id="create_numeroEmpleado" [(ngModel)]="nuevoUsuario.nuEmpleado" fluid />
+                            <input type="text" pInputText id="create_numeroEmpleado" [(ngModel)]="nuevoUsuario.nuEmpleado" maxlength="20" fluid />
                         </div>
                         <div class="col-span-6">
-                            <label for="create_claveEmpleado" class="block font-bold mb-3">Clave Empleado</label>
-                            <input type="text" pInputText id="create_claveEmpleado" [(ngModel)]="nuevoUsuario.clEmpleado" required fluid />
+                            <label for="create_claveEmpleado" class="block font-bold mb-3">Clave Empleado *</label>
+                            <input type="text" pInputText id="create_claveEmpleado" [(ngModel)]="nuevoUsuario.clEmpleado" required maxlength="50" fluid />
                             @if (submitted() && !nuevoUsuario.clEmpleado) {
                                 <small class="text-red-500">La clave de empleado es requerida.</small>
                             }
@@ -151,29 +151,29 @@ import { Area } from '../service/catalogos-maestros-api.types';
                     </div>
                     <div class="grid grid-cols-12 gap-4">
                         <div class="col-span-12">
-                            <label for="create_email" class="block font-bold mb-3">Email</label>
-                            <input type="email" pInputText id="create_email" [(ngModel)]="nuevoUsuario.email" required fluid />
+                            <label for="create_email" class="block font-bold mb-3">Email *</label>
+                            <input type="email" pInputText id="create_email" [(ngModel)]="nuevoUsuario.email" required maxlength="100" fluid />
                             @if (submitted() && !nuevoUsuario.email) {
-                                <small class="text-red-500">Requerido.</small>
+                                <small class="text-red-500">El email es requerido.</small>
                             }
                         </div>
                     </div>
                     <div class="grid grid-cols-12 gap-4">
                         <div class="col-span-6">
-                            <label for="create_password" class="block font-bold mb-3">Contraseña</label>
-                            <input type="password" pInputText id="create_password" [(ngModel)]="nuevoUsuario.password" required fluid (input)="validarPasswordRealtime()" />
+                            <label for="create_password" class="block font-bold mb-3">Contraseña *</label>
+                            <input type="password" pInputText id="create_password" [(ngModel)]="nuevoUsuario.password" required maxlength="100" fluid (input)="validarPasswordRealtime()" />
                             @if (submitted() && !nuevoUsuario.password) {
-                                <small class="text-red-500">Requerida.</small>
+                                <small class="text-red-500">La contraseña es requerida.</small>
                             }
                             @if (passwordError) {
                                 <small class="text-red-500 block mt-1">{{ passwordError }}</small>
                             }
                         </div>
                         <div class="col-span-6">
-                            <label for="create_confirm" class="block font-bold mb-3">Confirmar contraseña</label>
-                            <input type="password" pInputText id="create_confirm" [(ngModel)]="nuevoUsuario.confirmPassword" required fluid />
+                            <label for="create_confirm" class="block font-bold mb-3">Confirmar contraseña *</label>
+                            <input type="password" pInputText id="create_confirm" [(ngModel)]="nuevoUsuario.confirmPassword" required maxlength="100" fluid />
                             @if (submitted() && !nuevoUsuario.confirmPassword) {
-                                <small class="text-red-500">Requerida.</small>
+                                <small class="text-red-500">La confirmación es requerida.</small>
                             }
                             @if (submitted() && nuevoUsuario.password && nuevoUsuario.confirmPassword && nuevoUsuario.password !== nuevoUsuario.confirmPassword) {
                                 <small class="text-red-500">Las contraseñas no coinciden.</small>
@@ -182,22 +182,22 @@ import { Area } from '../service/catalogos-maestros-api.types';
                     </div>
                     <div class="grid grid-cols-12 gap-4">
                         <div class="col-span-6">
-                            <label for="create_nombres" class="block font-bold mb-3">Nombres</label>
-                            <input type="text" pInputText id="create_nombres" [(ngModel)]="nuevoUsuario.nbEmpleado" required fluid />
+                            <label for="create_nombres" class="block font-bold mb-3">Nombres *</label>
+                            <input type="text" pInputText id="create_nombres" [(ngModel)]="nuevoUsuario.nbEmpleado" required maxlength="100" fluid />
                             @if (submitted() && !nuevoUsuario.nbEmpleado) {
-                                <small class="text-red-500">Requerido.</small>
+                                <small class="text-red-500">Los nombres son requeridos.</small>
                             }
                         </div>
                         <div class="col-span-6">
-                            <label for="create_apellidos" class="block font-bold mb-3">Apellidos</label>
-                            <input type="text" pInputText id="create_apellidos" [(ngModel)]="nuevoUsuario.nbApellidos" required fluid />
+                            <label for="create_apellidos" class="block font-bold mb-3">Apellidos *</label>
+                            <input type="text" pInputText id="create_apellidos" [(ngModel)]="nuevoUsuario.nbApellidos" required maxlength="100" fluid />
                             @if (submitted() && !nuevoUsuario.nbApellidos) {
-                                <small class="text-red-500">Requerido.</small>
+                                <small class="text-red-500">Los apellidos son requeridos.</small>
                             }
                         </div>
                     </div>
                     <div>
-                        <label for="create_area" class="block font-bold mb-3">Área</label>
+                        <label for="create_area" class="block font-bold mb-3">Área *</label>
                         <p-select appendTo="body"
                             id="create_area"
                             [(ngModel)]="nuevoUsuario.idElemArea"
@@ -233,50 +233,64 @@ import { Area } from '../service/catalogos-maestros-api.types';
                     <div class="grid grid-cols-12 gap-4">
                         <div class="col-span-6">
                             <label for="edit_nuEmpleado" class="block font-bold mb-3">No. Empleado</label>
-                            <input type="text" pInputText id="edit_nuEmpleado" [(ngModel)]="datosEditar.nuEmpleado" fluid />
+                            <input type="text" pInputText id="edit_nuEmpleado" [(ngModel)]="datosEditar.nuEmpleado" maxlength="20" fluid />
                         </div>
                         <div class="col-span-6">
-                            <label for="edit_clEmpleado" class="block font-bold mb-3">Clave Empleado</label>
-                            <input type="text" pInputText id="edit_clEmpleado" [(ngModel)]="datosEditar.clEmpleado" required fluid />
+                            <label for="edit_clEmpleado" class="block font-bold mb-3">Clave Empleado *</label>
+                            <input type="text" pInputText id="edit_clEmpleado" [(ngModel)]="datosEditar.clEmpleado" required maxlength="50" fluid />
                             @if (submittedEditar() && !datosEditar.clEmpleado) {
-                                <small class="text-red-500">Requerido.</small>
+                                <small class="text-red-500">La clave es requerida.</small>
                             }
                         </div>
                     </div>
                     <div>
                         <label class="block font-bold mb-3">Correo</label>
-                        <span>{{ empleadoEditando.correo || 'Sin correo' }}</span>
+                        <span class="text-surface-700 dark:text-surface-300">{{ empleadoEditando.correo || 'Sin correo' }}</span>
                     </div>
                     <div class="grid grid-cols-12 gap-4">
                         <div class="col-span-6">
-                            <label for="edit_nombres" class="block font-bold mb-3">Nombres</label>
-                            <input type="text" pInputText id="edit_nombres" [(ngModel)]="datosEditar.nbEmpleado" required fluid />
+                            <label for="edit_nombres" class="block font-bold mb-3">Nombres *</label>
+                            <input type="text" pInputText id="edit_nombres" [(ngModel)]="datosEditar.nbEmpleado" required maxlength="100" fluid />
                             @if (submittedEditar() && !datosEditar.nbEmpleado) {
-                                <small class="text-red-500">Requerido.</small>
+                                <small class="text-red-500">Los nombres son requeridos.</small>
                             }
                         </div>
                         <div class="col-span-6">
-                            <label for="edit_apellidos" class="block font-bold mb-3">Apellidos</label>
-                            <input type="text" pInputText id="edit_apellidos" [(ngModel)]="datosEditar.nbApellidos" required fluid />
+                            <label for="edit_apellidos" class="block font-bold mb-3">Apellidos *</label>
+                            <input type="text" pInputText id="edit_apellidos" [(ngModel)]="datosEditar.nbApellidos" required maxlength="100" fluid />
                             @if (submittedEditar() && !datosEditar.nbApellidos) {
-                                <small class="text-red-500">Requerido.</small>
+                                <small class="text-red-500">Los apellidos son requeridos.</small>
                             }
                         </div>
                     </div>
-                    <div>
-                        <label for="edit_area" class="block font-bold mb-3">Área</label>
-                        <p-select appendTo="body"
-                            id="edit_area"
-                            [(ngModel)]="datosEditar.idElemArea"
-                            [options]="areas()"
-                            optionLabel="nombre"
-                            optionValue="id"
-                            placeholder="Selecciona una área"
-                            fluid
-                        />
-                        @if (submittedEditar() && !datosEditar.idElemArea) {
-                            <small class="text-red-500">Requerido.</small>
-                        }
+                    <div class="grid grid-cols-12 gap-4">
+                        <div class="col-span-6">
+                            <label for="edit_area" class="block font-bold mb-3">Área *</label>
+                            <p-select appendTo="body"
+                                id="edit_area"
+                                [(ngModel)]="datosEditar.idElemArea"
+                                [options]="areas()"
+                                optionLabel="nombre"
+                                optionValue="id"
+                                placeholder="Selecciona una área"
+                                fluid
+                            />
+                            @if (submittedEditar() && !datosEditar.idElemArea) {
+                                <small class="text-red-500">El área es requerida.</small>
+                            }
+                        </div>
+                        <div class="col-span-6">
+                            <label for="edit_status" class="block font-bold mb-3">Estado</label>
+                            <p-select appendTo="body"
+                                id="edit_status"
+                                [(ngModel)]="datosEditar.clEstatusEmpleado"
+                                [options]="estatusOptions"
+                                optionLabel="label"
+                                optionValue="value"
+                                placeholder="Selecciona un estado"
+                                fluid
+                            />
+                        </div>
                     </div>
 
                 </div>
@@ -313,20 +327,25 @@ export class Empleados implements OnInit {
     editarDialogVisible = false;
     submittedEditar = signal<boolean>(false);
     empleadoEditando: Empleado = this.emptyEmpleado();
-    datosEditar: ActualizarEmpleadoRequest = { 
-        idUsuario: null, 
-        idElemArea: 0, 
+    datosEditar: ActualizarEmpleadoRequest = {
+        idUsuario: null,
+        idElemArea: 0,
         nuEmpleado: null,
-        clEmpleado: '', 
-        nbEmpleado: '', 
-        nbApellidos: '', 
-        clEstatusEmpleado: 'ACTIVO' 
+        clEmpleado: '',
+        nbEmpleado: '',
+        nbApellidos: '',
+        clEstatusEmpleado: 'ACTIVO'
     };
 
     // ─── Options ───
     activoOptions = [
         { label: 'Activo', value: true },
         { label: 'Inactivo', value: false }
+    ];
+
+    estatusOptions = [
+        { label: 'ACTIVO', value: 'ACTIVO' },
+        { label: 'INACTIVO', value: 'INACTIVO' }
     ];
 
     private searchSubject = new Subject<{table: Table, query: string}>();
@@ -407,6 +426,7 @@ export class Empleados implements OnInit {
         if (!/[a-z]/.test(password)) return 'Debe incluir al menos una letra minúscula.';
         if (!/[0-9]/.test(password)) return 'Debe incluir al menos un número.';
         if (!/[!@#$%^&*(),.?":{}|<>]/.test(password)) return 'Debe incluir al menos un símbolo especial.';
+
         return '';
     }
 
@@ -421,6 +441,7 @@ export class Empleados implements OnInit {
                 detail: 'Completa todos los datos del empleado.',
                 life: 4000
             });
+
             return;
         }
 
@@ -431,6 +452,7 @@ export class Empleados implements OnInit {
                 detail: 'El email y la contraseña son obligatorios.',
                 life: 4000
             });
+
             return;
         }
 
@@ -441,6 +463,7 @@ export class Empleados implements OnInit {
                 detail: this.passwordError,
                 life: 5000
             });
+
             return;
         }
 
@@ -451,6 +474,7 @@ export class Empleados implements OnInit {
                 detail: 'Las contraseñas no coinciden.',
                 life: 4000
             });
+
             return;
         }
 
@@ -483,7 +507,7 @@ export class Empleados implements OnInit {
 
     editarEmpleado(emp: Empleado): void {
         this.empleadoEditando = { ...emp };
-        
+
         this.datosEditar = {
             idUsuario: emp.idUsuario,
             nuEmpleado: emp.nuEmpleado,
@@ -625,6 +649,7 @@ export class Empleados implements OnInit {
 
     getAreaName(idElemArea: number): string {
         const area = this.areas().find(a => a.id === idElemArea);
+
         return area ? area.nombre : '';
     }
 

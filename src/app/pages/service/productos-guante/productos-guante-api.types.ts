@@ -20,10 +20,8 @@ export interface ProductoGuante {
     id: string; 
     clProducto: string;
     nbProducto: string;
-    idElemDivision: number;
+    idElemCategoria: number;
     idElemLineaColeccion: number;
-    idElemGama: number;
-    idElemEstadoProducto: number;
     clHsCode: string;
     clEstatusProducto: string;
     nbPalma: string;
@@ -39,10 +37,8 @@ export interface ProductoGuante {
 export interface CrearProductoGuanteRequest {
     clProducto: string;
     nbProducto: string;
-    idElemDivision: number;
+    idElemCategoria: number;
     idElemLineaColeccion: number;
-    idElemGama: number;
-    idElemEstadoProducto: number;
     clHsCode: string;
     clEstatusProducto: string;
     nbPalma: string;

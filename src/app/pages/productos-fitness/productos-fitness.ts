@@ -471,9 +471,11 @@ export class ProductosFitness implements OnInit {
 
     onUploadBulk(event: any): void {
         const file = event.files[0];
+
         if (!file) return;
 
         const reader = new FileReader();
+
         reader.onload = (e: any) => {
             try {
                 const jsonContent = JSON.parse(e.target.result);
@@ -481,6 +483,7 @@ export class ProductosFitness implements OnInit {
                 if (!Array.isArray(jsonContent)) {
                     this.messageService.add({ severity: 'error', summary: 'Error de Formato', detail: 'El archivo JSON debe contener un arreglo de productos.', life: 5000 });
                     event.options.clear(); // Limpiar el fileupload
+
                     return;
                 }
 
@@ -507,11 +510,13 @@ export class ProductosFitness implements OnInit {
                 event.options.clear();
             }
         };
+
         reader.readAsText(file);
     }
 
     editarProducto(prod: ProductoFitness): void {
         const id = (prod as any).idProducto;
+
         if (!id) return;
 
         this.loading.set(true);
@@ -542,6 +547,7 @@ export class ProductosFitness implements OnInit {
                     
                     variantes: apiVariantes.map((v: any) => {
                         const apiSkus = v.skus || v.productoSkus || v.varianteSkus || v.lstSkus || [];
+
                         return {
                             idVariante: v.idVariante || v.id || v.idProductoVariante,
                             idElemCombinacion: Number(v.idElemCombinacion || v.idCombinacion || v.idCatalogoElementoCombinacion || 0),
@@ -605,6 +611,7 @@ export class ProductosFitness implements OnInit {
 
         if (!this.datosFormulario.clProducto?.trim() || !this.datosFormulario.nbProducto?.trim()) {
             this.messageService.add({ severity: 'warn', summary: 'Formulario incompleto', detail: 'La Clave y el Nombre del producto son requeridos.' });
+
             return;
         }
 
@@ -638,6 +645,7 @@ export class ProductosFitness implements OnInit {
             acceptButtonStyleClass: 'p-button-danger',
             accept: () => {
                 const id = (prod as any).idProducto;
+
                 this.apiService.eliminarProductoFitness(id).pipe(
                     takeUntilDestroyed(this.destroyRef)
                 ).subscribe({

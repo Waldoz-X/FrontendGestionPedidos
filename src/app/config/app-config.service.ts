@@ -7,6 +7,7 @@ export interface AppConfig {
     catalogosBase?: string;
     catalogoBase?: string;
     defaultTipoUsuario?: string;
+    cloudinaryCloudName?: string;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -44,6 +45,10 @@ export class AppConfigService {
 
     getDefaultTipoUsuario(): string {
         return this.get('defaultTipoUsuario', 'Empleado')!;
+    }
+
+    getCloudinaryCloudName(): string {
+        return this.get('cloudinaryCloudName', 'dvqppegcf')!;
     }
 }
 

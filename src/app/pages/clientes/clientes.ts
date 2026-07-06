@@ -544,6 +544,7 @@ export class Clientes implements OnInit {
         this.catalogosGenService.getElementos('MONEDAS').pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
             next: (data) => {
                 const options = (data || []).map(m => ({ label: m.nbCatalogoElemento, value: m.clCatalogoElemento }));
+
                 this.monedaOptions.set(options);
             },
             error: () => this.messageService.add({ severity: 'error', summary: 'Error', detail: 'No se pudieron cargar las monedas.' })
@@ -683,6 +684,7 @@ export class Clientes implements OnInit {
             moneda: (() => {
                 const monedas = this.monedasRaw();
                 const found = monedas.find((m: any) => m.clCatalogoElemento === cliente.moneda || m.nbCatalogoElemento === cliente.moneda);
+
                 return found ? found.id : cliente.moneda;
             })(),
             canalVenta: cliente.canalVenta,

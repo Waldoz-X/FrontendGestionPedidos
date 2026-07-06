@@ -21,6 +21,7 @@ import { TooltipModule } from 'primeng/tooltip';
 import { TextareaModule } from 'primeng/textarea';
 import { AccordionModule } from 'primeng/accordion';
 import { TabsModule } from 'primeng/tabs';
+import { FileUploadModule } from 'primeng/fileupload';
 
 import { 
     ProductoGuante, 
@@ -52,12 +53,43 @@ import { CatalogosApiService, CatalogoElemento } from '../service/catalogos-api.
         TooltipModule,
         TextareaModule,
         AccordionModule,
-        TabsModule
+        TabsModule,
+        FileUploadModule
     ],
     providers: [MessageService, ConfirmationService],
     template: `
         <p-toast />
         <p-confirmDialog [style]="{ width: '450px' }" />
+
+        <p-dialog 
+            [(visible)]="bulkDialogVisible" 
+            [style]="{ width: '500px' }" 
+            header="Carga Masiva de Guantes" 
+            [modal]="true"
+        >
+            <ng-template #content>
+                <div class="flex flex-col gap-4">
+                    <div class="flex items-center gap-3 p-4 bg-blue-50 dark:bg-blue-950 rounded-lg">
+                        <i class="pi pi-info-circle text-blue-500 text-xl"></i>
+                        <span class="text-sm">Seleccione un archivo <strong>.json</strong> con los datos estructurados. Tamaño máximo: <strong>10MB</strong>.</span>
+                    </div>
+
+                    <div class="flex flex-col items-center gap-4 p-6 border-2 border-dashed border-surface-300 dark:border-surface-600 rounded-lg">
+                        <i class="pi pi-cloud-upload text-4xl text-surface-400"></i>
+                        <p class="m-0 text-surface-500">Arrastre su archivo aquí o use el botón</p>
+                        <p-fileupload 
+                            mode="basic" 
+                            chooseLabel="Elegir Archivo JSON" 
+                            chooseIcon="pi pi-file"
+                            accept=".json" 
+                            maxFileSize="10000000" 
+                            [auto]="true"
+                            [customUpload]="true" 
+                            (uploadHandler)="onUploadBulk($event)" />
+                    </div>
+                </div>
+            </ng-template>
+        </p-dialog>
 
         <div class="card">
             <p-toolbar styleClass="mb-6">
@@ -68,8 +100,9 @@ import { CatalogosApiService, CatalogoElemento } from '../service/catalogos-api.
                     </div>
                 </ng-template>
                 <ng-template #end>
-                    <p-button label="Nuevo" icon="pi pi-plus" severity="secondary" class="mr-2" (onClick)="abrirNuevo()" />
-                    <p-button label="Recargar" icon="pi pi-refresh" severity="secondary" [outlined]="true" (onClick)="cargarProductos()" [loading]="loading()" />
+                        <p-button severity="success" label="Nuevo" icon="pi pi-plus" class="mr-2" (onClick)="abrirNuevo()" />
+                        <p-button severity="secondary" label="Carga Masiva" icon="pi pi-upload" class="mr-2" (onClick)="abrirCargaMasiva()" />
+                        <p-button severity="secondary" label="Recargar" icon="pi pi-refresh" [outlined]="true" (onClick)="cargarProductos()" [loading]="loading()" />
                 </ng-template>
             </p-toolbar>
 
@@ -163,8 +196,8 @@ import { CatalogosApiService, CatalogoElemento } from '../service/catalogos-api.
 
                                 <div class="grid grid-cols-12 gap-4">
                                     <div class="col-span-6">
-                                        <label class="block font-bold mb-3">División</label>
-                                        <p-select appendTo="body" [(ngModel)]="datosFormulario.idElemDivision" [options]="divisiones()" optionLabel="label" optionValue="value" placeholder="Seleccionar" fluid />
+                                        <label class="block font-bold mb-3">Categoría</label>
+                                        <p-select appendTo="body" [(ngModel)]="datosFormulario.idElemCategoria" [options]="categorias()" optionLabel="label" optionValue="value" placeholder="Seleccionar" fluid />
                                     </div>
                                     <div class="col-span-6">
                                         <label class="block font-bold mb-3">Línea / Colección</label>
@@ -173,20 +206,9 @@ import { CatalogosApiService, CatalogoElemento } from '../service/catalogos-api.
                                 </div>
 
                                 <div class="grid grid-cols-12 gap-4">
-                                    <div class="col-span-6 md:col-span-6">
-                                        <label class="block font-bold mb-3">Gama</label>
-                                        <p-select appendTo="body" [(ngModel)]="datosFormulario.idElemGama" [options]="gamas()" optionLabel="label" optionValue="value" placeholder="Seleccionar" fluid />
-                                    </div>
-                                    <div class="col-span-6 md:col-span-6">
-                                        <label class="block font-bold mb-3">Estado del Prod.</label>
-                                        <p-select appendTo="body" [(ngModel)]="datosFormulario.idElemEstadoProducto" [options]="estadosProd()" optionLabel="label" optionValue="value" placeholder="Seleccionar" fluid />
-                                    </div>
-                                </div>
-
-                                <div class="grid grid-cols-12 gap-4">
                                     <div class="col-span-6">
                                         <label class="block font-bold mb-3">Estatus</label>
-                                        <p-select appendTo="body" [(ngModel)]="datosFormulario.clEstatusProducto" [options]="estatusOptions" fluid />
+                                        <p-select appendTo="body" [(ngModel)]="datosFormulario.clEstatusProducto" [options]="estatusOptions" optionLabel="label" optionValue="value" fluid />
                                     </div>
                                 </div>
                             </div>
@@ -268,7 +290,7 @@ import { CatalogosApiService, CatalogoElemento } from '../service/catalogos-api.
                                                     </div>
                                                     <div class="col-span-12 md:col-span-4">
                                                         <label class="block font-bold mb-2">Estatus</label>
-                                                        <p-select appendTo="body" [(ngModel)]="variante.clEstatusVariante" [options]="estatusOptions" fluid />
+                                                        <p-select appendTo="body" [(ngModel)]="variante.clEstatusVariante" [options]="estatusOptions" optionLabel="label" optionValue="value" fluid />
                                                     </div>
                                                 </div>
 
@@ -297,9 +319,9 @@ import { CatalogosApiService, CatalogoElemento } from '../service/catalogos-api.
                                                                 </td>
                                                                 <td><input pInputText [(ngModel)]="sku.clItem" class="w-24" /></td>
                                                                 <td><input pInputText [(ngModel)]="sku.clCodigoBarras" class="w-32" /></td>
-                                                                <td><p-select appendTo="body" [(ngModel)]="sku.clEstatusSku" [options]="estatusOptions" styleClass="w-32" /></td>
-                                                                <td><input type="number" pInputText [(ngModel)]="sku.noStockDisponible" class="w-20" /></td>
-                                                                <td><input type="number" pInputText [(ngModel)]="sku.noStockReservado" class="w-20" /></td>
+                                                                <td><p-select appendTo="body" [(ngModel)]="sku.clEstatusSku" [options]="estatusOptions" optionLabel="label" optionValue="value" styleClass="w-32" /></td>
+                                                                <td><input type="number" pInputText [(ngModel)]="sku.noStockDisponible" [min]="0" class="w-20" /></td>
+                                                                <td><input type="number" pInputText [(ngModel)]="sku.noStockReservado" [min]="0" class="w-20" /></td>
                                                                 <td>
                                                                     <p-button icon="pi pi-trash" severity="danger" [text]="true" (onClick)="removerSku(i, j)" />
                                                                 </td>
@@ -308,7 +330,7 @@ import { CatalogosApiService, CatalogoElemento } from '../service/catalogos-api.
                                                         <ng-template #emptymessage>
                                                             <tr>
                                                                 <td colspan="7">No hay tallas configuradas para esta variante.</td>
-                                                            </tr>
+                                                                </tr>
                                                         </ng-template>
                                                     </p-table>
                                                 </div>
@@ -342,10 +364,8 @@ export class ProductosGuante implements OnInit {
     saving = signal<boolean>(false);
 
     // ─── Dropdown Options ───
-    divisiones = signal<{label: string, value: number}[]>([]);
+    categorias = signal<{label: string, value: number}[]>([]);
     colecciones = signal<{label: string, value: number}[]>([]);
-    gamas = signal<{label: string, value: number}[]>([]);
-    estadosProd = signal<{label: string, value: number}[]>([]);
     combinaciones = signal<{label: string, value: number}[]>([]);
     tallas = signal<{label: string, value: number}[]>([]);
 
@@ -355,7 +375,8 @@ export class ProductosGuante implements OnInit {
     ];
 
     // ─── Form Dialog ───
-    dialogVisible = false;
+    dialogVisible: boolean = false;
+    bulkDialogVisible: boolean = false;
     editando = signal<boolean>(false);
     submitted = signal<boolean>(false);
     idEditando = '';
@@ -363,10 +384,8 @@ export class ProductosGuante implements OnInit {
     datosFormulario: CrearProductoGuanteRequest = {
         clProducto: '',
         nbProducto: '',
-        idElemDivision: 0,
+        idElemCategoria: 0,
         idElemLineaColeccion: 0,
-        idElemGama: 0,
-        idElemEstadoProducto: 0,
         clHsCode: '',
         clEstatusProducto: 'ACTIVO',
         nbPalma: '',
@@ -398,19 +417,40 @@ export class ProductosGuante implements OnInit {
         const fetchCatalogo = (clCatalogo: string, targetSignal: any) => {
             this.catalogosService.getElementos(clCatalogo).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
                 next: (data: CatalogoElemento[]) => {
-                    targetSignal.set((data || []).map((m) => ({
+                    let mapData = (data || []).map((m) => ({
                         label: m.nbCatalogoElemento || m.clCatalogoElemento,
                         value: m.idCatalogoElemento
-                    })));
+                    }));
+                    
+                    if (clCatalogo === 'TALLAS') {
+                        mapData = mapData.filter(item => {
+                            const match = item.label.match(/\d+/);
+
+                            if (match) {
+                                const size = parseInt(match[0], 10);
+
+                                return size >= 3 && size <= 11;
+                            }
+
+                            return false;
+                        });
+                        // Opcional: ordenar las tallas de menor a mayor
+                        mapData.sort((a, b) => {
+                            const numA = parseInt(a.label.match(/\d+/)?.[0] || '0', 10);
+                            const numB = parseInt(b.label.match(/\d+/)?.[0] || '0', 10);
+
+                            return numA - numB;
+                        });
+                    }
+                    
+                    targetSignal.set(mapData);
                 },
                 error: () => console.error('Error cargando ' + clCatalogo)
             });
         };
 
-        fetchCatalogo('DIVISIONES', this.divisiones);
+        fetchCatalogo('DIVISIONES', this.categorias);
         fetchCatalogo('LINEAS_COLECCION', this.colecciones);
-        fetchCatalogo('GAMAS', this.gamas);
-        fetchCatalogo('ESTADOS_PRODUCTO', this.estadosProd);
         fetchCatalogo('COMBINACIONES', this.combinaciones);
         fetchCatalogo('TALLAS', this.tallas);
     }
@@ -443,15 +483,116 @@ export class ProductosGuante implements OnInit {
         this.dialogVisible = true;
     }
 
+    abrirCargaMasiva(): void {
+        this.bulkDialogVisible = true;
+    }
+
+    onUploadBulk(event: any): void {
+        const file = event.files[0];
+
+        if (!file) return;
+
+        const reader = new FileReader();
+
+        reader.onload = (e: any) => {
+            try {
+                const jsonContent = JSON.parse(e.target.result);
+                
+                if (!Array.isArray(jsonContent)) {
+                    this.messageService.add({ severity: 'error', summary: 'Error de Formato', detail: 'El archivo JSON debe contener un arreglo de productos.', life: 5000 });
+                    event.options.clear(); // Limpiar el fileupload
+
+                    return;
+                }
+
+                this.saving.set(true);
+                this.apiService.crearProductosGuanteBulk(jsonContent).pipe(
+                    takeUntilDestroyed(this.destroyRef)
+                ).subscribe({
+                    next: (res) => {
+                        this.messageService.add({ severity: 'success', summary: 'Éxito', detail: 'Carga masiva completada correctamente.', life: 3000 });
+                        this.bulkDialogVisible = false;
+                        this.saving.set(false);
+                        event.options.clear();
+                        this.cargarProductos();
+                    },
+                    error: (err) => {
+                        console.error(err);
+                        this.messageService.add({ severity: 'error', summary: 'Error de Carga', detail: 'Hubo un error al procesar el archivo en el servidor.', life: 5000 });
+                        this.saving.set(false);
+                        event.options.clear();
+                    }
+                });
+            } catch (error) {
+                this.messageService.add({ severity: 'error', summary: 'Error', detail: 'El archivo JSON tiene una sintaxis inválida.', life: 5000 });
+                event.options.clear();
+            }
+        };
+
+        reader.readAsText(file);
+    }
+
     editarProducto(prod: ProductoGuante): void {
-        this.editando.set(true);
-        this.idEditando = prod.id || (prod as any).idProducto;
-        this.datosFormulario = { ...prod };
-        if (!this.datosFormulario.variantes) {
-            this.datosFormulario.variantes = [];
-        }
-        this.submitted.set(false);
-        this.dialogVisible = true;
+        const id = prod.id || (prod as any).idProducto;
+
+        if (!id) return;
+
+        this.loading.set(true);
+        this.apiService.getProductoGuante(id).pipe(
+            takeUntilDestroyed(this.destroyRef)
+        ).subscribe({
+            next: (fullProd: any) => {
+                this.loading.set(false);
+                console.log('API RESPONSE FULL PRODUCT:', fullProd);
+                this.editando.set(true);
+                this.idEditando = id;
+
+                // Handle alternative array names
+                const apiVariantes = fullProd.variantes || fullProd.productoVariantes || fullProd.variantesDtos || [];
+
+                this.datosFormulario = {
+                    clProducto: fullProd.clProducto || fullProd.ClProducto || '',
+                    nbProducto: fullProd.nbProducto || fullProd.NbProducto || '',
+                    idElemCategoria: Number(fullProd.idElemCategoria || fullProd.IdElemCategoria || 0),
+                    idElemLineaColeccion: Number(fullProd.idElemLineaColeccion || fullProd.IdElemLineaColeccion || 0),
+                    clHsCode: fullProd.clHsCode || fullProd.ClHsCode || '',
+                    clEstatusProducto: fullProd.clEstatusProducto || fullProd.ClEstatusProducto || 'ACTIVO',
+                    nbPalma: fullProd.nbPalma || fullProd.NbPalma || '',
+                    dsComposicion: fullProd.dsComposicion || fullProd.DsComposicion || '',
+                    clMsCode: fullProd.clMsCode || fullProd.ClMsCode || '',
+                    clIndicePalma: fullProd.clIndicePalma || fullProd.ClIndicePalma || '',
+                    dsForro: fullProd.dsForro || fullProd.DsForro || '',
+                    dsCierre: fullProd.dsCierre || fullProd.DsCierre || '',
+                    dsHomologacion: fullProd.dsHomologacion || fullProd.DsHomologacion || '',
+                    variantes: apiVariantes.map((v: any) => {
+                        const apiSkus = v.skus || v.productoSkus || v.varianteSkus || v.lstSkus || [];
+
+                        return {
+                            idVariante: v.idVariante || v.id || v.idProductoVariante,
+                            idElemCombinacion: Number(v.idElemCombinacion || v.idCombinacion || v.idCatalogoElementoCombinacion || 0),
+                            urlImagen: v.urlImagen || v.UrlImagen || '',
+                            clEstatusVariante: v.clEstatusVariante || v.ClEstatusVariante || 'ACTIVO',
+                            skus: apiSkus.map((s: any) => ({
+                                idSku: s.idSku || s.id || s.idProductoSku,
+                                idElemTalla: Number(s.idElemTalla || s.idTalla || s.idCatalogoElementoTalla || 0),
+                                clItem: s.clItem || s.ClItem || '',
+                                clCodigoBarras: s.clCodigoBarras || s.ClCodigoBarras || s.codigoBarras || '',
+                                clEstatusSku: s.clEstatusSku || s.ClEstatusSku || 'ACTIVO',
+                                noStockDisponible: s.noStockDisponible !== undefined ? s.noStockDisponible : (s.NoStockDisponible !== undefined ? s.NoStockDisponible : (s.stockDisponible || s.StockDisponible || 0)),
+                                noStockReservado: s.noStockReservado !== undefined ? s.noStockReservado : (s.NoStockReservado !== undefined ? s.NoStockReservado : (s.stockReservado || s.StockReservado || 0))
+                            }))
+                        };
+                    })
+                };
+                this.submitted.set(false);
+                this.dialogVisible = true;
+            },
+            error: (err) => {
+                this.loading.set(false);
+                console.error('Error loading product detail:', err);
+                this.messageService.add({ severity: 'error', summary: 'Error', detail: 'No se pudo cargar la información detallada del guante.', life: 5000 });
+            }
+        });
     }
 
     // --- Dynamic Variants & SKUs ---
@@ -489,6 +630,7 @@ export class ProductosGuante implements OnInit {
 
         if (!this.datosFormulario.clProducto?.trim() || !this.datosFormulario.nbProducto?.trim()) {
             this.messageService.add({ severity: 'warn', summary: 'Formulario incompleto', detail: 'La Clave y el Nombre del producto son requeridos.' });
+
             return;
         }
 
@@ -522,6 +664,7 @@ export class ProductosGuante implements OnInit {
             acceptButtonStyleClass: 'p-button-danger',
             accept: () => {
                 const id = prod.id || (prod as any).idProducto;
+
                 this.apiService.eliminarProductoGuante(id).pipe(
                     takeUntilDestroyed(this.destroyRef)
                 ).subscribe({
@@ -539,10 +682,8 @@ export class ProductosGuante implements OnInit {
         this.datosFormulario = {
             clProducto: '',
             nbProducto: '',
-            idElemDivision: 0,
+            idElemCategoria: 0,
             idElemLineaColeccion: 0,
-            idElemGama: 0,
-            idElemEstadoProducto: 0,
             clHsCode: '',
             clEstatusProducto: 'ACTIVO',
             nbPalma: '',

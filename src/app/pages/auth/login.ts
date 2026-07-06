@@ -141,6 +141,7 @@ export class Login implements OnInit {
             for (const tipoUsuario of candidates) {
                 try {
                     await this.tryLogin(tipoUsuario);
+
                     return;
                 } catch (error: unknown) {
                     if (error instanceof HttpErrorResponse && (error.status === 401 || error.status === 403 || error.status === 404)) {
@@ -156,15 +157,18 @@ export class Login implements OnInit {
                 // Do NOT redirect on 401 (invalid credentials). Just show error.
                 if (lastAuthError.status === 401) {
                     this.errorMessage = 'Correo o contraseña incorrectos.';
+
                     return;
                 }
                 
                 if (lastAuthError.status === 403) {
                     this.errorMessage = 'No tienes permiso para acceder.';
+
                     return;
                 }
 
                 const detail = (lastAuthError.error as { message?: string; detail?: string; title?: string } | null) || null;
+
                 this.errorMessage = detail?.message || detail?.detail || detail?.title || 'No se pudo iniciar sesión. Verifica tus credenciales.';
 
                 return;

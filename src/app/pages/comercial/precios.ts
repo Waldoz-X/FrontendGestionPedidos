@@ -289,14 +289,18 @@ export class Precios implements OnInit {
 
     guardarPrecio(): void {
         if (!this.formulario.idSku) {
-            this.messageService.add({ severity: 'warn', summary: 'Atención', detail: 'El ID del SKU es requerido.', life: 3000 }); return;
+            this.messageService.add({ severity: 'warn', summary: 'Atención', detail: 'El ID del SKU es requerido.', life: 3000 });
+
+ return;
         }
+
         this.saving.set(true);
         const payload: CrearPrecioRequest = {
             ...this.formulario,
             feVigenteDesde: this.fechaDesde ? this.fechaDesde.toISOString() : new Date().toISOString(),
             feVigenteHasta: this.fechaHasta ? this.fechaHasta.toISOString() : ''
         };
+
         this.apiService.crearPrecio(payload).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
             next: () => {
                 this.messageService.add({ severity: 'success', summary: 'Éxito', detail: 'Precio creado correctamente.', life: 3000 });
@@ -317,15 +321,21 @@ export class Precios implements OnInit {
 
     onUploadBulk(event: any): void {
         const file = event.files[0];
+
         if (!file) return;
         const reader = new FileReader();
+
         reader.onload = (e: any) => {
             try {
                 const jsonContent = JSON.parse(e.target.result);
+
                 if (!Array.isArray(jsonContent)) {
                     this.messageService.add({ severity: 'error', summary: 'Error de Formato', detail: 'El archivo debe contener un arreglo de precios.', life: 5000 });
-                    event.options.clear(); return;
+                    event.options.clear();
+
+ return;
                 }
+
                 this.saving.set(true);
                 this.apiService.crearPreciosBulk(jsonContent).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
                     next: () => {
@@ -340,6 +350,7 @@ export class Precios implements OnInit {
                 });
             } catch { this.messageService.add({ severity: 'error', summary: 'Error', detail: 'JSON inválido.', life: 5000 }); event.options.clear(); }
         };
+
         reader.readAsText(file);
     }
 }

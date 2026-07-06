@@ -189,8 +189,10 @@ export class AdminCatalogosComponent implements OnInit {
     cargarElementos(cl: string | undefined): void {
         if (!cl) {
             this.elementos.set([]);
+
             return;
         }
+
         this.loading.set(true);
         this.service.getElementos(cl).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
             next: (data) => {
@@ -363,6 +365,7 @@ export class AdminCatalogosComponent implements OnInit {
 
     recargar(): void {
         this.cargarCatalogos();
+
         if (this.selectedCatalogo) {
             this.cargarElementos(this.selectedCatalogo.clCatalogo);
         }

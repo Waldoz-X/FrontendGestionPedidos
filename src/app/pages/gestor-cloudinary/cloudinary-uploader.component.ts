@@ -222,11 +222,13 @@ export class CloudinaryUploaderComponent {
         rawFile: file
       });
     }
+
     this.cdr.markForCheck();
   }
 
   onRemove(event: any): void {
     const file = event.file;
+
     this.selectedFiles = this.selectedFiles.filter(f => f.name !== file.name);
     this.cdr.markForCheck();
   }
@@ -238,12 +240,15 @@ export class CloudinaryUploaderComponent {
 
   removeFileFromList(file: UploadedFile): void {
     this.selectedFiles = this.selectedFiles.filter(f => f !== file);
+
     if (this.uploader && file.rawFile) {
       const idx = this.uploader.files.indexOf(file.rawFile);
+
       if (idx !== -1) {
         this.uploader.remove({} as Event, idx);
       }
     }
+
     this.cdr.markForCheck();
   }
 
@@ -285,6 +290,7 @@ export class CloudinaryUploaderComponent {
          errorCount++;
          clearInterval(progressInterval);
          this.cdr.markForCheck();
+
          return;
        }
 
@@ -306,11 +312,13 @@ export class CloudinaryUploaderComponent {
 
              if (uploadedCount > 0) {
                this.selectedFiles = [];
+
                if (this.uploader) {
                  this.uploader.clear();
                }
              }
            }
+
            this.cdr.markForCheck();
         },
         error: (error) => {
@@ -322,10 +330,12 @@ export class CloudinaryUploaderComponent {
           if (uploadedCount + errorCount === this.selectedFiles.length) {
             this.isUploading = false;
             this.showUploadSummary(uploadedCount, errorCount);
+
             if (uploadedCount > 0) {
               this.selectedFiles = this.selectedFiles.filter(f => f.status === 'error');
             }
           }
+
           this.cdr.markForCheck();
         }
       });

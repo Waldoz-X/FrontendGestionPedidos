@@ -35,9 +35,36 @@ export class AppMenu implements OnInit {
                 ]
             },
             {
+                label: 'Multimedia',
+                items: [
+                    { label: 'Gestor Cloudinary', icon: 'pi pi-fw pi-cloud', routerLink: ['/pages/gestor-cloudinary'] }
+                ]
+            },
+            {
                 label: 'Productos',
                 items: [
-                    { label: 'Guantes', icon: 'pi pi-fw pi-box', routerLink: ['/productos/guantes'] }
+                    { label: 'Guantes', icon: 'pi pi-fw pi-box', routerLink: ['/productos/guantes'] },
+                    { label: 'Visor de Guantes', icon: 'pi pi-fw pi-images', routerLink: ['/productos/guantes-visor'] },
+                    { label: 'Textiles', icon: 'pi pi-fw pi-star', routerLink: ['/productos/textil'] },
+                    { label: 'Visor de Textiles', icon: 'pi pi-fw pi-images', routerLink: ['/productos/textil-visor'] },
+                    { label: 'Mochilas', icon: 'pi pi-fw pi-shopping-bag', routerLink: ['/productos/mochilas'] },
+                    { label: 'Visor de Mochilas', icon: 'pi pi-fw pi-images', routerLink: ['/productos/mochilas-visor'] },
+                    { label: 'Fitness', icon: 'pi pi-fw pi-heart', routerLink: ['/productos/fitness'] },
+                    { label: 'Visor de Fitness', icon: 'pi pi-fw pi-images', routerLink: ['/productos/fitness-visor'] },
+                    { label: 'Espinilleras', icon: 'pi pi-fw pi-shield', routerLink: ['/productos/espinilleras'] },
+                    { label: 'Visor de Espinilleras', icon: 'pi pi-fw pi-images', routerLink: ['/productos/espinilleras-visor'] },
+                    { label: 'Accesorios', icon: 'pi pi-fw pi-paperclip', routerLink: ['/productos/accesorios'] },
+                    { label: 'Visor de Accesorios', icon: 'pi pi-fw pi-images', routerLink: ['/productos/accesorios-visor'] },
+                    { label: 'Conos', icon: 'pi pi-fw pi-exclamation-triangle', routerLink: ['/productos/conos'] },
+                    { label: 'Visor de Conos', icon: 'pi pi-fw pi-images', routerLink: ['/productos/conos-visor'] }
+                ]
+            },
+            {
+                label: 'Comercial',
+                items: [
+                    { label: 'Precios', icon: 'pi pi-fw pi-dollar', routerLink: ['/comercial/precios'] },
+                    { label: 'Políticas', icon: 'pi pi-fw pi-briefcase', routerLink: ['/comercial/politicas'] },
+                    { label: 'Visibilidad', icon: 'pi pi-fw pi-eye', routerLink: ['/comercial/visibilidad'] }
                 ]
             },
             {

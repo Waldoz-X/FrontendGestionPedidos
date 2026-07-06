@@ -385,10 +385,13 @@ export class Asignaciones implements OnInit {
         ).subscribe({
             next: (results) => {
                 let list = results;
+
                 if (activo !== undefined) {
                     const status = activo ? 'ACTIVO' : 'INACTIVO';
+
                     list = list.filter(a => a.clEstatusAsignacion === status);
                 }
+
                 this.asignaciones.set(list);
                 this.loading.set(false);
             },
@@ -477,6 +480,7 @@ export class Asignaciones implements OnInit {
         this.editandoIdEmpleado = item.idEmpleado;
         this.editandoIdCliente = item.idCliente;
         const nombreEmp = item.nombreEmpleado || (item.nbEmpleado ? item.nbEmpleado + ' ' + (item.nbApellidos || '') : '');
+
         this.editandoNombreEmpleado = `${item.nuEmpleado || item.numeroEmpleado || '-'} | ${item.clEmpleado || 'N/A'} — ${nombreEmp}`;
         this.editandoNombreCliente = item.nombreComercialCliente || item.nbComercial || 'Cliente sin nombre';
         this.datosEditar = { clTipoRelacion: item.clTipoRelacion, activo: item.clEstatusAsignacion === 'ACTIVO' };
@@ -521,6 +525,7 @@ export class Asignaciones implements OnInit {
     confirmarEliminar(item: AsignacionClienteEmpleado): void {
         const nombreEmp = item.nombreEmpleado || (item.nbEmpleado ? item.nbEmpleado + ' ' + (item.nbApellidos || '') : '');
         const nombreCli = item.nombreComercialCliente || item.nbComercial || 'Cliente sin nombre';
+
         this.confirmationService.confirm({
             message: `¿Eliminar la asignación de ${nombreEmp} con ${nombreCli}?`,
             header: 'Confirmar eliminación',

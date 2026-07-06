@@ -250,14 +250,17 @@ export class Politicas implements OnInit {
     guardarPolitica(): void {
         if (!this.formulario.nbPolitica) {
             this.messageService.add({ severity: 'warn', summary: 'Atención', detail: 'El nombre de la política es requerido.', life: 3000 });
+
             return;
         }
+
         this.saving.set(true);
         const payload: CrearPoliticaRequest = {
             ...this.formulario,
             feVigenteDesde: this.fechaDesde ? this.fechaDesde.toISOString() : new Date().toISOString(),
             feVigenteHasta: this.fechaHasta ? this.fechaHasta.toISOString() : ''
         };
+
         this.apiService.crearPolitica(payload).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
             next: () => {
                 this.messageService.add({ severity: 'success', summary: 'Éxito', detail: 'Política creada correctamente.', life: 3000 });
@@ -289,6 +292,7 @@ export class Politicas implements OnInit {
             idPolitica: this.politicaSeleccionada.idPolitica,
             esPrincipal: false
         };
+
         this.apiService.asignarClientePolitica(this.politicaSeleccionada.idPolitica, payload).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
             next: () => {
                 this.messageService.add({ severity: 'success', summary: 'Éxito', detail: 'Cliente asignado.', life: 3000 });

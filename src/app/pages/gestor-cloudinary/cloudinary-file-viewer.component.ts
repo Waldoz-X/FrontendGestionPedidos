@@ -261,9 +261,7 @@ export class CloudinaryFileViewerComponent implements OnChanges {
     this.cloudinaryApi.listResources(this.selectedFolder.path).subscribe({
       next: (resources) => {
         // Sort by date descending (newest first)
-        this.resources = (resources || []).sort((a, b) => {
-          return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
-        });
+        this.resources = (resources || []).sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
         this.filterResources();
         this.isLoading = false;
         this.messageService.add({
@@ -296,6 +294,7 @@ export class CloudinaryFileViewerComponent implements OnChanges {
       this.filteredResources = this.resources.filter(
         (r) => {
           const name = r.original_filename || r.public_id.split('/').pop() || '';
+
           return name.toLowerCase().includes(search) || r.format?.toLowerCase().includes(search);
         }
       );

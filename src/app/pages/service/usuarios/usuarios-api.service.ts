@@ -46,11 +46,13 @@ export class UsuariosApiService {
 
     actualizarEstado(idUsuario: string, nuevoEstado: string): Observable<void> {
         const payload: ActualizarEstadoUsuarioRequest = { nuevoEstado };
+
         return this.http.put<void>(`${this.usuariosUrl}/${idUsuario}/estado`, payload);
     }
 
     resetearPassword(idUsuario: string, nuevaPassword: string): Observable<void> {
         const payload: ResetearPasswordUsuarioRequest = { nuevaPassword };
+
         return this.http.put<void>(`${this.usuariosUrl}/${idUsuario}/resetear-password`, payload);
     }
 }

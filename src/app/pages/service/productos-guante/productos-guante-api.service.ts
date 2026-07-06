@@ -34,4 +34,8 @@ export class ProductosGuanteApiService {
     eliminarProductoGuante(id: string): Observable<void> {
         return this.http.delete<void>(`${this.baseUrl}/${id}`);
     }
+
+    crearProductosGuanteBulk(payload: any[]): Observable<any> {
+        return this.http.post<any>(`${this.baseUrl}/bulk`, payload);
+    }
 }

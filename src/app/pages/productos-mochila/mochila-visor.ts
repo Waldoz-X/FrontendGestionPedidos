@@ -319,6 +319,7 @@ export class MochilasVisor implements OnInit {
     filteredMochilas = computed(() => {
         const query = this.searchQuery().toLowerCase().trim();
         const list = this.mochilas();
+
         if (!query) return list;
 
         return list.filter(g => {
@@ -329,6 +330,7 @@ export class MochilasVisor implements OnInit {
             // Check if any variant combinations matches search
             const matchesColor = (g.variantes || []).some(v => {
                 const combName = this.combinacionesMap().get(Number(v.idElemCombinacion)) || '';
+
                 return combName.toLowerCase().includes(query);
             });
 
@@ -340,13 +342,16 @@ export class MochilasVisor implements OnInit {
         const list = this.filteredMochilas();
         const start = this.first();
         const end = start + this.rows();
+
         return list.slice(start, end);
     });
 
     varianteSeleccionada = computed(() => {
         const mochila = this.mochilaSeleccionado();
+
         if (!mochila || !mochila.variantes || mochila.variantes.length === 0) return null;
         const index = this.varianteIdx();
+
         return mochila.variantes[index] || mochila.variantes[0];
     });
 
@@ -363,6 +368,7 @@ export class MochilasVisor implements OnInit {
             this.catalogosService.getElementos(clCatalogo).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
                 next: (data: CatalogoElemento[]) => {
                     const newMap = new Map<number, string>();
+
                     (data || []).forEach(item => {
                         if (item.idCatalogoElemento !== undefined) {
                             newMap.set(Number(item.idCatalogoElemento), item.nbCatalogoElemento || item.clCatalogoElemento);
@@ -416,17 +422,22 @@ export class MochilasVisor implements OnInit {
     getImagenMini(mochila: ProductoMochila): string {
         if (mochila.variantes && mochila.variantes.length > 0) {
             const url = mochila.variantes[0].urlImagen;
+
             if (!url) return 'demo/images/product/product-placeholder.svg';
+
             if (url.includes('cloudinary.com') && url.includes('/upload/')) {
                 return url.replace('/upload/', '/upload/w_250,h_250,c_limit,q_auto,f_auto/');
             }
+
             return url;
         }
+
         return 'demo/images/product/product-placeholder.svg';
     }
 
     getColoresDisponibles(mochila: ProductoMochila): string {
         if (!mochila.variantes || mochila.variantes.length === 0) return 'N/A';
+
         return mochila.variantes
             .map(v => this.getCombinacionName(v.idElemCombinacion))
             .filter((value, index, self) => self.indexOf(value) === index)
@@ -435,6 +446,7 @@ export class MochilasVisor implements OnInit {
 
     cleanTallaLabel(label: string): string {
         if (!label) return '';
+
         return label
             .replace(/Talla\s+/i, '')
             .replace(/\s*-\s*\w+/g, '')
@@ -444,25 +456,30 @@ export class MochilasVisor implements OnInit {
     getTallasDisponibles(mochila: ProductoMochila): string {
         if (!mochila.variantes || mochila.variantes.length === 0) return 'N/A';
         const allTallas: string[] = [];
+
         mochila.variantes.forEach(v => {
             (v.skus || []).forEach(s => {
                 const rawLabel = this.getTallaLabel(s.idElemTalla);
                 const label = this.cleanTallaLabel(rawLabel);
+
                 if (label && !allTallas.includes(label)) {
                     allTallas.push(label);
                 }
             });
         });
+
         return allTallas.length > 0 ? allTallas.sort((a,b) => a.localeCompare(b, undefined, {numeric: true})).join(', ') : 'N/A';
     }
 
     getStockTotal(mochila: ProductoMochila): number {
         let total = 0;
+
         (mochila.variantes || []).forEach(v => {
             (v.skus || []).forEach(s => {
                 total += s.noStockDisponible || 0;
             });
         });
+
         return total;
     }
 
@@ -492,11 +509,14 @@ export class MochilasVisor implements OnInit {
 
     getImagenVarianteActual(): string {
         const selected = this.varianteSeleccionada();
+
         if (!selected || !selected.urlImagen) return 'demo/images/product/product-placeholder.svg';
         const url = selected.urlImagen;
+
         if (url.includes('cloudinary.com') && url.includes('/upload/')) {
             return url.replace('/upload/', '/upload/w_500,h_500,c_limit,q_auto,f_auto/');
         }
+
         return url;
     }
 }

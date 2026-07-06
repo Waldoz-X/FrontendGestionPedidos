@@ -415,6 +415,7 @@ noCompartimentos: 0,
                     if (clCatalogo === 'DIVISIONES' && parentFilter === 'MOCHILA') {
                         mapData = mapData.filter(item => item.parent && item.parent.toString().toUpperCase() === 'MOCHILA');
                     }
+
                     if (clCatalogo === 'TALLAS') {
                         // Filtrar para que solo muestre las tallas que sean hijas de Mochila Infantil o Mochila Adulto
                         mapData = mapData;
@@ -467,9 +468,11 @@ noCompartimentos: 0,
 
     onUploadBulk(event: any): void {
         const file = event.files[0];
+
         if (!file) return;
 
         const reader = new FileReader();
+
         reader.onload = (e: any) => {
             try {
                 const jsonContent = JSON.parse(e.target.result);
@@ -477,6 +480,7 @@ noCompartimentos: 0,
                 if (!Array.isArray(jsonContent)) {
                     this.messageService.add({ severity: 'error', summary: 'Error de Formato', detail: 'El archivo JSON debe contener un arreglo de productos.', life: 5000 });
                     event.options.clear(); // Limpiar el fileupload
+
                     return;
                 }
 
@@ -503,11 +507,13 @@ noCompartimentos: 0,
                 event.options.clear();
             }
         };
+
         reader.readAsText(file);
     }
 
     editarProducto(prod: ProductoMochila): void {
         const id = (prod as any).idProducto;
+
         if (!id) return;
 
         this.loading.set(true);
@@ -541,6 +547,7 @@ noCompartimentos: fullProd.noCompartimentos || fullProd.NoCompartimentos || 0,
                     
                     variantes: apiVariantes.map((v: any) => {
                         const apiSkus = v.skus || v.productoSkus || v.varianteSkus || v.lstSkus || [];
+
                         return {
                             idVariante: v.idVariante || v.id || v.idProductoVariante,
                             idElemCombinacion: Number(v.idElemCombinacion || v.idCombinacion || v.idCatalogoElementoCombinacion || 0),
@@ -604,6 +611,7 @@ noCompartimentos: fullProd.noCompartimentos || fullProd.NoCompartimentos || 0,
 
         if (!this.datosFormulario.clProducto?.trim() || !this.datosFormulario.nbProducto?.trim()) {
             this.messageService.add({ severity: 'warn', summary: 'Formulario incompleto', detail: 'La Clave y el Nombre del producto son requeridos.' });
+
             return;
         }
 
@@ -637,6 +645,7 @@ noCompartimentos: fullProd.noCompartimentos || fullProd.NoCompartimentos || 0,
             acceptButtonStyleClass: 'p-button-danger',
             accept: () => {
                 const id = (prod as any).idProducto;
+
                 this.apiService.eliminarProductoMochila(id).pipe(
                     takeUntilDestroyed(this.destroyRef)
                 ).subscribe({

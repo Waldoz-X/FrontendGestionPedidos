@@ -26,6 +26,9 @@ import { Notfound } from './app/pages/notfound/notfound';
 import { Usuarios } from './app/pages/usuarios/usuarios';
 import { Pedidos } from './app/pages/pedidos/pedidos';
 import { ProductosGuante } from './app/pages/productos-guante/productos-guante';
+import { Precios } from './app/pages/comercial/precios';
+import { Politicas } from './app/pages/comercial/politicas';
+import { Visibilidad } from './app/pages/comercial/visibilidad';
 
 export const appRoutes: Routes = [
     {
@@ -69,7 +72,28 @@ export const appRoutes: Routes = [
             {
                 path: 'productos',
                 children: [
-                    { path: 'guantes', component: ProductosGuante }
+                    { path: 'guantes', component: ProductosGuante },
+                    { path: 'guantes-visor', loadComponent: () => import('./app/pages/productos-guante/guantes-visor').then(m => m.GuantesVisor) },
+                    { path: 'textil', loadComponent: () => import('./app/pages/productos-textil/productos-textil').then(m => m.ProductosTextil) },
+                    { path: 'textil-visor', loadComponent: () => import('./app/pages/productos-textil/textil-visor').then(m => m.TextilesVisor) },
+                    { path: 'mochilas', loadComponent: () => import('./app/pages/productos-mochila/productos-mochila').then(m => m.ProductosMochila) },
+                    { path: 'mochilas-visor', loadComponent: () => import('./app/pages/productos-mochila/mochila-visor').then(m => m.MochilasVisor) },
+                    { path: 'fitness', loadComponent: () => import('./app/pages/productos-fitness/productos-fitness').then(m => m.ProductosFitness) },
+                    { path: 'fitness-visor', loadComponent: () => import('./app/pages/productos-fitness/fitness-visor').then(m => m.FitnessVisor) },
+                    { path: 'espinilleras', loadComponent: () => import('./app/pages/productos-espinillera/productos-espinillera').then(m => m.ProductosEspinillera) },
+                    { path: 'espinilleras-visor', loadComponent: () => import('./app/pages/productos-espinillera/espinillera-visor').then(m => m.EspinillerasVisor) },
+                    { path: 'accesorios', loadComponent: () => import('./app/pages/productos-accesorios/productos-accesorios').then(m => m.ProductosAccesorio) },
+                    { path: 'accesorios-visor', loadComponent: () => import('./app/pages/productos-accesorios/accesorios-visor').then(m => m.AccesoriosVisor) },
+                    { path: 'conos', loadComponent: () => import('./app/pages/productos-cono/productos-cono').then(m => m.ProductosCono) },
+                    { path: 'conos-visor', loadComponent: () => import('./app/pages/productos-cono/cono-visor').then(m => m.ConosVisor) }
+                ]
+            },
+            {
+                path: 'comercial',
+                children: [
+                    { path: 'precios', component: Precios },
+                    { path: 'politicas', component: Politicas },
+                    { path: 'visibilidad', component: Visibilidad }
                 ]
             },
             { path: 'clientes', component: ClientesAdminComponent },

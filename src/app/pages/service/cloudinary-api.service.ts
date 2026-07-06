@@ -36,9 +36,11 @@ export class CloudinaryApiService {
    */
   listResources(prefix?: string): Observable<CloudinaryResource[]> {
     let params = new HttpParams();
+
     if (prefix) {
       params = params.set('prefix', prefix);
     }
+
     return this.http.get<CloudinaryResource[]>(`${this.apiUrl}/resources`, { params });
   }
 

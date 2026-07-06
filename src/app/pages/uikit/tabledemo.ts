@@ -20,9 +20,7 @@ import { Customer, CustomerService, Representative } from '@/app/pages/service/c
 import { Product, ProductService } from '@/app/pages/service/product.service';
 import {ObjectUtils} from "primeng/utils";
 
-interface expandedRows {
-    [key: string]: boolean;
-}
+type expandedRows = Record<string, boolean>;
 
 @Component({
     selector: 'app-table-demo',
@@ -478,6 +476,7 @@ export class TableDemo implements OnInit {
                 } else {
                     const previousRowData = this.customers3[i - 1];
                     const previousRowGroup = previousRowData?.representative?.name;
+
                     if (representativeName === previousRowGroup) {
                         this.rowGroupMetadata[representativeName].size++;
                     } else {
@@ -495,9 +494,10 @@ export class TableDemo implements OnInit {
                     if (p.id) {
                         acc[p.id] = true;
                     }
+
                     return acc;
                 },
-                {} as { [key: string]: boolean }
+                {} as Record<string, boolean>
             );
             this.isExpanded = true;
         } else {
