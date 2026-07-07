@@ -1,5 +1,5 @@
 
-import {Component} from '@angular/core';
+import {Component, inject} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {MessageService, ToastMessageOptions} from 'primeng/api';
 import {ButtonModule} from 'primeng/button';
