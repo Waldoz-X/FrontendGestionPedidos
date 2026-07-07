@@ -1,5 +1,5 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { TabsModule } from 'primeng/tabs';
 import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
@@ -17,14 +17,13 @@ import { CloudinaryFileViewerComponent } from './cloudinary-file-viewer.componen
   selector: 'p-gestor-cloudinary',
   standalone: true,
   imports: [
-    CommonModule,
     TabsModule,
     ToastModule,
     ButtonModule,
     CloudinaryFolderExplorerComponent,
     CloudinaryUploaderComponent,
     CloudinaryFileViewerComponent
-  ],
+],
   providers: [MessageService],
   template: `
     <p-toast />

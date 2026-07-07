@@ -1,5 +1,4 @@
 import { CommonModule } from '@angular/common';
-import { HttpErrorResponse } from '@angular/common/http';
 import { Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Subject } from 'rxjs';
@@ -25,16 +24,13 @@ import { FileUploadModule } from 'primeng/fileupload';
 
 import { 
     ProductoMochila, 
-    CrearProductoMochilaRequest, 
-    ActualizarProductoMochilaRequest,
-    VarianteNestedDtoMochila,
-    SkuNestedDtoMochila
+    CrearProductoMochilaRequest
 } from '../service/productos-mochila/productos-mochila-api.types';
 import { ProductosMochilaApiService } from '../service/productos-mochila/productos-mochila-api.service';
-import { CatalogosApiService, CatalogoElemento } from '../service/catalogos-api.service';
+import { CatalogosApiService } from '../service/catalogos-api.service';
 
 @Component({
-    selector: 'app-productos-mochila',
+    selector: 'p-productos-mochila',
     standalone: true,
     imports: [
         CommonModule,
@@ -418,7 +414,7 @@ noCompartimentos: 0,
 
                     if (clCatalogo === 'TALLAS') {
                         // Filtrar para que solo muestre las tallas que sean hijas de Mochila Infantil o Mochila Adulto
-                        mapData = mapData;
+                        // mapData = mapData;
                     }
                     
                     targetSignal.set(mapData);
@@ -444,7 +440,7 @@ noCompartimentos: 0,
                 this.productos.set(data);
                 this.loading.set(false);
             },
-            error: (error: HttpErrorResponse) => {
+            error: () => {
                 this.loading.set(false);
                 this.messageService.add({ severity: 'error', summary: 'Error', detail: 'No se pudieron cargar los mochilas.', life: 5000 });
             }
@@ -488,7 +484,7 @@ noCompartimentos: 0,
                 this.apiService.bulkCreate(jsonContent).pipe(
                     takeUntilDestroyed(this.destroyRef)
                 ).subscribe({
-                    next: (res) => {
+                    next: () => {
                         this.messageService.add({ severity: 'success', summary: 'Éxito', detail: 'Carga masiva completada correctamente.', life: 3000 });
                         this.bulkDialogVisible = false;
                         this.saving.set(false);
@@ -502,7 +498,7 @@ noCompartimentos: 0,
                         event.options.clear();
                     }
                 });
-            } catch (error) {
+            } catch {
                 this.messageService.add({ severity: 'error', summary: 'Error', detail: 'El archivo JSON tiene una sintaxis inválida.', life: 5000 });
                 event.options.clear();
             }
@@ -628,7 +624,7 @@ noCompartimentos: fullProd.noCompartimentos || fullProd.NoCompartimentos || 0,
                 this.cargarProductos();
                 this.messageService.add({ severity: 'success', summary: 'Éxito', detail: 'Registro guardado correctamente.' });
             },
-            error: (err: HttpErrorResponse) => {
+            error: () => {
                 this.saving.set(false);
                 this.messageService.add({ severity: 'error', summary: 'Error al guardar', detail: 'Ocurrió un error al intentar guardar el mochila.' });
             }

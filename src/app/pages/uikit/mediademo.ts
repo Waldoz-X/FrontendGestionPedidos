@@ -9,7 +9,7 @@ import { PhotoService } from '@/app/pages/service/photo.service';
 import { Product, ProductService } from '@/app/pages/service/product.service';
 
 @Component({
-    selector: 'app-media-demo',
+    selector: 'p-media-demo',
     standalone: true,
     imports: [CommonModule, CarouselModule, ButtonModule, GalleriaModule, ImageModule, TagModule],
     template: `<div class="card">

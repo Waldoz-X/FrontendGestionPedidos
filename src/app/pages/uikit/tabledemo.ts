@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, inject, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { InputTextModule } from 'primeng/inputtext';
 import { MultiSelectModule } from 'primeng/multiselect';
@@ -23,7 +23,7 @@ import {ObjectUtils} from "primeng/utils";
 type expandedRows = Record<string, boolean>;
 
 @Component({
-    selector: 'app-table-demo',
+    selector: 'p-table-demo',
     standalone: true,
     imports: [
         TableModule,
@@ -419,17 +419,15 @@ export class TableDemo implements OnInit {
 
     @ViewChild('filter') filter!: ElementRef;
 
-    constructor(
-        private customerService: CustomerService,
-        private productService: ProductService
-    ) {}
+    private customerService = inject(CustomerService);
+    private productService = inject(ProductService);
 
     ngOnInit() {
         this.customerService.getCustomersLarge().then((customers) => {
             this.customers1 = customers;
             this.loading = false;
 
-            // @ts-ignore
+            // @ts-expect-error Property date needs conversion
             this.customers1.forEach((customer) => (customer.date = new Date(customer.date)));
         });
         this.customerService.getCustomersMedium().then((customers) => (this.customers2 = customers));

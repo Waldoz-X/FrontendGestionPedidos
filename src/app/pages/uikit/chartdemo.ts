@@ -4,7 +4,7 @@ import {FluidModule} from 'primeng/fluid';
 import {LayoutService} from '@/app/layout/service/layout.service';
 
 @Component({
-    selector: 'app-chart-demo',
+    selector: 'p-chart-demo',
     standalone: true,
     imports: [ChartModule, FluidModule],
     template: `
@@ -72,6 +72,7 @@ export class ChartDemo {
     radarOptions = signal<any>(null);
 
     chartEffect = effect(() => {
+        // eslint-disable-next-line @typescript-eslint/no-unused-expressions
         this.layoutService.layoutConfig().darkTheme;
         setTimeout(() => this.initCharts(), 150);
     })

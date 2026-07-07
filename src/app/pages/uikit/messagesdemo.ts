@@ -1,4 +1,4 @@
-import {CommonModule} from '@angular/common';
+
 import {Component} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {MessageService, ToastMessageOptions} from 'primeng/api';
@@ -8,9 +8,9 @@ import {MessageModule} from 'primeng/message';
 import {ToastModule} from 'primeng/toast';
 
 @Component({
-    selector: 'app-messages-demo',
+    selector: 'p-messages-demo',
     standalone: true,
-    imports: [CommonModule, ToastModule, ButtonModule, InputTextModule, MessageModule, FormsModule],
+    imports: [ToastModule, ButtonModule, InputTextModule, MessageModule, FormsModule],
     template: `
         <div class="flex flex-col md:flex-row gap-8">
             <div class="md:w-1/2">
@@ -61,7 +61,7 @@ export class MessagesDemo {
 
     email: string | undefined;
 
-    constructor(private service: MessageService) {}
+    private service = inject(MessageService);
 
     pt: any = {
         contentWrapper: 'flex items-center'

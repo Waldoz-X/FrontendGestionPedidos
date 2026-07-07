@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -24,22 +24,21 @@ import { CrearEstadoRequest, Estado, Pais } from '../service/catalogos-maestros-
     selector: 'p-admin-estados',
     standalone: true,
     imports: [
-        CommonModule,
-        FormsModule,
-        TableModule,
-        ButtonModule,
-        InputTextModule,
-        SelectModule,
-        TagModule,
-        ToastModule,
-        ToolbarModule,
-        DialogModule,
-        IconFieldModule,
-        InputIconModule,
-        TooltipModule,
-        CheckboxModule,
-        ConfirmDialogModule
-    ],
+    FormsModule,
+    TableModule,
+    ButtonModule,
+    InputTextModule,
+    SelectModule,
+    TagModule,
+    ToastModule,
+    ToolbarModule,
+    DialogModule,
+    IconFieldModule,
+    InputIconModule,
+    TooltipModule,
+    CheckboxModule,
+    ConfirmDialogModule
+],
     providers: [MessageService, ConfirmationService],
     template: `
         <p-toast />

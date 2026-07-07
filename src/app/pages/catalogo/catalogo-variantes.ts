@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, computed, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule, ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
@@ -29,23 +29,22 @@ import {
     selector: 'p-catalogo-variantes',
     standalone: true,
     imports: [
-        CommonModule,
-        FormsModule,
-        ReactiveFormsModule,
-        ButtonModule,
-        InputTextModule,
-        SelectModule,
-        TableModule,
-        DialogModule,
-        ToastModule,
-        ConfirmDialogModule,
-        ToolbarModule,
-        TagModule,
-        IconFieldModule,
-        InputIconModule,
-        TooltipModule,
-        CheckboxModule
-    ],
+    FormsModule,
+    ReactiveFormsModule,
+    ButtonModule,
+    InputTextModule,
+    SelectModule,
+    TableModule,
+    DialogModule,
+    ToastModule,
+    ConfirmDialogModule,
+    ToolbarModule,
+    TagModule,
+    IconFieldModule,
+    InputIconModule,
+    TooltipModule,
+    CheckboxModule
+],
     providers: [MessageService, ConfirmationService],
     template: `
         <p-toast />

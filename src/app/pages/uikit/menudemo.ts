@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { BreadcrumbModule } from 'primeng/breadcrumb';
 import { TieredMenuModule } from 'primeng/tieredmenu';
 import { ContextMenuModule } from 'primeng/contextmenu';
-import { CommonModule } from '@angular/common';
+
 import { MenuModule } from 'primeng/menu';
 import { ButtonModule } from 'primeng/button';
 import { MegaMenuModule } from 'primeng/megamenu';
@@ -15,28 +15,27 @@ import { IconField, IconFieldModule } from 'primeng/iconfield';
 import { InputIcon, InputIconModule } from 'primeng/inputicon';
 
 @Component({
-    selector: 'app-menu-demo',
+    selector: 'p-menu-demo',
     standalone: true,
     imports: [
-        CommonModule,
-        BreadcrumbModule,
-        TieredMenuModule,
-        IconFieldModule,
-        InputIconModule,
-        MenuModule,
-        ButtonModule,
-        ContextMenuModule,
-        MegaMenuModule,
-        PanelMenuModule,
-        TabsModule,
-        MenubarModule,
-        InputTextModule,
-        TabsModule,
-        StepperModule,
-        TabsModule,
-        IconField,
-        InputIcon
-    ],
+    BreadcrumbModule,
+    TieredMenuModule,
+    IconFieldModule,
+    InputIconModule,
+    MenuModule,
+    ButtonModule,
+    ContextMenuModule,
+    MegaMenuModule,
+    PanelMenuModule,
+    TabsModule,
+    MenubarModule,
+    InputTextModule,
+    TabsModule,
+    StepperModule,
+    TabsModule,
+    IconField,
+    InputIcon
+],
     template: `
         <div class="card">
             <div class="font-semibold text-xl mb-4">Menubar</div>

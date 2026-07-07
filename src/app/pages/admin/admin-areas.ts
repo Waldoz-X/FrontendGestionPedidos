@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -23,21 +23,20 @@ import { Area, CrearAreaRequest } from '../service/catalogos-maestros-api.types'
     selector: 'p-admin-areas',
     standalone: true,
     imports: [
-        CommonModule,
-        FormsModule,
-        TableModule,
-        ButtonModule,
-        InputTextModule,
-        TagModule,
-        ToastModule,
-        ToolbarModule,
-        DialogModule,
-        IconFieldModule,
-        InputIconModule,
-        TooltipModule,
-        CheckboxModule,
-        ConfirmDialogModule
-    ],
+    FormsModule,
+    TableModule,
+    ButtonModule,
+    InputTextModule,
+    TagModule,
+    ToastModule,
+    ToolbarModule,
+    DialogModule,
+    IconFieldModule,
+    InputIconModule,
+    TooltipModule,
+    CheckboxModule,
+    ConfirmDialogModule
+],
     providers: [MessageService, ConfirmationService],
     template: `
         <p-toast />

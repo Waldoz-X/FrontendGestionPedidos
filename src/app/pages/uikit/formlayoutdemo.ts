@@ -7,7 +7,7 @@ import { FormsModule } from '@angular/forms';
 import { TextareaModule } from 'primeng/textarea';
 
 @Component({
-    selector: 'app-formlayout-demo',
+    selector: 'p-formlayout-demo',
     standalone: true,
     imports: [InputTextModule, FluidModule, ButtonModule, SelectModule, FormsModule, TextareaModule],
     template: `<p-fluid>

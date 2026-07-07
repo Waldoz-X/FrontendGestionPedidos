@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, DestroyRef, inject, OnInit, signal, computed } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -15,27 +15,26 @@ import { ToastModule } from 'primeng/toast';
 import { TooltipModule } from 'primeng/tooltip';
 import { PaginatorModule } from 'primeng/paginator';
 
-import { ProductoFitness, VarianteNestedDtoFitness, SkuNestedDtoFitness } from '../service/productos-fitness/productos-fitness-api.types';
+import { ProductoFitness } from '../service/productos-fitness/productos-fitness-api.types';
 import { ProductosFitnessApiService } from '../service/productos-fitness/productos-fitness-api.service';
 import { CatalogosApiService, CatalogoElemento } from '../service/catalogos-api.service';
 
 @Component({
-    selector: 'app-fitness-visor',
+    selector: 'p-fitness-visor',
     standalone: true,
     imports: [
-        CommonModule,
-        FormsModule,
-        ButtonModule,
-        CardModule,
-        DialogModule,
-        IconFieldModule,
-        InputIconModule,
-        InputTextModule,
-        TagModule,
-        ToastModule,
-        TooltipModule,
-        PaginatorModule
-    ],
+    FormsModule,
+    ButtonModule,
+    CardModule,
+    DialogModule,
+    IconFieldModule,
+    InputIconModule,
+    InputTextModule,
+    TagModule,
+    ToastModule,
+    TooltipModule,
+    PaginatorModule
+],
     providers: [MessageService],
     template: `
         <p-toast />
@@ -84,6 +83,7 @@ import { CatalogosApiService, CatalogoElemento } from '../service/catalogos-api.
                                 <!-- Imagen Cloudinary Mini -->
                                 <div class="relative bg-surface-100 dark:bg-surface-955 aspect-square flex items-center justify-center overflow-hidden border-b border-surface-150 dark:border-surface-850">
                                     <img 
+                                                    alt="Imagen del producto"
                                         [src]="getImagenMini(fitness)" 
                                         [alt]="fitness.nbProducto" 
                                         class="object-contain h-48 w-full p-4 transform group-hover:scale-105 transition-transform duration-300"
@@ -170,6 +170,7 @@ import { CatalogosApiService, CatalogoElemento } from '../service/catalogos-api.
                         <div class="col-span-12 md:col-span-6 flex flex-col gap-4">
                             <div class="relative bg-surface-50 dark:bg-surface-955 aspect-square rounded-xl flex items-center justify-center overflow-hidden border border-surface-200 dark:border-surface-850 p-4 shadow-inner">
                                 <img 
+                                                    alt="Imagen del producto"
                                     [src]="getImagenVarianteActual()" 
                                     [alt]="fitness.nbProducto" 
                                     class="object-contain max-h-[300px] w-full"
@@ -198,6 +199,7 @@ import { CatalogosApiService, CatalogoElemento } from '../service/catalogos-api.
                                                 [title]="getCombinacionName(v.idElemCombinacion)"
                                             >
                                                 <img 
+                                                    alt="Imagen del producto"
                                                     [src]="v.urlImagen || 'demo/images/product/product-placeholder.svg'" 
                                                     class="object-contain w-full h-full"
                                                     (error)="onImgError($event)"

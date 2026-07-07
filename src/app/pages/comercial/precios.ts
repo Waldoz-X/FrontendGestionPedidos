@@ -11,7 +11,7 @@ import { InputIconModule } from 'primeng/inputicon';
 import { InputTextModule } from 'primeng/inputtext';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { SelectModule } from 'primeng/select';
-import { Table, TableModule } from 'primeng/table';
+import { TableModule } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
 import { ToastModule } from 'primeng/toast';
 import { ToolbarModule } from 'primeng/toolbar';
@@ -27,7 +27,7 @@ import { PoliticasApiService } from '../service/politicas/politicas-api.service'
 import { Politica } from '../service/politicas/politicas-api.types';
 
 @Component({
-    selector: 'app-precios',
+    selector: 'p-precios',
     standalone: true,
     imports: [
         CommonModule, FormsModule, TableModule, ButtonModule, InputTextModule, InputNumberModule,
@@ -118,14 +118,18 @@ import { Politica } from '../service/politicas/politicas-api.types';
                         <div class="col-span-6">
                             <div class="flex justify-between items-center mb-3">
                                 <label class="font-bold">Cliente</label>
-                                <button *ngIf="formulario.idCliente" pButton icon="pi pi-times" class="p-button-rounded p-button-text p-button-xs" style="padding: 0; width: 1.5rem; height: 1.5rem;" (click)="formulario.idCliente = ''" pTooltip="Limpiar cliente"></button>
+                                @if (formulario.idCliente) {
+                                    <button pButton icon="pi pi-times" class="p-button-rounded p-button-text p-button-xs" style="padding: 0; width: 1.5rem; height: 1.5rem;" (click)="formulario.idCliente = ''" pTooltip="Limpiar cliente"></button>
+                                }
                             </div>
                             <p-select appendTo="body" [(ngModel)]="formulario.idCliente" [options]="clientesOptions()" optionLabel="label" optionValue="value" [filter]="true" filterBy="label" placeholder="Buscar cliente..." [disabled]="!!formulario.idPolitica" fluid />
                         </div>
                         <div class="col-span-6">
                             <div class="flex justify-between items-center mb-3">
                                 <label class="font-bold">Política</label>
-                                <button *ngIf="formulario.idPolitica" pButton icon="pi pi-times" class="p-button-rounded p-button-text p-button-xs" style="padding: 0; width: 1.5rem; height: 1.5rem;" (click)="formulario.idPolitica = ''" pTooltip="Limpiar política"></button>
+                                @if (formulario.idPolitica) {
+                                    <button pButton icon="pi pi-times" class="p-button-rounded p-button-text p-button-xs" style="padding: 0; width: 1.5rem; height: 1.5rem;" (click)="formulario.idPolitica = ''" pTooltip="Limpiar política"></button>
+                                }
                             </div>
                             <p-select appendTo="body" [(ngModel)]="formulario.idPolitica" [options]="politicasOptions()" optionLabel="label" optionValue="value" placeholder="Seleccionar" [disabled]="!!formulario.idCliente" fluid />
                         </div>
@@ -139,7 +143,7 @@ import { Politica } from '../service/politicas/politicas-api.types';
                     <div class="grid grid-cols-12 gap-4">
                         <div class="col-span-6">
                             <label class="block font-bold mb-3">Precio Neto</label>
-                            <p-inputnumber [(ngModel)]="formulario.mnPrecioNeto" [minFractionDigits]="2" [maxFractionDigits]="2" [min]="0" mode="currency" currency="MXN" locale="es-MX" fluid />
+                            <p-inputNumber [(ngModel)]="formulario.mnPrecioNeto" [minFractionDigits]="2" [maxFractionDigits]="2" [min]="0" mode="currency" currency="MXN" locale="es-MX" fluid></p-inputNumber>
                         </div>
                         <div class="col-span-6">
                             <label class="block font-bold mb-3">Moneda</label>
@@ -149,11 +153,11 @@ import { Politica } from '../service/politicas/politicas-api.types';
                     <div class="grid grid-cols-12 gap-4">
                         <div class="col-span-6">
                             <label class="block font-bold mb-3">Vigente Desde</label>
-                            <p-datepicker appendTo="body" [(ngModel)]="fechaDesde" dateFormat="dd/mm/yy" fluid />
+                            <p-datePicker appendTo="body" [(ngModel)]="fechaDesde" dateFormat="dd/mm/yy" fluid></p-datePicker>
                         </div>
                         <div class="col-span-6">
                             <label class="block font-bold mb-3">Vigente Hasta</label>
-                            <p-datepicker appendTo="body" [(ngModel)]="fechaHasta" dateFormat="dd/mm/yy" fluid />
+                            <p-datePicker appendTo="body" [(ngModel)]="fechaHasta" dateFormat="dd/mm/yy" fluid></p-datePicker>
                         </div>
                     </div>
                 </div>

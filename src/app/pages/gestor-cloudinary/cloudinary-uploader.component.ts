@@ -7,7 +7,6 @@ import { CloudinaryApiService } from '../service/cloudinary-api.service';
 import { CloudinaryFolder } from '../service/cloudinary-api.types';
 import { ProgressBarModule } from 'primeng/progressbar';
 import { TooltipModule } from 'primeng/tooltip';
-import { NgClass } from '@angular/common';
 
 interface UploadedFile {
   name: string;
@@ -20,7 +19,7 @@ interface UploadedFile {
 
 /**
  * Componente para subir imágenes a Cloudinary
- * Soporta drag & drop y múltiples archivos
+ * Permite drag & drop y múltiples archivos
  */
 @Component({
   selector: 'p-cloudinary-uploader',
@@ -34,15 +33,15 @@ interface UploadedFile {
           <i class="pi pi-upload mr-2"></i>Subir Imágenes
         </h2>
         <p class="text-sm text-gray-600 dark:text-gray-400">
-          Arrastra imágenes aquí o haz clic para seleccionar. Máximo 10MB por archivo.
+          Arrastra imágenes aquí o haz clic para elegir. Máximo 10 MB por archivo.
         </p>
       </div>
 
-      <!-- Alerta si no hay carpeta seleccionada -->
+      <!-- Alerta si no hay carpeta elegida -->
       @if (!selectedFolder) {
         <div class="mb-4 p-4 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-700 rounded text-yellow-700 dark:text-yellow-400">
           <i class="pi pi-exclamation-triangle mr-2"></i>
-          <span>Selecciona una carpeta primero en el tab "Explorador de Carpetas" para subir imágenes</span>
+          <span>Elige una carpeta primero en el tab "Explorador de Carpetas" para subir imágenes</span>
         </div>
       }
 
@@ -70,7 +69,7 @@ interface UploadedFile {
               <div class="p-8 text-center">
                 <i class="pi pi-cloud-upload text-gray-300 dark:text-gray-700 text-5xl mb-4"></i>
                 <p class="text-lg text-gray-600 dark:text-gray-400">
-                  Arrastra y suelta imágenes aquí, o haz clic para seleccionar
+                  Arrastra y suelta imágenes aquí, o haz clic para elegir
                 </p>
               </div>
             </ng-template>
@@ -78,12 +77,12 @@ interface UploadedFile {
         </div>
       }
 
-      <!-- Lista de archivos seleccionados -->
+      <!-- Lista de archivos elegidos -->
       @if (selectedFiles.length > 0) {
         <div class="mb-6">
           <div class="flex items-center justify-between mb-4">
             <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-100">
-              Archivos seleccionados ({{ selectedFiles.length }})
+              Archivos elegidos ({{ selectedFiles.length }})
             </h3>
             <p-button
               label="Subir todos"
@@ -169,7 +168,7 @@ interface UploadedFile {
       @if (selectedFiles.length === 0 && !isUploading) {
         <div class="text-center py-8">
           <i class="pi pi-inbox text-gray-300 dark:text-gray-700 text-4xl mb-3"></i>
-          <p class="text-gray-600 dark:text-gray-400">Ningún archivo seleccionado</p>
+          <p class="text-gray-600 dark:text-gray-400">Ningún archivo elegido</p>
         </div>
       }
     </div>
@@ -188,27 +187,21 @@ export class CloudinaryUploaderComponent {
   selectedFiles: UploadedFile[] = [];
   isUploading = false;
 
+  private showWarning(summary: string, detail: string): void {
+    this.messageService.add({ severity: 'warn', summary, detail, life: 4000 });
+  }
+
   onSelect(event: any): void {
     for (const file of event.files) {
       // Validar tipo de archivo
       if (!file.type.startsWith('image/')) {
-        this.messageService.add({
-          severity: 'warn',
-          summary: 'Tipo no válido',
-          detail: `${file.name} no es una imagen. Solo se permiten imágenes.`,
-          life: 4000
-        });
+        this.showWarning('Tipo no válido', `${file.name} no es una imagen. Solo se permiten imágenes.`);
         continue;
       }
 
-      // Validar tamaño (10MB)
+      // Validar tamaño (10 MB)
       if (file.size > 10485760) {
-        this.messageService.add({
-          severity: 'warn',
-          summary: 'Archivo muy grande',
-          detail: `${file.name} supera los 10MB permitidos.`,
-          life: 4000
-        });
+        this.showWarning('Archivo muy grande', `${file.name} supera los 10 MB permitidos.`);
         continue;
       }
 
@@ -257,7 +250,7 @@ export class CloudinaryUploaderComponent {
       this.messageService.add({
         severity: 'error',
         summary: 'Error',
-        detail: 'Selecciona una carpeta primero',
+        detail: 'Elige una carpeta primero',
         life: 3000
       });
 
@@ -276,7 +269,7 @@ export class CloudinaryUploaderComponent {
       file.status = 'uploading';
       this.cdr.markForCheck();
 
-      // Simulamos el progreso mientras se carga
+      // Simular el progreso mientras se carga
       const progressInterval = setInterval(() => {
         if (file.progress < 90) {
           file.progress += Math.random() * 40;
@@ -365,7 +358,7 @@ export class CloudinaryUploaderComponent {
   getStatusLabel(status: string): string {
     const labels: Record<string, string> = {
       pending: 'Pendiente',
-      uploading: 'Subiendo...',
+      uploading: 'Cargando...',
       success: 'Exitoso',
       error: 'Error'
     };

@@ -1,5 +1,5 @@
 import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 import { InputIconModule } from 'primeng/inputicon';
@@ -22,7 +22,6 @@ import { FormsModule } from '@angular/forms';
   selector: 'p-cloudinary-file-viewer',
   standalone: true,
   imports: [
-    CommonModule,
     TableModule,
     ButtonModule,
     InputIconModule,
@@ -33,7 +32,7 @@ import { FormsModule } from '@angular/forms';
     TooltipModule,
     DialogModule,
     FormsModule
-  ],
+],
   providers: [ConfirmationService],
   template: `
     <p-confirmDialog />

@@ -1,5 +1,4 @@
 import { CommonModule } from '@angular/common';
-import { HttpErrorResponse } from '@angular/common/http';
 import { Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
@@ -12,10 +11,11 @@ import { InputIconModule } from 'primeng/inputicon';
 import { InputTextModule } from 'primeng/inputtext';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { SelectModule } from 'primeng/select';
-import { Table, TableModule } from 'primeng/table';
+import { TableModule } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
 import { ToastModule } from 'primeng/toast';
 import { ToolbarModule } from 'primeng/toolbar';
+import { TooltipModule } from 'primeng/tooltip';
 import { DatePickerModule } from 'primeng/datepicker';
 import { CheckboxModule } from 'primeng/checkbox';
 
@@ -25,12 +25,12 @@ import { ClientesAdminService } from '../service/clientes-admin.service';
 import { ClienteAdmin } from '../service/clientes-admin-api.types';
 
 @Component({
-    selector: 'app-politicas',
+    selector: 'p-politicas',
     standalone: true,
     imports: [
         CommonModule, FormsModule, TableModule, ButtonModule, InputTextModule, InputNumberModule,
         SelectModule, TagModule, ToastModule, ToolbarModule, DialogModule, ConfirmDialogModule,
-        IconFieldModule, InputIconModule, DatePickerModule, CheckboxModule
+        IconFieldModule, InputIconModule, TooltipModule, DatePickerModule, CheckboxModule
     ],
     providers: [MessageService, ConfirmationService],
     template: `
@@ -116,23 +116,23 @@ import { ClienteAdmin } from '../service/clientes-admin-api.types';
                         </div>
                         <div class="col-span-6">
                             <label class="block font-bold mb-3">Prioridad</label>
-                            <p-inputnumber [(ngModel)]="formulario.noPrioridad" [min]="1" [max]="100" fluid />
+                            <p-inputNumber [(ngModel)]="formulario.noPrioridad" [min]="1" [max]="100" fluid></p-inputNumber>
                         </div>
                     </div>
                     <div class="grid grid-cols-12 gap-4">
                         <div class="col-span-12">
                             <label class="block font-bold mb-3">Factor de Descuento (ej. 0.10 = 10%)</label>
-                            <p-inputnumber [(ngModel)]="formulario.mnFactorDescuento" [minFractionDigits]="2" [maxFractionDigits]="4" [min]="0" [max]="1" fluid />
+                            <p-inputNumber [(ngModel)]="formulario.mnFactorDescuento" [minFractionDigits]="2" [maxFractionDigits]="4" [min]="0" [max]="1" fluid></p-inputNumber>
                         </div>
                     </div>
                     <div class="grid grid-cols-12 gap-4">
                         <div class="col-span-6">
                             <label class="block font-bold mb-3">Vigente Desde</label>
-                            <p-datepicker appendTo="body" [(ngModel)]="fechaDesde" dateFormat="dd/mm/yy" fluid />
+                            <p-datePicker appendTo="body" [(ngModel)]="fechaDesde" dateFormat="dd/mm/yy" fluid></p-datePicker>
                         </div>
                         <div class="col-span-6">
                             <label class="block font-bold mb-3">Vigente Hasta</label>
-                            <p-datepicker appendTo="body" [(ngModel)]="fechaHasta" dateFormat="dd/mm/yy" fluid />
+                            <p-datePicker appendTo="body" [(ngModel)]="fechaHasta" dateFormat="dd/mm/yy" fluid></p-datePicker>
                         </div>
                     </div>
                 </div>

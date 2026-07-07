@@ -1,5 +1,4 @@
 import { CommonModule } from '@angular/common';
-import { HttpErrorResponse } from '@angular/common/http';
 import { Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Subject } from 'rxjs';
@@ -25,16 +24,13 @@ import { FileUploadModule } from 'primeng/fileupload';
 
 import { 
     ProductoCono, 
-    CrearProductoConoRequest, 
-    ActualizarProductoConoRequest,
-    VarianteNestedDtoCono,
-    SkuNestedDtoCono
+    CrearProductoConoRequest
 } from '../service/productos-cono/productos-cono-api.types';
 import { ProductosConoApiService } from '../service/productos-cono/productos-cono-api.service';
-import { CatalogosApiService, CatalogoElemento } from '../service/catalogos-api.service';
+import { CatalogosApiService } from '../service/catalogos-api.service';
 
 @Component({
-    selector: 'app-productos-cono',
+    selector: 'p-productos-cono',
     standalone: true,
     imports: [
         CommonModule,
@@ -405,7 +401,7 @@ export class ProductosCono implements OnInit {
 
                     if (clCatalogo === 'TALLAS') {
                         // Filtrar para que solo muestre las tallas que sean hijas de Cono Infantil o Cono Adulto
-                        mapData = mapData;
+                        // mapData = mapData;
                     }
                     
                     targetSignal.set(mapData);
@@ -431,7 +427,7 @@ export class ProductosCono implements OnInit {
                 this.productos.set(data);
                 this.loading.set(false);
             },
-            error: (error: HttpErrorResponse) => {
+            error: () => {
                 this.loading.set(false);
                 this.messageService.add({ severity: 'error', summary: 'Error', detail: 'No se pudieron cargar los conos.', life: 5000 });
             }
@@ -475,21 +471,21 @@ export class ProductosCono implements OnInit {
                 this.apiService.bulkCreate(jsonContent).pipe(
                     takeUntilDestroyed(this.destroyRef)
                 ).subscribe({
-                    next: (res) => {
+                    next: () => {
                         this.messageService.add({ severity: 'success', summary: 'Éxito', detail: 'Carga masiva completada correctamente.', life: 3000 });
                         this.bulkDialogVisible = false;
                         this.saving.set(false);
                         event.options.clear();
                         this.cargarProductos();
                     },
-                    error: (err) => {
+                    error: (err: any) => {
                         console.error(err);
                         this.messageService.add({ severity: 'error', summary: 'Error de Carga', detail: 'Hubo un error al procesar el archivo en el servidor.', life: 5000 });
                         this.saving.set(false);
                         event.options.clear();
                     }
                 });
-            } catch (error) {
+            } catch {
                 this.messageService.add({ severity: 'error', summary: 'Error', detail: 'El archivo JSON tiene una sintaxis inválida.', life: 5000 });
                 event.options.clear();
             }
@@ -552,7 +548,7 @@ dsMaterial: fullProd.dsMaterial || fullProd.DsMaterial || '',
                 this.submitted.set(false);
                 this.dialogVisible = true;
             },
-            error: (err) => {
+            error: (err: any) => {
                 this.loading.set(false);
                 console.error('Error loading product detail:', err);
                 this.messageService.add({ severity: 'error', summary: 'Error', detail: 'No se pudo cargar la información detallada del cono.', life: 5000 });
@@ -612,7 +608,7 @@ dsMaterial: fullProd.dsMaterial || fullProd.DsMaterial || '',
                 this.cargarProductos();
                 this.messageService.add({ severity: 'success', summary: 'Éxito', detail: 'Registro guardado correctamente.' });
             },
-            error: (err: HttpErrorResponse) => {
+            error: () => {
                 this.saving.set(false);
                 this.messageService.add({ severity: 'error', summary: 'Error al guardar', detail: 'Ocurrió un error al intentar guardar el cono.' });
             }

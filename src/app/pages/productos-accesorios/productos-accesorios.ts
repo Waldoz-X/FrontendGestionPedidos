@@ -1,5 +1,4 @@
 import { CommonModule } from '@angular/common';
-import { HttpErrorResponse } from '@angular/common/http';
 import { Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Subject } from 'rxjs';
@@ -25,16 +24,13 @@ import { FileUploadModule } from 'primeng/fileupload';
 
 import { 
     ProductoAccesorio, 
-    CrearProductoAccesorioRequest, 
-    ActualizarProductoAccesorioRequest,
-    VarianteNestedDtoAccesorio,
-    SkuNestedDtoAccesorio
+    CrearProductoAccesorioRequest
 } from '../service/productos-accesorios/productos-accesorios-api.types';
 import { ProductosAccesorioApiService } from '../service/productos-accesorios/productos-accesorios-api.service';
-import { CatalogosApiService, CatalogoElemento } from '../service/catalogos-api.service';
+import { CatalogosApiService } from '../service/catalogos-api.service';
 
 @Component({
-    selector: 'app-productos-accesorios',
+    selector: 'p-productos-accesorios',
     standalone: true,
     imports: [
         CommonModule,
@@ -404,7 +400,7 @@ export class ProductosAccesorio implements OnInit {
 
                     if (clCatalogo === 'TALLAS') {
                         // Filtrar para que solo muestre las tallas que sean hijas de Accesorio Infantil o Accesorio Adulto
-                        mapData = mapData;
+                        // mapData = mapData;
                     }
                     
                     targetSignal.set(mapData);
@@ -430,7 +426,7 @@ export class ProductosAccesorio implements OnInit {
                 this.productos.set(data);
                 this.loading.set(false);
             },
-            error: (error: HttpErrorResponse) => {
+            error: () => {
                 this.loading.set(false);
                 this.messageService.add({ severity: 'error', summary: 'Error', detail: 'No se pudieron cargar los accesorios.', life: 5000 });
             }
@@ -474,7 +470,7 @@ export class ProductosAccesorio implements OnInit {
                 this.apiService.bulkCreate(jsonContent).pipe(
                     takeUntilDestroyed(this.destroyRef)
                 ).subscribe({
-                    next: (res) => {
+                    next: () => {
                         this.messageService.add({ severity: 'success', summary: 'Éxito', detail: 'Carga masiva completada correctamente.', life: 3000 });
                         this.bulkDialogVisible = false;
                         this.saving.set(false);
@@ -488,7 +484,7 @@ export class ProductosAccesorio implements OnInit {
                         event.options.clear();
                     }
                 });
-            } catch (error) {
+            } catch {
                 this.messageService.add({ severity: 'error', summary: 'Error', detail: 'El archivo JSON tiene una sintaxis inválida.', life: 5000 });
                 event.options.clear();
             }
@@ -610,7 +606,7 @@ dsMaterialPrincipal: fullProd.dsMaterialPrincipal || fullProd.DsMaterialPrincipa
                 this.cargarProductos();
                 this.messageService.add({ severity: 'success', summary: 'Éxito', detail: 'Registro guardado correctamente.' });
             },
-            error: (err: HttpErrorResponse) => {
+            error: () => {
                 this.saving.set(false);
                 this.messageService.add({ severity: 'error', summary: 'Error al guardar', detail: 'Ocurrió un error al intentar guardar el accesorio.' });
             }

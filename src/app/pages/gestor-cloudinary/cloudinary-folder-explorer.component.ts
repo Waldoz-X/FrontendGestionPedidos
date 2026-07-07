@@ -1,5 +1,5 @@
 import { Component, OnInit, Output, EventEmitter, inject, ChangeDetectorRef } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 import { SkeletonModule } from 'primeng/skeleton';
@@ -20,16 +20,15 @@ import { ConfirmationService, MessageService } from 'primeng/api';
   selector: 'p-cloudinary-folder-explorer',
   standalone: true,
   imports: [
-    CommonModule, 
-    TableModule, 
-    ButtonModule, 
-    SkeletonModule, 
-    TooltipModule, 
-    DialogModule, 
-    ConfirmDialogModule, 
-    InputTextModule, 
+    TableModule,
+    ButtonModule,
+    SkeletonModule,
+    TooltipModule,
+    DialogModule,
+    ConfirmDialogModule,
+    InputTextModule,
     FormsModule
-  ],
+],
   providers: [ConfirmationService],
   template: `
     <p-confirmDialog />

@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -24,24 +24,23 @@ import { InputNumberModule } from 'primeng/inputnumber';
     selector: 'p-admin-lineas-coleccion',
     standalone: true,
     imports: [
-        CommonModule,
-        FormsModule,
-        ReactiveFormsModule,
-        ButtonModule,
-        InputTextModule,
-        TableModule,
-        DialogModule,
-        ToastModule,
-        ConfirmDialogModule,
-        ToolbarModule,
-        TagModule,
-        IconFieldModule,
-        InputIconModule,
-        TooltipModule,
-        CheckboxModule,
-        SelectModule,
-        InputNumberModule
-    ],
+    FormsModule,
+    ReactiveFormsModule,
+    ButtonModule,
+    InputTextModule,
+    TableModule,
+    DialogModule,
+    ToastModule,
+    ConfirmDialogModule,
+    ToolbarModule,
+    TagModule,
+    IconFieldModule,
+    InputIconModule,
+    TooltipModule,
+    CheckboxModule,
+    SelectModule,
+    InputNumberModule
+],
     providers: [MessageService, ConfirmationService],
     template: `
         <p-toast></p-toast>

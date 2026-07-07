@@ -18,7 +18,7 @@ import { TabsModule } from 'primeng/tabs';
 import { ToolbarModule } from 'primeng/toolbar';
 
 @Component({
-    selector: 'app-panels-demo',
+    selector: 'p-panels-demo',
     standalone: true,
     imports: [
         CommonModule,

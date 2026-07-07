@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
@@ -8,7 +8,7 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { DialogModule } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
 import { SelectModule } from 'primeng/select';
-import { Table, TableModule } from 'primeng/table';
+import { TableModule } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
 import { ToastModule } from 'primeng/toast';
 import { ToolbarModule } from 'primeng/toolbar';
@@ -22,12 +22,21 @@ import { ProductosGuanteApiService } from '../service/productos-guante/productos
 import { ProductoGuante } from '../service/productos-guante/productos-guante-api.types';
 
 @Component({
-    selector: 'app-visibilidad',
+    selector: 'p-visibilidad',
     standalone: true,
     imports: [
-        CommonModule, FormsModule, TableModule, ButtonModule, InputTextModule,
-        SelectModule, TagModule, ToastModule, ToolbarModule, DialogModule, ConfirmDialogModule, TooltipModule
-    ],
+    FormsModule,
+    TableModule,
+    ButtonModule,
+    InputTextModule,
+    SelectModule,
+    TagModule,
+    ToastModule,
+    ToolbarModule,
+    DialogModule,
+    ConfirmDialogModule,
+    TooltipModule
+],
     providers: [MessageService, ConfirmationService],
     template: `
         <p-toast />

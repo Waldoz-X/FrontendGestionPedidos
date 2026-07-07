@@ -1,7 +1,7 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
-import { CommonModule } from '@angular/common';
+
 import { FormsModule } from '@angular/forms';
 import { CheckboxModule } from 'primeng/checkbox';
 import { RadioButtonModule } from 'primeng/radiobutton';
@@ -32,37 +32,36 @@ import { TreeNode } from 'primeng/api';
 import { Country } from '@/app/pages/service/customer.service';
 
 @Component({
-    selector: 'app-input-demo',
+    selector: 'p-input-demo',
     standalone: true,
     imports: [
-        CommonModule,
-        FormsModule,
-        InputTextModule,
-        ButtonModule,
-        CheckboxModule,
-        RadioButtonModule,
-        SelectButtonModule,
-        InputGroupModule,
-        FluidModule,
-        IconFieldModule,
-        InputIconModule,
-        FloatLabelModule,
-        AutoCompleteModule,
-        InputNumberModule,
-        SliderModule,
-        RatingModule,
-        ColorPickerModule,
-        KnobModule,
-        SelectModule,
-        DatePickerModule,
-        ToggleButtonModule,
-        ToggleSwitchModule,
-        TreeSelectModule,
-        MultiSelectModule,
-        ListboxModule,
-        InputGroupAddonModule,
-        TextareaModule
-    ],
+    FormsModule,
+    InputTextModule,
+    ButtonModule,
+    CheckboxModule,
+    RadioButtonModule,
+    SelectButtonModule,
+    InputGroupModule,
+    FluidModule,
+    IconFieldModule,
+    InputIconModule,
+    FloatLabelModule,
+    AutoCompleteModule,
+    InputNumberModule,
+    SliderModule,
+    RatingModule,
+    ColorPickerModule,
+    KnobModule,
+    SelectModule,
+    DatePickerModule,
+    ToggleButtonModule,
+    ToggleSwitchModule,
+    TreeSelectModule,
+    MultiSelectModule,
+    ListboxModule,
+    InputGroupAddonModule,
+    TextareaModule
+],
     template: ` <p-fluid class="flex flex-col md:flex-row gap-8">
             <div class="md:w-1/2">
                 <div class="card flex flex-col gap-4">
@@ -327,9 +326,7 @@ export class InputDemo implements OnInit {
         const filtered: any[] = [];
         const query = event.query;
 
-        for (let i = 0; i < (this.autoValue as any[]).length; i++) {
-            const country = (this.autoValue as any[])[i];
-
+        for (const country of (this.autoValue as any[])) {
             if (country.name.toLowerCase().indexOf(query.toLowerCase()) == 0) {
                 filtered.push(country);
             }

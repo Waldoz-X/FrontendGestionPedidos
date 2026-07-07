@@ -467,6 +467,7 @@ export class Clientes implements OnInit {
     ];
 
     monedaOptions = signal<{label: string, value: string}[]>([]);
+    monedasRaw = signal<any[]>([]);
 
     private searchSubject = new Subject<{table: Table, query: string}>();
 
@@ -546,6 +547,7 @@ export class Clientes implements OnInit {
                 const options = (data || []).map(m => ({ label: m.nbCatalogoElemento, value: m.clCatalogoElemento }));
 
                 this.monedaOptions.set(options);
+                this.monedasRaw.set(data || []);
             },
             error: () => this.messageService.add({ severity: 'error', summary: 'Error', detail: 'No se pudieron cargar las monedas.' })
         });
@@ -621,7 +623,7 @@ export class Clientes implements OnInit {
             takeUntilDestroyed(this.destroyRef)
         ).subscribe({
             next: (r) => {
-                this.empleadosActivos.set(r.filter((e) => e.activo));
+                this.empleadosActivos.set(r.filter((e) => e.clEstatusEmpleado === 'ACTIVO'));
                 this.loadingEmpleados.set(false);
             },
             error: () => {

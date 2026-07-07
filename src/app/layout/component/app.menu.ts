@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { RouterModule } from '@angular/router';
 import { MenuItem } from 'primeng/api';
 import { AppMenuitem } from './app.menuitem';
@@ -7,7 +7,7 @@ import { AppMenuitem } from './app.menuitem';
 @Component({
     selector: 'p-menu',
     standalone: true,
-    imports: [CommonModule, AppMenuitem, RouterModule],
+    imports: [AppMenuitem, RouterModule],
     template: `<ul class="layout-menu">
         @for (item of model; track item.label) {
             @if (!item.separator) {

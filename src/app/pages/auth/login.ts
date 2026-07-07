@@ -80,6 +80,7 @@ export class Login implements OnInit {
     loading: boolean = false;
 
     errorMessage: string = '';
+    private readonly appConfig = inject(AppConfigService);
 
     ngOnInit(): void {
         const reason = this.route.snapshot.queryParamMap.get('reason');
@@ -89,7 +90,6 @@ export class Login implements OnInit {
         }
     }
 
-    private readonly appConfig = inject(AppConfigService);
 
     private getSafeReturnUrl(): string {
         const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl');

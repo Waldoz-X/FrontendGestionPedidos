@@ -13,7 +13,7 @@ import {TableModule} from 'primeng/table';
 import {Product, ProductService} from '@/app/pages/service/product.service';
 
 @Component({
-    selector: 'app-overlay-demo',
+    selector: 'p-overlay-demo',
     standalone: true,
     imports: [ToastModule, DialogModule, ButtonModule, DrawerModule, PopoverModule, ConfirmPopupModule, InputTextModule, FormsModule, TooltipModule, TableModule, ToastModule],
     template: `<div class="flex flex-col md:flex-row gap-8">
@@ -162,11 +162,9 @@ export class OverlayDemo implements OnInit {
 
     selectedProduct!: Product;
 
-    constructor(
-        private productService: ProductService,
-        private confirmationService: ConfirmationService,
-        private messageService: MessageService
-    ) {}
+    private productService = inject(ProductService);
+    private confirmationService = inject(ConfirmationService);
+    private messageService = inject(MessageService);
 
     ngOnInit() {
         this.productService.getProductsSmall().then((products) => (this.products = products));

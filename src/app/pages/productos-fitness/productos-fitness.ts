@@ -1,5 +1,4 @@
 import { CommonModule } from '@angular/common';
-import { HttpErrorResponse } from '@angular/common/http';
 import { Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Subject } from 'rxjs';
@@ -25,16 +24,13 @@ import { FileUploadModule } from 'primeng/fileupload';
 
 import { 
     ProductoFitness, 
-    CrearProductoFitnessRequest, 
-    ActualizarProductoFitnessRequest,
-    VarianteNestedDtoFitness,
-    SkuNestedDtoFitness
+    CrearProductoFitnessRequest
 } from '../service/productos-fitness/productos-fitness-api.types';
 import { ProductosFitnessApiService } from '../service/productos-fitness/productos-fitness-api.service';
-import { CatalogosApiService, CatalogoElemento } from '../service/catalogos-api.service';
+import { CatalogosApiService } from '../service/catalogos-api.service';
 
 @Component({
-    selector: 'app-productos-fitness',
+    selector: 'p-productos-fitness',
     standalone: true,
     imports: [
         CommonModule,
@@ -447,7 +443,7 @@ export class ProductosFitness implements OnInit {
                 this.productos.set(data);
                 this.loading.set(false);
             },
-            error: (error: HttpErrorResponse) => {
+            error: () => {
                 this.loading.set(false);
                 this.messageService.add({ severity: 'error', summary: 'Error', detail: 'No se pudieron cargar los fitness.', life: 5000 });
             }
@@ -491,7 +487,7 @@ export class ProductosFitness implements OnInit {
                 this.apiService.bulkCreate(jsonContent).pipe(
                     takeUntilDestroyed(this.destroyRef)
                 ).subscribe({
-                    next: (res: any) => {
+                    next: () => {
                         this.messageService.add({ severity: 'success', summary: 'Éxito', detail: 'Carga masiva completada correctamente.', life: 3000 });
                         this.bulkDialogVisible = false;
                         this.saving.set(false);
@@ -505,7 +501,7 @@ export class ProductosFitness implements OnInit {
                         event.options.clear();
                     }
                 });
-            } catch (error) {
+            } catch {
                 this.messageService.add({ severity: 'error', summary: 'Error', detail: 'El archivo JSON tiene una sintaxis inválida.', life: 5000 });
                 event.options.clear();
             }
@@ -628,7 +624,7 @@ export class ProductosFitness implements OnInit {
                 this.cargarProductos();
                 this.messageService.add({ severity: 'success', summary: 'Éxito', detail: 'Registro guardado correctamente.' });
             },
-            error: (err: HttpErrorResponse) => {
+            error: () => {
                 this.saving.set(false);
                 this.messageService.add({ severity: 'error', summary: 'Error al guardar', detail: 'Ocurrió un error al intentar guardar el fitness.' });
             }
