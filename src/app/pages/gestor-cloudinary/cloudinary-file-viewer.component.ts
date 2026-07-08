@@ -86,7 +86,8 @@ import { FormsModule } from '@angular/forms';
           <p-skeleton height="3rem"></p-skeleton>
         </div>
       }
-      <!-- Tabla de archivos -->
+
+      <!-- Tabla de archivos -->
       @if (!isLoading && selectedFolder && filteredResources.length > 0) {
         <div class="overflow-x-auto">
           <p-table
@@ -231,7 +232,7 @@ import { FormsModule } from '@angular/forms';
 export class CloudinaryFileViewerComponent implements OnChanges {
   private cloudinaryApi = inject(CloudinaryApiService);
   private messageService = inject(MessageService);
-  private confirmationService = inject(ConfirmationService);
+  private readonly confirmationService = inject(ConfirmationService);
 
   @Input() selectedFolder: CloudinaryFolder | null = null;
   @Output() fileDeleted = new EventEmitter<string>();

@@ -142,7 +142,7 @@ import { Area } from '../service/catalogos-maestros-api.types';
                             <input type="text" pInputText id="create_numeroEmpleado" [(ngModel)]="nuevoUsuario.nuEmpleado" maxlength="20" fluid />
                         </div>
                         <div class="col-span-6">
-                            <label for="create_claveEmpleado" class="block font-bold mb-3">Clave Empleado *</label>
+                            <label for="create_claveEmpleado" class="block font-bold mb-3">Clave Empleado  <span class="text-red-500">*</span></label>
                             <input type="text" pInputText id="create_claveEmpleado" [(ngModel)]="nuevoUsuario.clEmpleado" required maxlength="50" fluid />
                             @if (submitted() && !nuevoUsuario.clEmpleado) {
                                 <small class="text-red-500">La clave de empleado es requerida.</small>
@@ -151,7 +151,7 @@ import { Area } from '../service/catalogos-maestros-api.types';
                     </div>
                     <div class="grid grid-cols-12 gap-4">
                         <div class="col-span-12">
-                            <label for="create_email" class="block font-bold mb-3">Email *</label>
+                            <label for="create_email" class="block font-bold mb-3">Email  <span class="text-red-500">*</span></label>
                             <input type="email" pInputText id="create_email" [(ngModel)]="nuevoUsuario.email" required maxlength="100" fluid />
                             @if (submitted() && !nuevoUsuario.email) {
                                 <small class="text-red-500">El email es requerido.</small>
@@ -160,7 +160,7 @@ import { Area } from '../service/catalogos-maestros-api.types';
                     </div>
                     <div class="grid grid-cols-12 gap-4">
                         <div class="col-span-6">
-                            <label for="create_password" class="block font-bold mb-3">Contraseña *</label>
+                            <label for="create_password" class="block font-bold mb-3">Contraseña  <span class="text-red-500">*</span></label>
                             <input type="password" pInputText id="create_password" [(ngModel)]="nuevoUsuario.password" required maxlength="100" fluid (input)="validarPasswordRealtime()" />
                             @if (submitted() && !nuevoUsuario.password) {
                                 <small class="text-red-500">La contraseña es requerida.</small>
@@ -170,7 +170,7 @@ import { Area } from '../service/catalogos-maestros-api.types';
                             }
                         </div>
                         <div class="col-span-6">
-                            <label for="create_confirm" class="block font-bold mb-3">Confirmar contraseña *</label>
+                            <label for="create_confirm" class="block font-bold mb-3">Confirmar contraseña  <span class="text-red-500">*</span></label>
                             <input type="password" pInputText id="create_confirm" [(ngModel)]="nuevoUsuario.confirmPassword" required maxlength="100" fluid />
                             @if (submitted() && !nuevoUsuario.confirmPassword) {
                                 <small class="text-red-500">La confirmación es requerida.</small>
@@ -182,14 +182,14 @@ import { Area } from '../service/catalogos-maestros-api.types';
                     </div>
                     <div class="grid grid-cols-12 gap-4">
                         <div class="col-span-6">
-                            <label for="create_nombres" class="block font-bold mb-3">Nombres *</label>
+                            <label for="create_nombres" class="block font-bold mb-3">Nombres  <span class="text-red-500">*</span></label>
                             <input type="text" pInputText id="create_nombres" [(ngModel)]="nuevoUsuario.nbEmpleado" required maxlength="100" fluid />
                             @if (submitted() && !nuevoUsuario.nbEmpleado) {
                                 <small class="text-red-500">Los nombres son requeridos.</small>
                             }
                         </div>
                         <div class="col-span-6">
-                            <label for="create_apellidos" class="block font-bold mb-3">Apellidos *</label>
+                            <label for="create_apellidos" class="block font-bold mb-3">Apellidos  <span class="text-red-500">*</span></label>
                             <input type="text" pInputText id="create_apellidos" [(ngModel)]="nuevoUsuario.nbApellidos" required maxlength="100" fluid />
                             @if (submitted() && !nuevoUsuario.nbApellidos) {
                                 <small class="text-red-500">Los apellidos son requeridos.</small>
@@ -197,7 +197,7 @@ import { Area } from '../service/catalogos-maestros-api.types';
                         </div>
                     </div>
                     <div>
-                        <label for="create_area" class="block font-bold mb-3">Área *</label>
+                        <label for="create_area" class="block font-bold mb-3">Área  <span class="text-red-500">*</span></label>
                         <p-select appendTo="body"
                             id="create_area"
                             [(ngModel)]="nuevoUsuario.idElemArea"
@@ -236,7 +236,7 @@ import { Area } from '../service/catalogos-maestros-api.types';
                             <input type="text" pInputText id="edit_nuEmpleado" [(ngModel)]="datosEditar.nuEmpleado" maxlength="20" fluid />
                         </div>
                         <div class="col-span-6">
-                            <label for="edit_clEmpleado" class="block font-bold mb-3">Clave Empleado *</label>
+                            <label for="edit_clEmpleado" class="block font-bold mb-3">Clave Empleado  <span class="text-red-500">*</span></label>
                             <input type="text" pInputText id="edit_clEmpleado" [(ngModel)]="datosEditar.clEmpleado" required maxlength="50" fluid />
                             @if (submittedEditar() && !datosEditar.clEmpleado) {
                                 <small class="text-red-500">La clave es requerida.</small>
@@ -249,14 +249,14 @@ import { Area } from '../service/catalogos-maestros-api.types';
                     </div>
                     <div class="grid grid-cols-12 gap-4">
                         <div class="col-span-6">
-                            <label for="edit_nombres" class="block font-bold mb-3">Nombres *</label>
+                            <label for="edit_nombres" class="block font-bold mb-3">Nombres  <span class="text-red-500">*</span></label>
                             <input type="text" pInputText id="edit_nombres" [(ngModel)]="datosEditar.nbEmpleado" required maxlength="100" fluid />
                             @if (submittedEditar() && !datosEditar.nbEmpleado) {
                                 <small class="text-red-500">Los nombres son requeridos.</small>
                             }
                         </div>
                         <div class="col-span-6">
-                            <label for="edit_apellidos" class="block font-bold mb-3">Apellidos *</label>
+                            <label for="edit_apellidos" class="block font-bold mb-3">Apellidos  <span class="text-red-500">*</span></label>
                             <input type="text" pInputText id="edit_apellidos" [(ngModel)]="datosEditar.nbApellidos" required maxlength="100" fluid />
                             @if (submittedEditar() && !datosEditar.nbApellidos) {
                                 <small class="text-red-500">Los apellidos son requeridos.</small>
@@ -265,7 +265,7 @@ import { Area } from '../service/catalogos-maestros-api.types';
                     </div>
                     <div class="grid grid-cols-12 gap-4">
                         <div class="col-span-6">
-                            <label for="edit_area" class="block font-bold mb-3">Área *</label>
+                            <label for="edit_area" class="block font-bold mb-3">Área  <span class="text-red-500">*</span></label>
                             <p-select appendTo="body"
                                 id="edit_area"
                                 [(ngModel)]="datosEditar.idElemArea"

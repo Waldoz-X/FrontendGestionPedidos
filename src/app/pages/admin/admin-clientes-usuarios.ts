@@ -1,3 +1,4 @@
+import { SecurityHelper } from '@/app/shared/utils/security.util';
 import { CommonModule } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
@@ -346,6 +347,7 @@ export class AdminClientesUsuarios implements OnInit {
         if (!this.clienteSeleccionadoId) {
             this.messageService.add({ severity: 'warn', summary: 'Selecciona un cliente', detail: 'Primero selecciona un cliente para crear su usuario.', life: 3000 });
 
+
             return;
         }
 
@@ -366,18 +368,20 @@ export class AdminClientesUsuarios implements OnInit {
         if (!this.nuevoUsuario.email?.trim() || !this.nuevoUsuario.password?.trim()) {
             this.messageService.add({ severity: 'warn', summary: 'Formulario incompleto', detail: 'Email y contraseña son obligatorios.', life: 4000 });
 
+
             return;
         }
 
         if (this.nuevoUsuario.password.length < 8) {
             this.messageService.add({ severity: 'warn', summary: 'Contraseña corta', detail: 'La contraseña debe tener al menos 8 caracteres.', life: 4000 });
 
+
             return;
         }
 
         this.saving.set(true);
 
-        this.clientesUsuariosService.crearUsuarioCliente(this.clienteSeleccionadoId, this.nuevoUsuario).pipe(
+        this.clientesUsuariosService.crearUsuarioCliente(this.clienteSeleccionadoId, { ...this.nuevoUsuario, email: SecurityHelper.sanitizeString(this.nuevoUsuario.email) }).pipe(
             takeUntilDestroyed(this.destroyRef)
         ).subscribe({
             next: () => {
@@ -402,6 +406,7 @@ export class AdminClientesUsuarios implements OnInit {
         if (!this.clienteSeleccionadoId) {
             this.messageService.add({ severity: 'warn', summary: 'Selecciona un cliente', detail: 'Selecciona un cliente antes de cambiar contraseña.', life: 3000 });
 
+
             return;
         }
 
@@ -419,11 +424,13 @@ export class AdminClientesUsuarios implements OnInit {
         if (!this.nuevaPassword?.trim()) {
             this.messageService.add({ severity: 'warn', summary: 'Campo vacío', detail: 'Ingresa la nueva contraseña.', life: 4000 });
 
+
             return;
         }
 
         if (this.nuevaPassword.length < 8) {
             this.messageService.add({ severity: 'warn', summary: 'Contraseña corta', detail: 'La contraseña debe tener al menos 8 caracteres.', life: 4000 });
+
 
             return;
         }

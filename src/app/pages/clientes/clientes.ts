@@ -649,6 +649,7 @@ export class Clientes implements OnInit {
         if (!this.nuevoCliente.nombreComercial?.trim() || !this.nuevoCliente.canalVenta?.trim()) {
             this.messageService.add({ severity: 'warn', summary: 'Formulario incompleto', detail: 'Completa los campos obligatorios.', life: 4000 });
 
+
             return;
         }
 
@@ -702,6 +703,7 @@ export class Clientes implements OnInit {
 
         if (!this.datosEditar.nombreComercial?.trim() || !this.datosEditar.canalVenta?.trim()) {
             this.messageService.add({ severity: 'warn', summary: 'Formulario incompleto', detail: 'Nombre comercial y canal de venta son obligatorios.', life: 4000 });
+
 
             return;
         }
@@ -873,6 +875,7 @@ export class Clientes implements OnInit {
             !this.direccionFormData.codigoPostal?.trim() || !this.direccionFormData.pais?.trim()) {
             this.messageService.add({ severity: 'warn', summary: 'Formulario incompleto', detail: 'Completa todos los campos de dirección obligatorios.', life: 4000 });
 
+
             return;
         }
 
@@ -954,6 +957,7 @@ export class Clientes implements OnInit {
         if (!this.asignacionFormData.idEmpleado || !this.asignacionFormData.clTipoRelacion?.trim()) {
             this.messageService.add({ severity: 'warn', summary: 'Formulario incompleto', detail: 'Selecciona un empleado y tipo de relación.', life: 4000 });
 
+
             return;
         }
 
@@ -966,6 +970,7 @@ export class Clientes implements OnInit {
             if (!esActivo) {
                 this.messageService.add({ severity: 'warn', summary: 'Empleado inválido', detail: 'Selecciona un empleado activo.', life: 4000 });
 
+
                 return;
             }
 
@@ -973,6 +978,7 @@ export class Clientes implements OnInit {
 
             if (duplicada) {
                 this.messageService.add({ severity: 'warn', summary: 'Duplicado', detail: 'Ya existe una asignación para este empleado.', life: 4000 });
+
 
                 return;
             }

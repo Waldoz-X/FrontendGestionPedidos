@@ -444,6 +444,7 @@ export class CatalogoProductos implements OnInit {
             this.productoForm.markAllAsTouched();
             this.messageService.add({ severity: 'warn', summary: 'Formulario Incompleto', detail: 'Por favor completa los campos requeridos.', life: 4000 });
 
+
             return;
         }
 
@@ -514,6 +515,7 @@ export class CatalogoProductos implements OnInit {
         if (this.estiloForm.invalid) {
             this.estiloForm.markAllAsTouched();
             this.messageService.add({ severity: 'warn', summary: 'Formulario Incompleto', detail: 'El nombre del estilo es obligatorio.', life: 4000 });
+
 
             return;
         }

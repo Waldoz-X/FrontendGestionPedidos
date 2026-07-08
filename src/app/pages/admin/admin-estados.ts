@@ -257,6 +257,7 @@ export class AdminEstadosComponent implements OnInit {
         if (!this.formData.nombre?.trim() || !this.formData.idPais) {
             this.messageService.add({ severity: 'warn', summary: 'Formulario incompleto', detail: 'País y nombre son obligatorios.', life: 4000 });
 
+
             return;
         }
 

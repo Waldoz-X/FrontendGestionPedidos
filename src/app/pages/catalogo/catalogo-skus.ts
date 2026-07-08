@@ -399,6 +399,7 @@ export class CatalogoSkus implements OnInit {
             this.form.markAllAsTouched();
             this.messageService.add({ severity: 'warn', summary: 'Formulario Incompleto', detail: 'Por favor completa los campos requeridos.', life: 4000 });
 
+
             return;
         }
 
@@ -406,6 +407,7 @@ export class CatalogoSkus implements OnInit {
 
         if (raw.stockReservado > raw.stockDisponible) {
             this.messageService.add({ severity: 'error', summary: 'Error de Stock', detail: 'El stock reservado no puede ser mayor al disponible.', life: 5000 });
+
 
             return;
         }

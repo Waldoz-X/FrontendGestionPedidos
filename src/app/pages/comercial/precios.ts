@@ -1,3 +1,4 @@
+import { SecurityHelper } from '@/app/shared/utils/security.util';
 import { CommonModule } from '@angular/common';
 import { Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -25,6 +26,8 @@ import { ClientesAdminService } from '../service/clientes-admin.service';
 import { ClienteAdmin } from '../service/clientes-admin-api.types';
 import { PoliticasApiService } from '../service/politicas/politicas-api.service';
 import { Politica } from '../service/politicas/politicas-api.types';
+import { CatalogoService } from '../service/catalogo.service';
+import { SkuCatalogo } from '../service/catalogo-api.types';
 
 @Component({
     selector: 'p-precios',
@@ -136,17 +139,17 @@ import { Politica } from '../service/politicas/politicas-api.types';
                     </div>
                     <div class="grid grid-cols-12 gap-4">
                         <div class="col-span-12">
-                            <label class="block font-bold mb-3">ID del SKU</label>
-                            <input type="text" pInputText [(ngModel)]="formulario.idSku" fluid />
+                            <label class="block font-bold mb-3">ID del SKU <span class="text-red-500">*</span></label>
+                            <p-select appendTo="body" [(ngModel)]="formulario.idSku" [options]="skusOptions()" [filter]="true" filterBy="label" optionLabel="label" optionValue="value" placeholder="Buscar SKU por modelo o talla..." fluid />
                         </div>
                     </div>
                     <div class="grid grid-cols-12 gap-4">
                         <div class="col-span-6">
-                            <label class="block font-bold mb-3">Precio Neto</label>
+                            <label class="block font-bold mb-3">Precio Neto <span class="text-red-500">*</span></label>
                             <p-inputNumber [(ngModel)]="formulario.mnPrecioNeto" [minFractionDigits]="2" [maxFractionDigits]="2" [min]="0" mode="currency" currency="MXN" locale="es-MX" fluid></p-inputNumber>
                         </div>
                         <div class="col-span-6">
-                            <label class="block font-bold mb-3">Moneda</label>
+                            <label class="block font-bold mb-3">Moneda <span class="text-red-500">*</span></label>
                             <p-select appendTo="body" [(ngModel)]="formulario.clMoneda" [options]="monedaOptions" fluid />
                         </div>
                     </div>
@@ -238,6 +241,7 @@ export class Precios implements OnInit {
     private readonly clientesService = inject(ClientesAdminService);
     private readonly politicasService = inject(PoliticasApiService);
     private readonly messageService = inject(MessageService);
+    private readonly catalogoService = inject(CatalogoService);
     private readonly destroyRef = inject(DestroyRef);
 
     precios = signal<Precio[]>([]);
@@ -252,6 +256,7 @@ export class Precios implements OnInit {
 
     clientesOptions = signal<{label: string, value: string}[]>([]);
     politicasOptions = signal<{label: string, value: string}[]>([]);
+    skusOptions = signal<{label: string, value: string}[]>([]);
 
     formulario: CrearPrecioRequest = {
         idSku: '', idCliente: '', idPolitica: '', mnPrecioNeto: 0,
@@ -278,10 +283,18 @@ export class Precios implements OnInit {
 
     cargarDropdowns(): void {
         this.clientesService.getClientes().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-            next: (data: ClienteAdmin[]) => { this.clientesOptions.set((data || []).map(c => ({ label: c.nbComercial, value: c.id }))); }
+            next: (data: ClienteAdmin[]) => { this.clientesOptions.set((data || []).map(c => ({ label: c.nbComercial, value: c.id || (c as any).idCliente }))); }
         });
         this.politicasService.getPoliticas().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
             next: (data: Politica[]) => { this.politicasOptions.set((data || []).map(p => ({ label: p.nbPolitica, value: p.idPolitica }))); }
+        });
+        this.catalogoService.getSkus({ activo: true }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+            next: (data: SkuCatalogo[]) => {
+                this.skusOptions.set((data || []).map(s => ({
+                    label: `${s.modeloProducto} - ${s.etiquetaTalla} (${s.id})`,
+                    value: s.id
+                })));
+            }
         });
     }
 
@@ -292,10 +305,14 @@ export class Precios implements OnInit {
     }
 
     guardarPrecio(): void {
-        if (!this.formulario.idSku) {
-            this.messageService.add({ severity: 'warn', summary: 'Atención', detail: 'El ID del SKU es requerido.', life: 3000 });
+        const requiredFields = ['idSku', 'mnPrecioNeto', 'clMoneda'];
 
- return;
+        
+        if (!SecurityHelper.validateRequired(this.formulario, requiredFields)) {
+            this.messageService.add({ severity: 'warn', summary: 'Atención', detail: 'El ID del SKU, Moneda y Precio Neto son requeridos.', life: 3000 });
+
+            
+            return;
         }
 
         this.saving.set(true);
@@ -305,7 +322,7 @@ export class Precios implements OnInit {
             feVigenteHasta: this.fechaHasta ? this.fechaHasta.toISOString() : ''
         };
 
-        this.apiService.crearPrecio(payload).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+        this.apiService.crearPrecio(SecurityHelper.sanitizePayload(payload)).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
             next: () => {
                 this.messageService.add({ severity: 'success', summary: 'Éxito', detail: 'Precio creado correctamente.', life: 3000 });
                 this.dialogVisible = false; this.saving.set(false); this.cargarPrecios();

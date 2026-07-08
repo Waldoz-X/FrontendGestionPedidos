@@ -194,7 +194,7 @@ import { ToolbarModule } from 'primeng/toolbar';
                     <ng-template #panel>
                         <p-splitter layout="vertical" [panelSizes]="[50, 50]">
                             <ng-template #panel>
-                                <div style="grow: 1;" class="flex items-center justify-center">Panel 2</div>
+                                <div style="flex-grow: 1;" class="flex items-center justify-center">Panel 2</div>
                             </ng-template>
                             <ng-template #panel>
                                 <p-splitter [panelSizes]="[20, 80]">

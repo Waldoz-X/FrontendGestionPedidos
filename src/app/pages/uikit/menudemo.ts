@@ -42,7 +42,7 @@ import { InputIcon, InputIconModule } from 'primeng/inputicon';
             <p-menubar [model]="nestedMenuItems">
                 <ng-template #end>
                     <p-iconfield>
-                        <p-inputicon class="pi pi-search" />
+                        <p-inputicon class="pi pi-search"></p-inputicon>
                         <input type="text" pInputText placeholder="Search" />
                     </p-iconfield>
                 </ng-template>
@@ -113,16 +113,16 @@ import { InputIcon, InputIconModule } from 'primeng/inputicon';
             <div class="md:w-1/2">
                 <div class="card">
                     <div class="font-semibold text-xl mb-4">MegaMenu | Horizontal</div>
-                    <p-megamenu [model]="megaMenuItems" />
+                    <p-megamenu [model]="megaMenuItems"></p-megamenu>
 
                     <div class="font-semibold text-xl mb-4 mt-8">MegaMenu | Vertical</div>
-                    <p-megamenu [model]="megaMenuItems" orientation="vertical" />
+                    <p-megamenu [model]="megaMenuItems" orientation="vertical"></p-megamenu>
                 </div>
             </div>
             <div class="md:w-1/2">
                 <div class="card">
                     <div class="font-semibold text-xl mb-4">PanelMenu</div>
-                    <p-panelmenu [model]="panelMenuItems" />
+                    <p-panelmenu [model]="panelMenuItems"></p-panelmenu>
                 </div>
             </div>
         </div>

@@ -1,3 +1,4 @@
+import { SecurityHelper } from '@/app/shared/utils/security.util';
 import { CommonModule } from '@angular/common';
 import { Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -105,23 +106,23 @@ import { ClienteAdmin } from '../service/clientes-admin-api.types';
                 <div class="flex flex-col gap-6">
                     <div class="grid grid-cols-12 gap-4">
                         <div class="col-span-12">
-                            <label class="block font-bold mb-3">Nombre de la Política</label>
+                            <label class="block font-bold mb-3">Nombre de la Política <span class="text-red-500">*</span></label>
                             <input type="text" pInputText [(ngModel)]="formulario.nbPolitica" fluid />
                         </div>
                     </div>
                     <div class="grid grid-cols-12 gap-4">
                         <div class="col-span-6">
-                            <label class="block font-bold mb-3">Tipo</label>
+                            <label class="block font-bold mb-3">Tipo <span class="text-red-500">*</span></label>
                             <p-select appendTo="body" [(ngModel)]="formulario.clTipoPolitica" [options]="tipoOptions" fluid />
                         </div>
                         <div class="col-span-6">
-                            <label class="block font-bold mb-3">Prioridad</label>
+                            <label class="block font-bold mb-3">Prioridad <span class="text-red-500">*</span></label>
                             <p-inputNumber [(ngModel)]="formulario.noPrioridad" [min]="1" [max]="100" fluid></p-inputNumber>
                         </div>
                     </div>
                     <div class="grid grid-cols-12 gap-4">
                         <div class="col-span-12">
-                            <label class="block font-bold mb-3">Factor de Descuento (ej. 0.10 = 10%)</label>
+                            <label class="block font-bold mb-3">Factor de Descuento (ej. 0.10 = 10%) <span class="text-red-500">*</span></label>
                             <p-inputNumber [(ngModel)]="formulario.mnFactorDescuento" [minFractionDigits]="2" [maxFractionDigits]="4" [min]="0" [max]="1" fluid></p-inputNumber>
                         </div>
                     </div>
@@ -248,9 +249,13 @@ export class Politicas implements OnInit {
     }
 
     guardarPolitica(): void {
-        if (!this.formulario.nbPolitica) {
-            this.messageService.add({ severity: 'warn', summary: 'Atención', detail: 'El nombre de la política es requerido.', life: 3000 });
+        const requiredFields = ['nbPolitica', 'clTipoPolitica', 'noPrioridad', 'mnFactorDescuento'];
 
+        
+        if (!SecurityHelper.validateRequired(this.formulario, requiredFields)) {
+            this.messageService.add({ severity: 'warn', summary: 'Atención', detail: 'Todos los campos obligatorios de la política son requeridos.', life: 3000 });
+
+            
             return;
         }
 
@@ -261,7 +266,7 @@ export class Politicas implements OnInit {
             feVigenteHasta: this.fechaHasta ? this.fechaHasta.toISOString() : ''
         };
 
-        this.apiService.crearPolitica(payload).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+        this.apiService.crearPolitica(SecurityHelper.sanitizePayload(payload)).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
             next: () => {
                 this.messageService.add({ severity: 'success', summary: 'Éxito', detail: 'Política creada correctamente.', life: 3000 });
                 this.dialogVisible = false; this.saving.set(false); this.cargarPoliticas();

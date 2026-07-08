@@ -159,7 +159,7 @@ type expandedRows = Record<string, boolean>;
                         </td>
                         <td>
                             <div class="flex items-center gap-2">
-                                <img src="https://primefaces.org/cdn/primeng/images/demo/flag/flag_placeholder.png" [class]="'flag flag-' + customer.country.code" width="30" />
+                                <img src="https://primefaces.org/cdn/primeng/images/demo/flag/flag_placeholder.png" [class]="'flag flag-' + customer.country.code" width="30" alt="" />
                                 <span>{{ customer.country.name }}</span>
                             </div>
                         </td>
@@ -176,13 +176,13 @@ type expandedRows = Record<string, boolean>;
                             {{ customer.balance | currency: 'USD' : 'symbol' }}
                         </td>
                         <td>
-                            <p-tag [value]="customer.status.toLowerCase()" [severity]="getSeverity(customer.status.toLowerCase())" styleClass="dark:bg-surface-900!" />
+                            <p-tag [value]="customer.status.toLowerCase()" [severity]="getSeverity(customer.status.toLowerCase())" styleClass="dark:bg-surface-900!"></p-tag>
                         </td>
                         <td>
-                            <p-progressbar [value]="customer.activity" [showValue]="false" [style]="{ height: '0.5rem' }" />
+                            <p-progressbar [value]="customer.activity" [showValue]="false" [style]="{ height: '0.5rem' }"></p-progressbar>
                         </td>
                         <td class="text-center">
-                            <p-tag [value]="customer.status.toLowerCase()" [severity]="getSeverity(customer.status.toLowerCase())" styleClass="dark:bg-surface-900!" />
+                            <p-tag [value]="customer.status.toLowerCase()" [severity]="getSeverity(customer.status.toLowerCase())" styleClass="dark:bg-surface-900!"></p-tag>
                         </td>
                     </tr>
                 </ng-template>
@@ -201,7 +201,7 @@ type expandedRows = Record<string, boolean>;
 
         <div class="card">
             <div class="font-semibold text-xl mb-4">Frozen Columns</div>
-            <p-togglebutton [(ngModel)]="balanceFrozen" [onIcon]="'pi pi-lock'" offIcon="pi pi-lock-open" [onLabel]="'Balance'" offLabel="Balance" />
+            <p-togglebutton [(ngModel)]="balanceFrozen" [onIcon]="'pi pi-lock'" offIcon="pi pi-lock-open" [onLabel]="'Balance'" offLabel="Balance"></p-togglebutton>
 
             <p-table [value]="customers2" [scrollable]="true" scrollHeight="400px" styleClass="mt-4">
                 <ng-template #header>
@@ -245,18 +245,18 @@ type expandedRows = Record<string, boolean>;
                 <ng-template #header>
                     <tr>
                         <th style="width: 5rem"></th>
-                        <th pSortableColumn="name">Name <p-sortIcon field="name" /></th>
+                        <th pSortableColumn="name">Name <p-sortIcon field="name"></p-sortIcon></th>
                         <th>Image</th>
-                        <th pSortableColumn="price">Price <p-sortIcon field="price" /></th>
-                        <th pSortableColumn="category">Category <p-sortIcon field="category" /></th>
-                        <th pSortableColumn="rating">Reviews <p-sortIcon field="rating" /></th>
-                        <th pSortableColumn="inventoryStatus">Status <p-sortIcon field="inventoryStatus" /></th>
+                        <th pSortableColumn="price">Price <p-sortIcon field="price"></p-sortIcon></th>
+                        <th pSortableColumn="category">Category <p-sortIcon field="category"></p-sortIcon></th>
+                        <th pSortableColumn="rating">Reviews <p-sortIcon field="rating"></p-sortIcon></th>
+                        <th pSortableColumn="inventoryStatus">Status <p-sortIcon field="inventoryStatus"></p-sortIcon></th>
                     </tr>
                 </ng-template>
                 <ng-template #body let-product let-expanded="expanded">
                     <tr>
                         <td>
-                            <p-button type="button" pRipple [pRowToggler]="product" [text]="true" [rounded]="true" [plain]="true" [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'" />
+                            <p-button type="button" pRipple [pRowToggler]="product" [text]="true" [rounded]="true" [plain]="true" [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></p-button>
                         </td>
                         <td>{{ product.name }}</td>
                         <td>
@@ -265,10 +265,10 @@ type expandedRows = Record<string, boolean>;
                         <td>{{ product.price | currency: 'USD' }}</td>
                         <td>{{ product.category }}</td>
                         <td>
-                            <p-rating [ngModel]="product.rating" [readonly]="true" />
+                            <p-rating [ngModel]="product.rating" [readonly]="true"></p-rating>
                         </td>
                         <td>
-                            <p-tag [value]="product.inventoryStatus" [severity]="getSeverity(product.inventoryStatus)" />
+                            <p-tag [value]="product.inventoryStatus" [severity]="getSeverity(product.inventoryStatus)"></p-tag>
                         </td>
                     </tr>
                 </ng-template>
@@ -280,19 +280,19 @@ type expandedRows = Record<string, boolean>;
                                 <p-table [value]="product.orders" dataKey="id">
                                     <ng-template #header>
                                         <tr>
-                                            <th pSortableColumn="id">Id <p-sortIcon field="price" /></th>
+                                            <th pSortableColumn="id">Id <p-sortIcon field="price"></p-sortIcon></th>
                                             <th pSortableColumn="customer">
                                                 Customer
-                                                <p-sortIcon field="customer" />
+                                                <p-sortIcon field="customer"></p-sortIcon>
                                             </th>
-                                            <th pSortableColumn="date">Date <p-sortIcon field="date" /></th>
+                                            <th pSortableColumn="date">Date <p-sortIcon field="date"></p-sortIcon></th>
                                             <th pSortableColumn="amount">
                                                 Amount
-                                                <p-sortIcon field="amount" />
+                                                <p-sortIcon field="amount"></p-sortIcon>
                                             </th>
                                             <th pSortableColumn="status">
                                                 Status
-                                                <p-sortIcon field="status" />
+                                                <p-sortIcon field="status"></p-sortIcon>
                                             </th>
                                             <th style="width: 4rem"></th>
                                         </tr>
@@ -306,10 +306,10 @@ type expandedRows = Record<string, boolean>;
                                                 {{ order.amount | currency: 'USD' }}
                                             </td>
                                             <td>
-                                                <p-tag [value]="order.status" [severity]="getSeverity(order.status)" />
+                                                <p-tag [value]="order.status" [severity]="getSeverity(order.status)"></p-tag>
                                             </td>
                                             <td>
-                                                <p-button type="button" icon="pi pi-search" />
+                                                <p-button type="button" icon="pi pi-search"></p-button>
                                             </td>
                                         </tr>
                                     </ng-template>
@@ -353,14 +353,14 @@ type expandedRows = Record<string, boolean>;
                         <td colspan="5" class="text-right font-bold pr-12">Total Customers: {{ calculateCustomerTotal(customer.representative.name) }}</td>
                     </tr>
                 </ng-template>
-                <ng-template #body let-customer let-rowIndex="rowIndex">
+                <ng-template #body let-customer >
                     <tr>
                         <td>
                             {{ customer.name }}
                         </td>
                         <td>
                             <div class="flex items-center gap-2">
-                                <img src="https://primefaces.org/cdn/primeng/images/demo/flag/flag_placeholder.png" [class]="'flag flag-' + customer.country.code" style="width: 20px" />
+                                <img src="https://primefaces.org/cdn/primeng/images/demo/flag/flag_placeholder.png" [class]="'flag flag-' + customer.country.code" style="width: 20px" alt="" />
                                 <span>{{ customer.country.name }}</span>
                             </div>
                         </td>
@@ -368,7 +368,7 @@ type expandedRows = Record<string, boolean>;
                             {{ customer.company }}
                         </td>
                         <td>
-                            <p-tag [value]="customer.status" [severity]="getSeverity(customer.status)" />
+                            <p-tag [value]="customer.status" [severity]="getSeverity(customer.status)"></p-tag>
                         </td>
                         <td>
                             {{ customer.date }}

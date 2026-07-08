@@ -275,11 +275,13 @@ export class AdminEmpleadosUsuarios implements OnInit {
         if (!this.nuevoUsuario.email?.trim() || !this.nuevoUsuario.password?.trim()) {
             this.messageService.add({ severity: 'warn', summary: 'Formulario incompleto', detail: 'Email y contraseña son obligatorios.', life: 4000 });
 
+
             return;
         }
 
         if (this.nuevoUsuario.password.length < 8) {
             this.messageService.add({ severity: 'warn', summary: 'Contraseña corta', detail: 'La contraseña debe tener al menos 8 caracteres.', life: 4000 });
+
 
             return;
         }
@@ -321,11 +323,13 @@ export class AdminEmpleadosUsuarios implements OnInit {
         if (!this.nuevaPassword?.trim()) {
             this.messageService.add({ severity: 'warn', summary: 'Campo vacío', detail: 'Ingresa la nueva contraseña.', life: 4000 });
 
+
             return;
         }
 
         if (this.nuevaPassword.length < 8) {
             this.messageService.add({ severity: 'warn', summary: 'Contraseña corta', detail: 'La contraseña debe tener al menos 8 caracteres.', life: 4000 });
+
 
             return;
         }

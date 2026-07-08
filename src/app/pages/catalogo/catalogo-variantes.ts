@@ -434,6 +434,7 @@ export class CatalogoVariantes implements OnInit {
             this.form.markAllAsTouched();
             this.messageService.add({ severity: 'warn', summary: 'Formulario Incompleto', detail: 'Por favor completa los campos requeridos.', life: 4000 });
 
+
             return;
         }
 

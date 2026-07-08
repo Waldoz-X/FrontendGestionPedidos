@@ -160,7 +160,7 @@ import { Cliente } from '../service/clientes/clientes-api.types';
         >
             <form [formGroup]="crearForm" class="grid grid-cols-12 gap-4">
                 <div class="col-span-12 md:col-span-6">
-                    <label class="block mb-2 font-medium">Cliente *</label>
+                    <label class="block mb-2 font-medium">Cliente  <span class="text-red-500">*</span></label>
                     <p-select
                         formControlName="idCliente"
                         [options]="clienteOptions()"
@@ -173,7 +173,7 @@ import { Cliente } from '../service/clientes/clientes-api.types';
                     ></p-select>
                 </div>
                 <div class="col-span-12 md:col-span-6">
-                    <label class="block mb-2 font-medium">Dirección de Envío *</label>
+                    <label class="block mb-2 font-medium">Dirección de Envío  <span class="text-red-500">*</span></label>
                     <p-select
                         formControlName="idDireccionEnvio"
                         [options]="direccionOptions()"
@@ -184,7 +184,7 @@ import { Cliente } from '../service/clientes/clientes-api.types';
                     ></p-select>
                 </div>
                 <div class="col-span-12 md:col-span-4">
-                    <label class="block mb-2 font-medium">Política de Precios *</label>
+                    <label class="block mb-2 font-medium">Política de Precios  <span class="text-red-500">*</span></label>
                     <p-select
                         formControlName="idPolitica"
                         [options]="politicaOptions()"
@@ -195,7 +195,7 @@ import { Cliente } from '../service/clientes/clientes-api.types';
                     ></p-select>
                 </div>
                 <div class="col-span-12 md:col-span-4">
-                    <label class="block mb-2 font-medium">Moneda *</label>
+                    <label class="block mb-2 font-medium">Moneda  <span class="text-red-500">*</span></label>
                     <p-select
                         formControlName="moneda"
                         [options]="monedaOptions"

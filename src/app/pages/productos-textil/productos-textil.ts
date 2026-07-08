@@ -1,3 +1,4 @@
+import { SecurityHelper } from '@/app/shared/utils/security.util';
 import { CommonModule } from '@angular/common';
 import { Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -179,12 +180,12 @@ import { CatalogosApiService } from '../service/catalogos-api.service';
                             <div class="flex flex-col gap-6 pt-4">
                                 <div class="grid grid-cols-12 gap-4">
                                     <div class="col-span-6">
-                                        <label class="block font-bold mb-3">Clave de Producto</label>
+                                        <label class="block font-bold mb-3">Clave de Producto <span class="text-red-500">*</span></label>
                                         <input type="text" pInputText [(ngModel)]="datosFormulario.clProducto" required fluid />
                                         @if (submitted() && !datosFormulario.clProducto) { <small class="text-red-500">Requerido.</small> }
                                     </div>
                                     <div class="col-span-6">
-                                        <label class="block font-bold mb-3">Nombre del Producto</label>
+                                        <label class="block font-bold mb-3">Nombre del Producto <span class="text-red-500">*</span></label>
                                         <input type="text" pInputText [(ngModel)]="datosFormulario.nbProducto" required fluid />
                                         @if (submitted() && !datosFormulario.nbProducto) { <small class="text-red-500">Requerido.</small> }
                                     </div>
@@ -192,18 +193,18 @@ import { CatalogosApiService } from '../service/catalogos-api.service';
 
                                 <div class="grid grid-cols-12 gap-4">
                                     <div class="col-span-6">
-                                        <label class="block font-bold mb-3">Categoría</label>
+                                        <label class="block font-bold mb-3">Categoría <span class="text-red-500">*</span></label>
                                         <p-select appendTo="body" [(ngModel)]="datosFormulario.idElemCategoria" [options]="categorias()" optionLabel="label" optionValue="value" placeholder="Seleccionar" fluid />
                                     </div>
                                     <div class="col-span-6">
-                                        <label class="block font-bold mb-3">Línea / Colección</label>
+                                        <label class="block font-bold mb-3">Línea / Colección <span class="text-red-500">*</span></label>
                                         <p-select appendTo="body" [(ngModel)]="datosFormulario.idElemLineaColeccion" [options]="colecciones()" optionLabel="label" optionValue="value" placeholder="Seleccionar" fluid />
                                     </div>
                                 </div>
 
                                 <div class="grid grid-cols-12 gap-4">
                                     <div class="col-span-6">
-                                        <label class="block font-bold mb-3">Estatus</label>
+                                        <label class="block font-bold mb-3">Estatus <span class="text-red-500">*</span></label>
                                         <p-select appendTo="body" [(ngModel)]="datosFormulario.clEstatusProducto" [options]="estatusOptions" optionLabel="label" optionValue="value" fluid />
                                     </div>
                                 </div>
@@ -274,7 +275,7 @@ import { CatalogosApiService } from '../service/catalogos-api.service';
                                                         <input type="text" pInputText [(ngModel)]="variante.urlImagen" fluid />
                                                     </div>
                                                     <div class="col-span-12 md:col-span-4">
-                                                        <label class="block font-bold mb-2">Estatus</label>
+                                                        <label class="block font-bold mb-2">Estatus <span class="text-red-500">*</span></label>
                                                         <p-select appendTo="body" [(ngModel)]="variante.clEstatusVariante" [options]="estatusOptions" optionLabel="label" optionValue="value" fluid />
                                                     </div>
                                                 </div>
@@ -602,17 +603,22 @@ export class ProductosTextil implements OnInit {
     guardar(): void {
         this.submitted.set(true);
 
-        if (!this.datosFormulario.clProducto?.trim() || !this.datosFormulario.nbProducto?.trim()) {
-            this.messageService.add({ severity: 'warn', summary: 'Formulario incompleto', detail: 'La Clave y el Nombre del producto son requeridos.' });
+        const requiredFields = ['clProducto', 'nbProducto', 'idElemCategoria', 'idElemLineaColeccion', 'clEstatusProducto'];
+
+
+        if (!SecurityHelper.validateRequired(this.datosFormulario, requiredFields)) {
+            this.messageService.add({ severity: 'warn', summary: 'Formulario incompleto', detail: 'Todos los campos generales (Clave, Nombre, Categoría, Colección y Estatus) son requeridos.' });
+
 
             return;
         }
 
         this.saving.set(true);
+        const sanitizedPayload = SecurityHelper.sanitizePayload(this.datosFormulario);
 
         const request$ = this.editando() 
-            ? this.apiService.actualizarProductoTextil(this.idEditando, this.datosFormulario)
-            : this.apiService.crearProductoTextil(this.datosFormulario);
+            ? this.apiService.actualizarProductoTextil(this.idEditando, sanitizedPayload)
+            : this.apiService.crearProductoTextil(sanitizedPayload);
 
         request$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
             next: () => {

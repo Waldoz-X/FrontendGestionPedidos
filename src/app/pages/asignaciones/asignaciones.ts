@@ -443,6 +443,7 @@ export class Asignaciones implements OnInit {
         if (!this.nuevaAsignacion.idEmpleado || !this.nuevaAsignacion.idCliente || !this.nuevaAsignacion.clTipoRelacion?.trim()) {
             this.messageService.add({ severity: 'warn', summary: 'Formulario incompleto', detail: 'Completa todos los campos obligatorios.', life: 4000 });
 
+
             return;
         }
 
@@ -492,6 +493,7 @@ export class Asignaciones implements OnInit {
 
         if (!this.datosEditar.clTipoRelacion?.trim()) {
             this.messageService.add({ severity: 'warn', summary: 'Formulario incompleto', detail: 'El tipo de relación es obligatorio.', life: 4000 });
+
 
             return;
         }

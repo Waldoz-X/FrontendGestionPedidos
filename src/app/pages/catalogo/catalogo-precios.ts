@@ -544,6 +544,7 @@ export class CatalogoPrecios implements OnInit {
             this.politicaForm.markAllAsTouched();
             this.messageService.add({ severity: 'warn', summary: 'Faltan Campos', detail: 'Formulario de política incompleto.' });
 
+
             return;
         }
 
@@ -614,6 +615,7 @@ export class CatalogoPrecios implements OnInit {
         if (!sku) {
             this.messageService.add({ severity: 'warn', summary: 'Fallo Referencia', detail: 'SKU no ubicado en catálogo vivo.' });
 
+
             return;
         }
 
@@ -683,6 +685,7 @@ export class CatalogoPrecios implements OnInit {
         if (this.precioForm.invalid) {
             this.precioForm.markAllAsTouched();
             this.messageService.add({ severity: 'warn', summary: 'Faltan Campos', detail: 'Por favor complete todos los datos del precio.' });
+
 
             return;
         }

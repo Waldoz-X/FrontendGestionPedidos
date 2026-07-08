@@ -163,8 +163,8 @@ export class OverlayDemo implements OnInit {
     selectedProduct!: Product;
 
     private productService = inject(ProductService);
-    private confirmationService = inject(ConfirmationService);
     private messageService = inject(MessageService);
+    private readonly confirmationService = inject(ConfirmationService);
 
     ngOnInit() {
         this.productService.getProductsSmall().then((products: Product[]) => (this.products = products));

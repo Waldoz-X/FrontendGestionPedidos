@@ -205,6 +205,7 @@ export class AdminAreasComponent implements OnInit {
         if (!this.formData.nombre?.trim()) {
             this.messageService.add({ severity: 'warn', summary: 'Formulario incompleto', detail: 'El nombre es obligatorio.', life: 4000 });
 
+
             return;
         }
 

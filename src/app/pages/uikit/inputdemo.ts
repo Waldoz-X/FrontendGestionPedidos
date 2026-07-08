@@ -74,12 +74,12 @@ import { Country } from '@/app/pages/service/customer.service';
 
                     <div class="font-semibold text-xl">Icons</div>
                     <p-iconfield>
-                        <p-inputicon class="pi pi-user" />
+                        <p-inputicon class="pi pi-user"></p-inputicon>
                         <input pInputText type="text" placeholder="Username" />
                     </p-iconfield>
                     <p-iconfield iconPosition="left">
                         <input pInputText type="text" placeholder="Search" />
-                        <p-inputicon class="pi pi-search" />
+                        <p-inputicon class="pi pi-search"></p-inputicon>
                     </p-iconfield>
 
                     <div class="font-semibold text-xl">Float Label</div>
@@ -92,7 +92,7 @@ import { Country } from '@/app/pages/service/customer.service';
                     <textarea pTextarea placeholder="Your Message" [autoResize]="true" rows="3" cols="30"></textarea>
 
                     <div class="font-semibold text-xl">AutoComplete</div>
-                    <p-autocomplete [(ngModel)]="selectedAutoValue" [suggestions]="autoFilteredValue" optionLabel="name" placeholder="Search" dropdown multiple display="chip" (completeMethod)="filterCountry($event)" />
+                    <p-autocomplete [(ngModel)]="selectedAutoValue" [suggestions]="autoFilteredValue" optionLabel="name" placeholder="Search" dropdown multiple display="chip" (completeMethod)="filterCountry($event)"></p-autocomplete>
 
                     <div class="font-semibold text-xl">DatePicker</div>
                     <p-datepicker [showIcon]="true" [showButtonBar]="true" [(ngModel)]="calendarValue"></p-datepicker>
@@ -104,21 +104,21 @@ import { Country } from '@/app/pages/service/customer.service';
                 <div class="card flex flex-col gap-4">
                     <div class="font-semibold text-xl">Slider</div>
                     <input pInputText [(ngModel)]="sliderValue" type="number" />
-                    <p-slider [(ngModel)]="sliderValue" />
+                    <p-slider [(ngModel)]="sliderValue"></p-slider>
 
                     <div class="flex flex-row mt-6">
                         <div class="flex flex-col gap-4 w-1/2">
                             <div class="font-semibold text-xl">Rating</div>
-                            <p-rating [(ngModel)]="ratingValue" />
+                            <p-rating [(ngModel)]="ratingValue"></p-rating>
                         </div>
                         <div class="flex flex-col gap-4 w-1/2">
                             <div class="font-semibold text-xl">ColorPicker</div>
-                            <p-colorpicker [style]="{ width: '2rem' }" [(ngModel)]="colorValue" />
+                            <p-colorpicker [style]="{ width: '2rem' }" [(ngModel)]="colorValue"></p-colorpicker>
                         </div>
                     </div>
 
                     <div class="font-semibold text-xl">Knob</div>
-                    <p-knob [(ngModel)]="knobValue" [step]="10" [min]="-50" [max]="50" valueTemplate="{value}%" />
+                    <p-knob [(ngModel)]="knobValue" [step]="10" [min]="-50" [max]="50" valueTemplate="{value}%"></p-knob>
                 </div>
             </div>
             <div class="md:w-1/2">
@@ -126,15 +126,15 @@ import { Country } from '@/app/pages/service/customer.service';
                     <div class="font-semibold text-xl">RadioButton</div>
                     <div class="flex flex-col md:flex-row gap-4">
                         <div class="flex items-center">
-                            <p-radiobutton id="option1" name="option" value="Chicago" [(ngModel)]="radioValue" />
+                            <p-radiobutton id="option1" name="option" value="Chicago" [(ngModel)]="radioValue"></p-radiobutton>
                             <label for="option1" class="leading-none ml-2">Chicago</label>
                         </div>
                         <div class="flex items-center">
-                            <p-radiobutton id="option2" name="option" value="Los Angeles" [(ngModel)]="radioValue" />
+                            <p-radiobutton id="option2" name="option" value="Los Angeles" [(ngModel)]="radioValue"></p-radiobutton>
                             <label for="option2" class="leading-none ml-2">Los Angeles</label>
                         </div>
                         <div class="flex items-center">
-                            <p-radiobutton id="option3" name="option" value="New York" [(ngModel)]="radioValue" />
+                            <p-radiobutton id="option3" name="option" value="New York" [(ngModel)]="radioValue"></p-radiobutton>
                             <label for="option3" class="leading-none ml-2">New York</label>
                         </div>
                     </div>
@@ -142,29 +142,29 @@ import { Country } from '@/app/pages/service/customer.service';
                     <div class="font-semibold text-xl">Checkbox</div>
                     <div class="flex flex-col md:flex-row gap-4">
                         <div class="flex items-center">
-                            <p-checkbox id="checkOption1" name="option" value="Chicago" [(ngModel)]="checkboxValue" />
+                            <p-checkbox id="checkOption1" name="option" value="Chicago" [(ngModel)]="checkboxValue"></p-checkbox>
                             <label for="checkOption1" class="ml-2">Chicago</label>
                         </div>
                         <div class="flex items-center">
-                            <p-checkbox id="checkOption2" name="option" value="Los Angeles" [(ngModel)]="checkboxValue" />
+                            <p-checkbox id="checkOption2" name="option" value="Los Angeles" [(ngModel)]="checkboxValue"></p-checkbox>
                             <label for="checkOption2" class="ml-2">Los Angeles</label>
                         </div>
                         <div class="flex items-center">
-                            <p-checkbox id="checkOption3" name="option" value="New York" [(ngModel)]="checkboxValue" />
+                            <p-checkbox id="checkOption3" name="option" value="New York" [(ngModel)]="checkboxValue"></p-checkbox>
                             <label for="checkOption3" class="ml-2">New York</label>
                         </div>
                     </div>
 
                     <div class="font-semibold text-xl">ToggleSwitch</div>
-                    <p-toggleswitch [(ngModel)]="switchValue" />
+                    <p-toggleswitch [(ngModel)]="switchValue"></p-toggleswitch>
                 </div>
 
                 <div class="card flex flex-col gap-4">
                     <div class="font-semibold text-xl">Listbox</div>
-                    <p-listbox [(ngModel)]="listboxValue" [options]="listboxValues" optionLabel="name" [filter]="true" />
+                    <p-listbox [(ngModel)]="listboxValue" [options]="listboxValues" optionLabel="name" [filter]="true"></p-listbox>
 
                     <div class="font-semibold text-xl">Select</div>
-                    <p-select [(ngModel)]="dropdownValue" [options]="dropdownValues" optionLabel="name" placeholder="Select" />
+                    <p-select [(ngModel)]="dropdownValue" [options]="dropdownValues" optionLabel="name" placeholder="Select"></p-select>
 
                     <div class="font-semibold text-xl">MultiSelect</div>
                     <p-multiselect [options]="multiselectCountries" [(ngModel)]="multiselectSelectedCountries" placeholder="Select Countries" optionLabel="name" display="chip" [filter]="true">
@@ -190,10 +190,10 @@ import { Country } from '@/app/pages/service/customer.service';
 
                 <div class="card flex flex-col gap-4">
                     <div class="font-semibold text-xl">ToggleButton</div>
-                    <p-togglebutton [(ngModel)]="toggleValue" onLabel="Yes" offLabel="No" [style]="{ width: '10em' }" />
+                    <p-togglebutton [(ngModel)]="toggleValue" onLabel="Yes" offLabel="No" [style]="{ width: '10em' }"></p-togglebutton>
 
                     <div class="font-semibold text-xl">SelectButton</div>
-                    <p-selectbutton [(ngModel)]="selectButtonValue" [options]="selectButtonValues" optionLabel="name" />
+                    <p-selectbutton [(ngModel)]="selectButtonValue" [options]="selectButtonValues" optionLabel="name"></p-selectbutton>
                 </div>
             </div>
         </p-fluid>
@@ -215,19 +215,19 @@ import { Country } from '@/app/pages/service/customer.service';
                         <p-inputgroup-addon>
                             <i class="pi pi-star-fill"></i>
                         </p-inputgroup-addon>
-                        <p-inputnumber placeholder="Price" />
+                        <p-inputnumber placeholder="Price"></p-inputnumber>
                         <p-inputgroup-addon>$</p-inputgroup-addon>
                         <p-inputgroup-addon>.00</p-inputgroup-addon>
                     </p-inputgroup>
                 </div>
                 <div class="flex flex-col md:flex-row gap-6">
                     <p-inputgroup>
-                        <p-button label="Search" />
+                        <p-button label="Search"></p-button>
                         <input pInputText placeholder="Keyword" />
                     </p-inputgroup>
                     <p-inputgroup>
                         <p-inputgroup-addon>
-                            <p-checkbox [(ngModel)]="inputGroupValue" [binary]="true" />
+                            <p-checkbox [(ngModel)]="inputGroupValue" [binary]="true"></p-checkbox>
                         </p-inputgroup-addon>
                         <input pInputText placeholder="Confirm" />
                     </p-inputgroup>

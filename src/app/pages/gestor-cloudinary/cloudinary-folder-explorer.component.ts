@@ -190,7 +190,7 @@ import { ConfirmationService, MessageService } from 'primeng/api';
 export class CloudinaryFolderExplorerComponent implements OnInit {
   private cloudinaryApi = inject(CloudinaryApiService);
   private messageService = inject(MessageService);
-  private confirmationService = inject(ConfirmationService);
+  private readonly confirmationService = inject(ConfirmationService);
   private cdr = inject(ChangeDetectorRef);
 
   @Output() folderSelected = new EventEmitter<CloudinaryFolder>();

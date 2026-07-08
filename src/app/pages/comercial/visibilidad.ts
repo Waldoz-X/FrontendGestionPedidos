@@ -1,3 +1,4 @@
+import { SecurityHelper } from '@/app/shared/utils/security.util';
 
 import { Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -126,11 +127,11 @@ import { ProductoGuante } from '../service/productos-guante/productos-guante-api
             <ng-template #content>
                 <div class="flex flex-col gap-6">
                     <div>
-                        <label class="block font-bold mb-3">Cliente</label>
+                        <label class="block font-bold mb-3">Cliente <span class="text-red-500">*</span></label>
                         <p-select appendTo="body" [(ngModel)]="formulario.idCliente" [options]="clientesOptions()" optionLabel="label" optionValue="value" [filter]="true" filterBy="label" placeholder="Buscar cliente..." fluid />
                     </div>
                     <div>
-                        <label class="block font-bold mb-3">Producto</label>
+                        <label class="block font-bold mb-3">Producto <span class="text-red-500">*</span></label>
                         <p-select appendTo="body" [(ngModel)]="formulario.idProducto" [options]="productosOptions()" optionLabel="label" optionValue="value" [filter]="true" filterBy="label" placeholder="Buscar producto..." fluid />
                     </div>
                     <div>
@@ -215,11 +216,12 @@ export class Visibilidad implements OnInit {
         if (!this.formulario.idCliente || !this.formulario.idProducto) {
             this.messageService.add({ severity: 'warn', summary: 'Atención', detail: 'Seleccione un cliente y un producto.', life: 3000 });
 
+
  return;
         }
 
         this.saving.set(true);
-        this.apiService.asignarVisibilidad(this.formulario).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+        this.apiService.asignarVisibilidad(SecurityHelper.sanitizePayload(this.formulario)).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
             next: () => {
                 this.messageService.add({ severity: 'success', summary: 'Éxito', detail: 'Acceso asignado correctamente.', life: 3000 });
                 this.dialogVisible = false; this.saving.set(false);

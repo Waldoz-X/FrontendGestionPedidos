@@ -139,6 +139,8 @@ export class Login implements OnInit {
             let lastAuthError: HttpErrorResponse | null = null;
 
             for (const tipoUsuario of candidates) {
+                let unexpectedError: unknown = null;
+                
                 try {
                     await this.tryLogin(tipoUsuario);
 
@@ -149,7 +151,13 @@ export class Login implements OnInit {
                         continue;
                     }
 
-                    throw error;
+                    unexpectedError = error;
+                }
+                
+                if (unexpectedError) {
+                    // eslint-disable-next-line
+                    // noinspection ExceptionCaughtLocallyJS
+                    throw unexpectedError;
                 }
             }
 

@@ -70,7 +70,7 @@ import {ButtonModule} from 'primeng/button';
                                 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Inventore sed consequuntur error repudiandae numquam deserunt quisquam repellat libero asperiores earum nam nobis, culpa ratione quam perferendis esse,
                                 cupiditate neque quas!
                             </p>
-                            <p-button label="Read more" [text]="true" />
+                            <p-button label="Read more" [text]="true"></p-button>
                         </p-card>
                     </ng-template>
                 </p-timeline>
@@ -98,7 +98,7 @@ import {ButtonModule} from 'primeng/button';
                     <ng-template #content let-event>
                         {{ event }}
                     </ng-template>
-                    <ng-template #opposite let-event> &nbsp; </ng-template>
+                    <ng-template #opposite > &nbsp; </ng-template>
                 </p-timeline>
             </div>
         </div>

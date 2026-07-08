@@ -118,7 +118,7 @@ type ClienteForm = CrearClienteAdminRequest;
             <ng-template #content>
                 <div class="flex flex-col gap-5">
                     <div>
-                        <label for="nbComercial" class="block font-bold mb-2">Nombre comercial *</label>
+                        <label for="nbComercial" class="block font-bold mb-2">Nombre comercial  <span class="text-red-500">*</span></label>
                         <input id="nbComercial" pInputText [(ngModel)]="form.nbComercial" class="w-full" maxlength="100" />
                         @if (submitted() && !form.nbComercial.trim()) {
                             <small class="text-red-500">El nombre comercial es obligatorio.</small>
@@ -127,7 +127,7 @@ type ClienteForm = CrearClienteAdminRequest;
 
                     <div class="grid grid-cols-12 gap-4">
                         <div class="col-span-12 md:col-span-6">
-                            <label for="clTipoCliente" class="block font-bold mb-2">Tipo de cliente *</label>
+                            <label for="clTipoCliente" class="block font-bold mb-2">Tipo de cliente  <span class="text-red-500">*</span></label>
                             <p-select appendTo="body" inputId="clTipoCliente" [(ngModel)]="form.clTipoCliente" [options]="tipoClienteOptions" optionLabel="label" optionValue="value" placeholder="Selecciona..." fluid />
                             @if (submitted() && !form.clTipoCliente) {
                                 <small class="text-red-500">El tipo de cliente es obligatorio.</small>
@@ -135,7 +135,7 @@ type ClienteForm = CrearClienteAdminRequest;
                         </div>
 
                         <div class="col-span-12 md:col-span-6">
-                            <label for="idElemMoneda" class="block font-bold mb-2">Moneda *</label>
+                            <label for="idElemMoneda" class="block font-bold mb-2">Moneda  <span class="text-red-500">*</span></label>
                             <p-select appendTo="body" inputId="idElemMoneda" [(ngModel)]="form.idElemMoneda" [options]="monedaOptions()" optionLabel="label" optionValue="value" placeholder="Selecciona..." fluid />
                             @if (submitted() && !form.idElemMoneda) {
                                 <small class="text-red-500">La moneda es obligatoria.</small>
@@ -145,7 +145,7 @@ type ClienteForm = CrearClienteAdminRequest;
 
                     <div class="grid grid-cols-12 gap-4">
                         <div class="col-span-12">
-                            <label for="dsCanalVenta" class="block font-bold mb-2">Canal de venta *</label>
+                            <label for="dsCanalVenta" class="block font-bold mb-2">Canal de venta  <span class="text-red-500">*</span></label>
                             <input id="dsCanalVenta" pInputText [(ngModel)]="form.dsCanalVenta" class="w-full" maxlength="150" />
                             @if (submitted() && !form.dsCanalVenta.trim()) {
                                 <small class="text-red-500">El canal de venta es obligatorio.</small>
@@ -289,11 +289,13 @@ export class ClientesAdminComponent implements OnInit {
         if (!this.form.nbComercial.trim() || !this.form.clTipoCliente.trim() || !this.form.dsCanalVenta.trim()) {
             this.messageService.add({ severity: 'warn', summary: 'Formulario incompleto', detail: 'Completa los campos obligatorios.', life: 4000 });
 
+
             return;
         }
 
         if (!this.form.idElemMoneda) {
             this.messageService.add({ severity: 'warn', summary: 'Formulario incompleto', detail: 'Debes indicar el ID de moneda.', life: 4000 });
+
 
             return;
         }

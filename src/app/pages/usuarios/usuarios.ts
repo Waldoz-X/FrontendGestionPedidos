@@ -1,3 +1,4 @@
+import { SecurityHelper } from '@/app/shared/utils/security.util';
 import { CommonModule } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, DestroyRef, inject, OnInit, signal, computed } from '@angular/core';
@@ -337,11 +338,13 @@ export class Usuarios implements OnInit {
         if (!this.idEntidadData) {
             this.messageService.add({ severity: 'warn', summary: 'Requerido', detail: 'Debe seleccionar un empleado o cliente.' });
 
+
             return;
         }
 
         if (!this.accesoFormData.email || !this.accesoFormData.password) {
             this.messageService.add({ severity: 'warn', summary: 'Requerido', detail: 'Email y contraseña son obligatorios.' });
+
 
             return;
         }
@@ -349,13 +352,14 @@ export class Usuarios implements OnInit {
         if (this.passwordAccesoError) {
             this.messageService.add({ severity: 'warn', summary: 'Contraseña débil', detail: this.passwordAccesoError });
 
+
             return;
         }
 
         this.saving.set(true);
         const req$ = this.tipoUsuarioData === 'EMPLEADO'
-            ? this.usuariosService.asignarAccesoEmpleado(this.idEntidadData, { email: this.accesoFormData.email, password: this.accesoFormData.password, idEmpleado: this.idEntidadData })
-            : this.usuariosService.registrarUsuarioCliente({ email: this.accesoFormData.email, password: this.accesoFormData.password, confirmPassword: this.accesoFormData.password, idCliente: this.idEntidadData });
+            ? this.usuariosService.asignarAccesoEmpleado(this.idEntidadData, { email: SecurityHelper.sanitizeString(this.accesoFormData.email), password: this.accesoFormData.password, idEmpleado: this.idEntidadData })
+            : this.usuariosService.registrarUsuarioCliente({ email: SecurityHelper.sanitizeString(this.accesoFormData.email), password: this.accesoFormData.password, confirmPassword: this.accesoFormData.password, idCliente: this.idEntidadData });
 
         req$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
             next: () => {
@@ -393,11 +397,13 @@ export class Usuarios implements OnInit {
         if (!this.resetPasswordData) {
             this.messageService.add({ severity: 'warn', summary: 'Requerido', detail: 'La nueva contraseña es obligatoria.' });
 
+
             return;
         }
 
         if (this.passwordResetError) {
             this.messageService.add({ severity: 'warn', summary: 'Contraseña débil', detail: this.passwordResetError });
+
 
             return;
         }
