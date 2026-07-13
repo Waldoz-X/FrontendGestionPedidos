@@ -31,7 +31,8 @@ export class AppMenu implements OnInit {
                     { label: 'Empleados', icon: 'pi pi-fw pi-users', routerLink: ['/empleados'] },
                     { label: 'Usuarios', icon: 'pi pi-fw pi-user-edit', routerLink: ['/admin/usuarios'] },
                     { label: 'Asignaciones', icon: 'pi pi-fw pi-link', routerLink: ['/asignaciones'] },
-                    { label: 'Catálogos', icon: 'pi pi-fw pi-folder', routerLink: ['/admin/catalogos'] }
+                    { label: 'Catálogos', icon: 'pi pi-fw pi-folder', routerLink: ['/admin/catalogos'] },
+                    { label: 'Pedidos Globales', icon: 'pi pi-fw pi-shopping-cart', routerLink: ['/admin/pedidos'] }
                 ]
             },
             {
@@ -64,7 +65,10 @@ export class AppMenu implements OnInit {
                 items: [
                     { label: 'Precios', icon: 'pi pi-fw pi-dollar', routerLink: ['/comercial/precios'] },
                     { label: 'Políticas', icon: 'pi pi-fw pi-briefcase', routerLink: ['/comercial/politicas'] },
-                    { label: 'Visibilidad', icon: 'pi pi-fw pi-eye', routerLink: ['/comercial/visibilidad'] }
+                    { label: 'Visibilidad General', icon: 'pi pi-fw pi-eye', routerLink: ['/comercial/visibilidad-general'] },
+                    { label: 'Visibilidad Jerárquica', icon: 'pi pi-fw pi-sitemap', routerLink: ['/comercial/visibilidad-jerarquica'] },
+                    { label: 'Inventario', icon: 'pi pi-fw pi-warehouse', routerLink: ['/comercial/inventario'] },
+                    { label: 'Reportes de Inventario', icon: 'pi pi-fw pi-chart-line', routerLink: ['/comercial/reportes-inventario'] }
                 ]
             },
             {

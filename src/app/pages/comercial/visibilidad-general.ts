@@ -13,7 +13,7 @@ import { ToolbarModule } from 'primeng/toolbar';
 import { TooltipModule } from 'primeng/tooltip';
 
 import { VisibilidadApiService } from '../service/visibilidad/visibilidad-api.service';
-import { AsignarVisibilidadBulkRequest, ProductoVisibleDto } from '../service/visibilidad/visibilidad-api.types';
+import { ProductoVisibleDto } from '../service/visibilidad/visibilidad-api.types';
 import { ClientesAdminService } from '../service/clientes-admin.service';
 import { ClienteAdmin } from '../service/clientes-admin-api.types';
 import { ProductosGuanteApiService } from '../service/productos-guante/productos-guante-api.service';
@@ -30,7 +30,7 @@ interface ProductoPickItem {
 }
 
 @Component({
-    selector: 'p-visibilidad',
+    selector: 'p-visibilidad-general',
     standalone: true,
     imports: [
         FormsModule,
@@ -51,7 +51,12 @@ interface ProductoPickItem {
         <div class="card">
             <p-toolbar styleClass="mb-6">
                 <ng-template #start>
-                    <div class="font-semibold text-xl">Visibilidad de Productos</div>
+                    <div>
+                        <div class="font-semibold text-xl">Visibilidad General de Productos</div>
+                        <p class="text-sm text-surface-500 dark:text-surface-400 mt-1">
+                            Asigne o revoque el acceso a productos completos para cada cliente de forma masiva.
+                        </p>
+                    </div>
                 </ng-template>
                 <ng-template #end>
                     <p-button
@@ -65,7 +70,7 @@ interface ProductoPickItem {
                 </ng-template>
             </p-toolbar>
 
-            <!-- ═══ SELECTORES SUPERIORES ═══ -->
+            <!-- SELECTORES SUPERIORES -->
             <div class="grid grid-cols-12 gap-4 items-end mb-6">
                 <div class="col-span-12 md:col-span-5">
                     <label class="block font-bold mb-3">Seleccione un Cliente <span class="text-red-500">*</span></label>
@@ -103,7 +108,7 @@ interface ProductoPickItem {
                 </div>
             </div>
 
-            <!-- ═══ INSTRUCCIONES RÁPIDAS ═══ -->
+            <!-- INSTRUCCIONES RÁPIDAS -->
             @if (clienteSeleccionadoId && !loading()) {
                 <div class="flex flex-wrap gap-4 items-center justify-between p-3 mb-4 rounded border border-surface-200 bg-surface-50 text-xs text-surface-600">
                     <div class="flex flex-wrap gap-x-6 gap-y-2">
@@ -118,7 +123,7 @@ interface ProductoPickItem {
                 </div>
             }
 
-            <!-- ═══ PICKLIST ═══ -->
+            <!-- PICKLIST -->
             @if (clienteSeleccionadoId && !loading()) {
                 <p-pickList
                     [source]="productosDisponibles"
@@ -127,8 +132,8 @@ interface ProductoPickItem {
                     targetHeader="Productos Asignados"
                     [dragdrop]="true"
                     [responsive]="true"
-                    [sourceStyle]="{ height: '65vh', 'min-height': '500px' }"
-                    [targetStyle]="{ height: '65vh', 'min-height': '500px' }"
+                    [sourceStyle]="{ height: '55vh', 'min-height': '400px' }"
+                    [targetStyle]="{ height: '55vh', 'min-height': '400px' }"
                     filterBy="clProducto,nbProducto"
                     sourceFilterPlaceholder="Buscar disponible..."
                     targetFilterPlaceholder="Buscar asignado..."
@@ -156,8 +161,8 @@ interface ProductoPickItem {
                             @if (item._enTarget) {
                                 <p-tag
                                     [value]="item.clTipoAcceso"
-                                    [severity]="item.clTipoAcceso === 'EXCLUSIVO' ? 'warn' : 'success'"
                                     [style]="{ cursor: 'pointer', 'font-size': '0.7rem' }"
+                                    [severity]="item.clTipoAcceso === 'EXCLUSIVO' ? 'warn' : 'success'"
                                     (click)="toggleTipoAcceso(item); $event.stopPropagation()"
                                     pTooltip="Clic para cambiar tipo de acceso"
                                 />
@@ -180,7 +185,7 @@ interface ProductoPickItem {
         </div>
     `
 })
-export class Visibilidad implements OnInit {
+export class VisibilidadGeneral implements OnInit {
     private readonly apiService = inject(VisibilidadApiService);
     private readonly clientesService = inject(ClientesAdminService);
     private readonly productosService = inject(ProductosGuanteApiService);
@@ -190,18 +195,13 @@ export class Visibilidad implements OnInit {
 
     loading = signal<boolean>(false);
     saving = signal<boolean>(false);
-
     clienteSeleccionadoId = '';
     tipoAccesoDefault = 'VISIBLE';
     tipoAccesoOptions = ['VISIBLE', 'EXCLUSIVO'];
-
     clientesOptions = signal<{ label: string; value: string }[]>([]);
-
     productosDisponibles: ProductoPickItem[] = [];
     productosAsignados: ProductoPickItem[] = [];
     originalAsignados: ProductoPickItem[] = [];
-
-    // ═══ INICIALIZACIÓN ═══
 
     ngOnInit(): void {
         this.cargarClientes();
@@ -217,8 +217,6 @@ export class Visibilidad implements OnInit {
             }
         });
     }
-
-    // ═══ CARGA DEL PICKLIST ═══
 
     onClienteChange(): void {
         if (this.clienteSeleccionadoId) {
@@ -272,9 +270,7 @@ export class Visibilidad implements OnInit {
                     clMsCode: p.clMsCode
                 }));
 
-            // Copia profunda para calcular diferencias al guardar
             this.originalAsignados = this.productosAsignados.map(p => ({ ...p }));
-
             this.loading.set(false);
         };
 
@@ -285,7 +281,6 @@ export class Visibilidad implements OnInit {
             },
             error: () => {
                 this.loading.set(false);
-
                 this.messageService.add({ severity: 'error', summary: 'Error', detail: 'No se pudieron cargar los productos.', life: 5000 });
             }
         });
@@ -297,13 +292,10 @@ export class Visibilidad implements OnInit {
             },
             error: () => {
                 this.loading.set(false);
-
                 this.messageService.add({ severity: 'error', summary: 'Error', detail: 'No se pudo consultar la visibilidad del cliente.', life: 5000 });
             }
         });
     }
-
-    // ═══ EVENTOS DEL PICKLIST ═══
 
     onMoverATarget(event: any): void {
         for (const item of event.items) {
@@ -343,22 +335,17 @@ export class Visibilidad implements OnInit {
         item.clTipoAcceso = item.clTipoAcceso === 'VISIBLE' ? 'EXCLUSIVO' : 'VISIBLE';
     }
 
-    // ═══ GUARDAR CAMBIOS ═══
-
     guardarCambios(): void {
-        // Productos nuevos (movidos a asignados)
         const nuevos = this.productosAsignados.filter(
             p => !this.originalAsignados.some(o => o.idProducto === p.idProducto)
         );
 
-        // Productos con tipo de acceso modificado
         const cambiados = this.productosAsignados.filter(p => {
             const original = this.originalAsignados.find(o => o.idProducto === p.idProducto);
 
             return original && original.clTipoAcceso !== p.clTipoAcceso;
         });
 
-        // Productos revocados (movidos de vuelta a disponibles)
         const revocados = this.originalAsignados.filter(
             o => !this.productosAsignados.some(p => p.idProducto === o.idProducto)
         );
@@ -388,9 +375,7 @@ export class Visibilidad implements OnInit {
         const partes: string[] = [];
 
         if (nuevos > 0) partes.push(`<b>${nuevos}</b> producto(s) serán asignados`);
-
         if (cambiados > 0) partes.push(`<b>${cambiados}</b> producto(s) cambiarán tipo de acceso`);
-
         if (revocados > 0) partes.push(`<b>${revocados}</b> producto(s) serán revocados`);
 
         return '¿Desea aplicar los siguientes cambios?<br><br>' + partes.join('<br>');
@@ -401,7 +386,6 @@ export class Visibilidad implements OnInit {
         const observables: Observable<any>[] = [];
 
         if (toAssign.length > 0) {
-            // Agrupar por clTipoAcceso (VISIBLE vs EXCLUSIVO)
             const grupos = toAssign.reduce((acc, p) => {
                 if (!acc[p.clTipoAcceso]) acc[p.clTipoAcceso] = [];
                 acc[p.clTipoAcceso].push(p.idProducto);
@@ -410,13 +394,12 @@ export class Visibilidad implements OnInit {
             }, {} as Record<string, string[]>);
 
             for (const tipoAcceso in grupos) {
-                const payload: AsignarVisibilidadBulkRequest = {
+                const payload = {
                     idCliente: this.clienteSeleccionadoId,
-                    idsProductos: grupos[tipoAcceso].filter(id => !!id), // Evitar nulls/undefined
+                    idsProductos: grupos[tipoAcceso].filter(id => !!id),
                     clTipoAcceso: tipoAcceso
                 };
 
-                console.log(`[Visibilidad] Enviando payload BULK (${tipoAcceso}):`, JSON.stringify(payload));
                 observables.push(this.apiService.asignarVisibilidadBulk(payload));
             }
         }
@@ -436,7 +419,6 @@ export class Visibilidad implements OnInit {
                 const msgs: string[] = [];
 
                 if (toAssign.length > 0) msgs.push(`${toAssign.length} producto(s) asignado(s)`);
-
                 if (revocados.length > 0) msgs.push(`${revocados.length} producto(s) revocado(s)`);
 
                 this.messageService.add({
@@ -446,11 +428,10 @@ export class Visibilidad implements OnInit {
                     life: 4000
                 });
                 this.saving.set(false);
-                this.cargarPickList(); // Recargar para sincronizar con el server
+                this.cargarPickList();
             },
             error: () => {
                 this.saving.set(false);
-
                 this.messageService.add({ severity: 'error', summary: 'Error', detail: 'No se pudieron guardar todos los cambios.', life: 5000 });
             }
         });

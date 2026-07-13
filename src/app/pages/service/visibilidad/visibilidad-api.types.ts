@@ -1,3 +1,25 @@
+export interface VisibilidadDto {
+    idVisibilidad: string;
+    idCliente: string;
+    nbComercialCliente: string;
+    idProducto?: string;
+    nbProducto?: string;
+    idVariante?: string;
+    nbCombinacion?: string;
+    idSku?: string;
+    clItem?: string;
+    clTipoAcceso: string; // "VISIBLE" | "EXCLUSIVO" | "OCULTO"
+    clEstatusVisibilidad: string;
+}
+
+export interface VisibilidadUpsertDto {
+    idCliente: string;
+    idProducto?: string;
+    idVariante?: string;
+    idSku?: string;
+    clTipoAcceso: string; // "VISIBLE" | "EXCLUSIVO" | "OCULTO"
+}
+
 export interface VisibilidadProducto {
     idCliente: string;
     nbComercialCliente: string;

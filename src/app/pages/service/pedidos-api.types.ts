@@ -1,6 +1,6 @@
 // ─── Response Types ───
 
-export type EstatusPedido = 'Borrador' | 'Enviado' | 'Aprobado' | 'Rechazado' | 'Cancelado';
+export type EstatusPedido = 'Borrador' | 'Enviado' | 'Aprobado' | 'Rechazado' | 'Cancelado' | 'Confirmado' | 'Facturado' | 'BORRADOR' | 'CONFIRMADO' | 'FACTURADO' | 'ENVIADO' | 'CANCELADO';
 export type MonedaPedido = 'USD' | 'MXN';
 
 export interface LineaPedido {
@@ -10,6 +10,10 @@ export interface LineaPedido {
     precioUnitario: number;
     descuentoLinea: number;
     subtotal: number;
+    clItem?: string;
+    nbProducto?: string;
+    nbCombinacion?: string;
+    nbTalla?: string;
 }
 
 export interface Pedido {
@@ -27,6 +31,8 @@ export interface Pedido {
     total: number;
     notas: string;
     lineas: LineaPedido[];
+    resumenProductos?: string;
+    historial?: HistorialPedido[];
 }
 
 export interface HistorialPedido {
@@ -37,6 +43,18 @@ export interface HistorialPedido {
     idUsuario: string;
     notas: string;
     registradoEn: string;
+    nbUsuario?: string;
+}
+
+export interface DashboardResumenDto {
+    montoTotalFacturado: number;
+    montoPendienteFacturar: number;
+    conteosPorEstatus: Partial<Record<EstatusPedido, number>>;
+}
+
+export interface CambiarEstatusPedidoRequest {
+    estatus: EstatusPedido;
+    notas?: string;
 }
 
 // ─── Request Types ───
@@ -44,6 +62,10 @@ export interface HistorialPedido {
 export interface GetPedidosQuery {
     estatus?: string;
     idCliente?: string;
+    idEmpleado?: string;
+    filtroEstatus?: string;
+    filtroCliente?: string;
+    filtroEmpleado?: string;
 }
 
 export interface CrearLineaPedidoRequest {

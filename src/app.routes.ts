@@ -8,6 +8,7 @@ import { AdminEstadosComponent } from './app/pages/admin/admin-estados';
 import { AdminAreasComponent } from './app/pages/admin/admin-areas';
 import { authGuard } from './app/core/guards/auth.guard';
 import { adminGuard } from './app/core/guards/admin.guard';
+import { AdminPedidos } from './app/pages/admin/admin-pedidos';
 import { Catalogo } from './app/pages/catalogo/catalogo';
 import { CatalogoPrecios } from './app/pages/catalogo/catalogo-precios';
 import { CatalogoProductos } from './app/pages/catalogo/catalogo-productos';
@@ -28,7 +29,10 @@ import { Pedidos } from './app/pages/pedidos/pedidos';
 import { ProductosGuante } from './app/pages/productos-guante/productos-guante';
 import { Precios } from './app/pages/comercial/precios';
 import { Politicas } from './app/pages/comercial/politicas';
-import { Visibilidad } from './app/pages/comercial/visibilidad';
+import { VisibilidadGeneral } from './app/pages/comercial/visibilidad-general';
+import { VisibilidadJerarquica } from './app/pages/comercial/visibilidad-jerarquica';
+import { Inventario } from './app/pages/comercial/inventario';
+import { ReportesInventario } from './app/pages/comercial/reportes-inventario';
 
 export const appRoutes: Routes = [
     {
@@ -53,6 +57,7 @@ export const appRoutes: Routes = [
                     { path: 'lineas-coleccion', component: AdminLineasColeccionComponent },
                     { path: 'catalogos', component: AdminCatalogosComponent },
                     { path: 'usuarios', component: Usuarios },
+                    { path: 'pedidos', component: AdminPedidos },
                     { path: 'empleados-password', redirectTo: 'empleados-usuarios', pathMatch: 'full' }
                 ]
             },
@@ -93,7 +98,10 @@ export const appRoutes: Routes = [
                 children: [
                     { path: 'precios', component: Precios },
                     { path: 'politicas', component: Politicas },
-                    { path: 'visibilidad', component: Visibilidad }
+                    { path: 'visibilidad-general', component: VisibilidadGeneral },
+                    { path: 'visibilidad-jerarquica', component: VisibilidadJerarquica },
+                    { path: 'inventario', component: Inventario },
+                    { path: 'reportes-inventario', component: ReportesInventario }
                 ]
             },
             { path: 'clientes', component: ClientesAdminComponent },
