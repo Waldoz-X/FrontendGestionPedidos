@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { AppConfigService } from '@/app/config/app-config.service';
 import { 
@@ -19,7 +19,7 @@ export class InventarioApiService {
     private readonly configService = inject(AppConfigService);
 
     private get baseUrl() {
-        return `${this.configService.getApiBase()}/inventario`;
+        return `${this.configService.getApiBase()}/Inventario`;
     }
 
     registrarEntrada(payload: MovimientoInventarioRequest): Observable<any> {
@@ -39,14 +39,21 @@ export class InventarioApiService {
     }
 
     getLibroAuditoria(clTipoMovimiento?: string, feInicio?: string, feFin?: string): Observable<LibroAuditoriaDto[]> {
-        let queryParams = [];
+        let params = new HttpParams();
 
-        if (clTipoMovimiento) queryParams.push(`clTipoMovimiento=${clTipoMovimiento}`);
-        if (feInicio) queryParams.push(`feInicio=${feInicio}`);
-        if (feFin) queryParams.push(`feFin=${feFin}`);
-        const queryString = queryParams.length > 0 ? `?${queryParams.join('&')}` : '';
+        if (clTipoMovimiento) {
+            params = params.set('clTipoMovimiento', clTipoMovimiento);
+        }
 
-        return this.http.get<LibroAuditoriaDto[]>(`${this.baseUrl}/libro-auditoria${queryString}`);
+        if (feInicio) {
+            params = params.set('feInicio', feInicio);
+        }
+
+        if (feFin) {
+            params = params.set('feFin', feFin);
+        }
+
+        return this.http.get<LibroAuditoriaDto[]>(`${this.baseUrl}/libro-auditoria`, { params });
     }
 
     getStockReal(): Observable<StockRealDto[]> {
@@ -54,6 +61,10 @@ export class InventarioApiService {
     }
 
     getRotacion(feInicio: string, feFin: string): Observable<RotacionDto[]> {
-        return this.http.get<RotacionDto[]>(`${this.baseUrl}/rotacion?feInicio=${feInicio}&feFin=${feFin}`);
+        const params = new HttpParams()
+            .set('feInicio', feInicio)
+            .set('feFin', feFin);
+
+        return this.http.get<RotacionDto[]>(`${this.baseUrl}/rotacion`, { params });
     }
 }

@@ -13,6 +13,10 @@ export interface AjusteInventarioRequest {
 export interface MovimientoInventarioDto {
     idMovimiento: string;
     idSku: string;
+    clItem?: string;
+    nbProducto?: string;
+    nbCombinacion?: string;
+    nbTalla?: string;
     noCantidad: number;
     clTipoMovimiento: 'ENTRADA' | 'BAJA' | 'AJUSTE' | 'VENTA';
     dsMotivo: string;
