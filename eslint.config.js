@@ -2,8 +2,10 @@ import eslintRecommended from '@eslint/js';
 import tseslint from 'typescript-eslint';
 import angular from 'angular-eslint';
 import prettier from 'eslint-config-prettier';
+import eslintPluginSecurity from 'eslint-plugin-security';
 
 export default tseslint.config(
+    eslintPluginSecurity.configs.recommended,
     {
         ignores: ['**/dist/**', '**/.angular/**', '**/coverage/**']
     },
